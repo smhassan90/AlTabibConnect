@@ -98,9 +98,6 @@ const Page = () => {
             title: "Family member added",
             textBody: "Your family member was added successfully!",
             button: "Close",
-            onPressButton() {
-              router.push("/(auth)/(tabs)/(family)");
-            },
           });
         } else {
           console.log("Error, Status code: ", response.status);

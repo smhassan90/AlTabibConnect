@@ -102,9 +102,7 @@ const Form = () => {
   const encodedPatient = encodeURIComponent(JSON.stringify(patient));
 
   //USE YOUR OWN URL!!
-  const uri = url;
-
-  const loginUrl = `${uri}registerPatient?patient=${encodedPatient}&uuid=123&type=2`;
+  const loginUrl = `${url}registerPatient?patient=${encodedPatient}&uuid=123&type=2`;
 
   const fetchRegisterData = () => {
     axios
@@ -128,7 +126,7 @@ const Form = () => {
                 console.log(
                   `Register Token stored successfully: ${tokenCache.getToken("token")}`,
                 );
-                router.replace("/(auth)/(tabs)/(home)");
+                router.replace("/LoginScreen");
                 setLoading(false);
               }, 2000);
             })
@@ -210,7 +208,7 @@ const Form = () => {
         <AntDesign name="phone" size={24} color={colors.primary} />
         <Separator vertical borderColor={"lightgray"} />
         <TextInput
-          style={{ padding: 0, flex: 1, fontFamily: "PoppinsRegular" }}
+          style={{ padding: 0, flex: 1, fontFamily: "ArialB" }}
           placeholder="Enter Your Phone"
           keyboardType="phone-pad"
           maxLength={11}
@@ -231,7 +229,7 @@ const Form = () => {
         <AntDesign name="user" size={24} color={colors.primary} />
         <Separator vertical borderColor={"lightgray"} />
         <TextInput
-          style={{ padding: 0, flex: 1, fontFamily: "PoppinsRegular" }}
+          style={{ padding: 0, flex: 1, fontFamily: "ArialB" }}
           placeholder="Enter Your Name"
           onChangeText={handleNameChange}
           placeholderTextColor="#808080a4"
@@ -290,7 +288,7 @@ const Form = () => {
           style={{
             padding: 0,
             flex: 1,
-            fontFamily: "PoppinsRegular",
+            fontFamily: "ArialB",
           }}
           placeholder="Choose Password"
           onChangeText={handlePassChange}
@@ -313,7 +311,7 @@ const Form = () => {
           style={{
             padding: 0,
             flex: 1,
-            fontFamily: "PoppinsRegular",
+            fontFamily: "ArialB",
           }}
           onChangeText={handleVerifyPassChange}
           placeholder="Re-Enter Password"
@@ -323,7 +321,7 @@ const Form = () => {
         />
       </XStack>
       <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
-        <Text style={[fonts.sub, FontColors.whiteFont]}>Register</Text>
+        <Text style={[fonts.sub, FontColors.whiteFont, {textAlignVertical:"center"}]}>Register</Text>
       </TouchableOpacity>
 
       <View style={RegLog.onPressStyle}>

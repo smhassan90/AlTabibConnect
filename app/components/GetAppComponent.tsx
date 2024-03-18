@@ -1,29 +1,24 @@
 import { Platform, ToastAndroid, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import { Card, Text, XStack } from "tamagui";
 import dayjs from "dayjs";
 import "dayjs/locale/en";
 import { Dimensions } from "react-native";
-import { FontColors, fonts, themeColors } from "../constants";
+import { themeColors } from "../constants";
 import { router } from "expo-router";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { url } from "~/env";
 import MenuBar from "./MenuBar";
 import { colors, fontSizes } from "../styles";
-import { tokenCache } from "../getToken";
+import * as SecureStore from "expo-secure-store";
 
 dayjs.locale("en");
 
 const cardWidth = Dimensions.get("window").width - 30;
 
 const GetAppComponent = () => {
-
-  const [token, setToken] = useState("");
-
-  tokenCache.getToken("token").then((token) => {
-    setToken(token as string);
-  });
+  const token = SecureStore.getItem("token");
 
   const data = useSelector((state: any) => state.appointments);
 
@@ -43,37 +38,61 @@ const GetAppComponent = () => {
 
   console.log("User Token: ", token);
   console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
-  console.log("Doctor ID: ", docId);
+  console.log("Doctor ID: ", parseInt(docId));
   console.log("Doctor Name: ", docName);
   console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
-  console.log("Clinic Id: ", clinicId);
+  console.log("Clinic Id: ", parseInt(clinicId));
   console.log("Clinic Name: ", clinicName);
   console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
-  console.log("Patient ID: ", patient.id);
+  console.log("Patient ID: ", parseInt(patient.id));
   console.log("Patient Name: ", patient.name);
   console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
 
-  const uri = url;
+
+  const setAppObj = {
+    "id":0,
+    "patientName":"",
+    "clinicName":"",
+    "doctorName":"",
+    "visitDate":"",
+    "tokenNumber":0,
+    "status":0,
+    "clinicTotalAppointments":0,
+    "clinicLastAppointmentToken":0,
+    "charges":0,
+    "prescription":"",
+    "diagnosis":"",
+    "age":0,
+    "weight":0,
+    "bloodPressure":"",
+    "followupDate":"",
+    "patientId":patientId,
+    "clinicId":clinicId,
+    "doctorId":docId,
+    //"treatments":[]
+  }
+
+  const encodedApp = encodeURIComponent(JSON.stringify(setAppObj));
 
   const dispactBooked = () => {
     axios
       .get(
-        `${uri}setAppointment?token=${token}&doctorId=${docId}&clinicId=${clinicId}&patientId=${patientId}&visitDate=2024-02-26`,
+        `${url}setAppointment?token=${token}&appointment=${encodedApp}`,
       )
       .then((res) => {
         console.log("Appointment Booked: ", res.data);
+        {
+          Platform.OS === "ios"
+            ? alert("Appointment Booked")
+            : ToastAndroid.show("Appointment Booked", ToastAndroid.LONG);
+        }
+        setTimeout(() => {
+          router.push("/(auth)/(tabs)/(home)/");
+        }, 2000);
       })
       .catch((error) => {
         console.error("Error setting appointment: ", error);
       });
-    {
-      Platform.OS === "ios"
-        ? alert("Appointment Booked")
-        : ToastAndroid.show("Appointment Booked", ToastAndroid.LONG);
-    }
-    setTimeout(() => {
-      router.push("/(auth)/(tabs)/(home)/");
-    }, 2000);
   };
 
   const cancelBooking = () => {
@@ -106,7 +125,7 @@ const GetAppComponent = () => {
             fontFamily={"ArialB"}
             fontSize={fontSizes.SM}
           >
-            {dayjs().format("D-MMM-YYYY")}
+            {dayjs().format("DD-MMM-YYYY")}
           </Text>
         </XStack>
         <XStack gap={5}>
@@ -179,6 +198,7 @@ const GetAppComponent = () => {
             style={[
               themeColors.yellow,
               {
+                justifyContent:"center",
                 borderRadius: 7,
                 padding: 10,
                 flex: 1,
@@ -186,21 +206,21 @@ const GetAppComponent = () => {
               },
             ]}
           >
-            <Text style={[FontColors.whiteFont, fonts.normal]}>Cancel</Text>
+            <Text fontFamily={"ArialB"} color={colors.white}>Cancel</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => dispactBooked()}
-            style={[
-              themeColors.blue,
-              {
-                borderRadius: 7,
-                padding: 10,
-                flex: 1,
-                alignItems: "center",
-              },
-            ]}
+            style={{
+              flex: 1,
+              backgroundColor: "#0066a1",
+              borderRadius: 5,
+              height: 40,
+              alignItems: "center",
+              justifyContent: "center",
+              paddingHorizontal: 10,
+            }}
           >
-            <Text style={[FontColors.whiteFont, fonts.normal]}>
+            <Text fontFamily={"ArialB"} color={colors.white}>
               Get Appointment
             </Text>
           </TouchableOpacity>

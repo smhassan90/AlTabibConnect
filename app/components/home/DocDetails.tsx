@@ -18,7 +18,7 @@ import axios from "axios";
 import { colors, fontSizes } from "~/app/styles";
 import * as Progress from "react-native-progress";
 import { url } from "~/env";
-import { tokenCache } from "~/app/getToken";
+import * as SecureStore from "expo-secure-store";
 
 const cardWidth = (Dimensions.get("window").width / 2.2) * 2 + 10;
 
@@ -32,27 +32,22 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
   const [activeSlide, setActiveSlide] = React.useState(0);
   const [doctorsData, setDoctorsData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState("");
+  const token = SecureStore.getItem("token");
 
-  tokenCache.getToken("token").then((token) => {
-    setToken(token as string);
-  }
-  );
-
-  
   useEffect(() => {
     // Axios GET request to fetch doctors data
     axios
-    .get(
+      .get(
         //USE YOUR OWN URL!!
-        `${url}getAllBasicData?token=${token}`,
+        `${url}getAllBasicData?token=171039802574487587590`,
       )
       .then((res) => {
-        console.log("Doctors Data: ", JSON.stringify(res.data.data.doctors[0], null, 2));
+        console.log("DOCDETAILS RES:", JSON.stringify(res.data, null, 2));
+        //console.log("Doctors Data: ", JSON.stringify(res.data.data.doctors[0], null, 2));
         setDoctorsData(res.data.data.doctors);
         setTimeout(() => {
           setLoading(false);
-        }, 3000);
+        }, 1500);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -60,12 +55,13 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
       });
   }, []);
 
-  const handleGetAppointment = (doc: any, clinic: any) => {
+  const handleGetAppointment = (doc: any, clinic: any, doctorId: string) => {
     dispatch(addAppointment(doc, clinic));
+    SecureStore.setItem("doctorId", doctorId);
     router.push("/(auth)/(tabs)/(home)/SetAppointment");
   };
 
-  const handleOpenMaps = () => {
+  const handleOpenMaps = (lat: string, long: string) => {
     const url = `https://www.google.com/maps/search/?api=1&query=34.0050561,71.9912959`;
     Linking.openURL(url);
   };
@@ -94,7 +90,11 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
             width: cardWidth,
           }}
         >
-          <Text color={colors.primary} fontFamily={"ArialB"} fontSize={fontSizes.L}>
+          <Text
+            color={colors.primary}
+            fontFamily={"ArialB"}
+            fontSize={fontSizes.L}
+          >
             Loading Doctors
           </Text>
           <Progress.CircleSnail
@@ -119,7 +119,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
             data={doctorsData}
             keyExtractor={(item: any) => item.id.toString()}
             renderItem={({ item }) => (
-              <View style={{ paddingVertical: 10, gap: 15 }}>
+              <View style={{ paddingVertical: 15, gap: 15 }}>
                 {/* Doctor's information */}
                 <View
                   style={{
@@ -179,7 +179,11 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       >
                         Clinic Name:
                       </Text>
-                      <Text color={colors.primary} fontFamily={"ArialB"} fontSize={fontSizes.SM}>
+                      <Text
+                        color={colors.primary}
+                        fontFamily={"ArialB"}
+                        fontSize={fontSizes.SM}
+                      >
                         {clinic.clinic.name}
                       </Text>
                       <Text
@@ -189,7 +193,11 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       >
                         Charges:
                       </Text>
-                      <Text color={colors.primary} fontFamily={"ArialB"} fontSize={fontSizes.SM}>
+                      <Text
+                        color={colors.primary}
+                        fontFamily={"ArialB"}
+                        fontSize={fontSizes.SM}
+                      >
                         ${clinic.charges}
                       </Text>
                       <Text
@@ -199,7 +207,11 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       >
                         Timings:
                       </Text>
-                      <Text color={colors.primary} fontFamily={"ArialB"} fontSize={fontSizes.SM}>
+                      <Text
+                        color={colors.primary}
+                        fontFamily={"ArialB"}
+                        fontSize={fontSizes.SM}
+                      >
                         {clinic.startTime} - {clinic.endTime}
                       </Text>
                       {/* Additional clinic information can be displayed here */}
@@ -213,8 +225,26 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       >
                         {/* Buttons for actions */}
                         <TouchableOpacity
+                          onPress={() => handleOpenMaps}
+                          style={{
+                            flex: 1,
+                            backgroundColor: "#0066a1",
+                            borderRadius: 5,
+                            height: 40,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            paddingHorizontal: 10,
+                          }}
+                        >
+                          <Text color={colors.white}>Get Directions</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
                           onPress={() =>
-                            handleGetAppointment(item, item.doctorClinicDALS)
+                            handleGetAppointment(
+                              item,
+                              item.doctorClinicDALS,
+                              item.id.toString(),
+                            )
                           }
                           style={{
                             flex: 1,
@@ -227,20 +257,6 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                           }}
                         >
                           <Text color={colors.white}>Get Appointment</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                        onPress={handleOpenMaps}
-                          style={{
-                            flex: 1,
-                            backgroundColor: "#0066a1",
-                            borderRadius: 5,
-                            height: 40,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            paddingHorizontal: 10,
-                          }}
-                        >
-                          <Text color={colors.white}>Get Directions</Text>
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -265,7 +281,11 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
             )}
           />
           <XStack alignSelf="center" alignItems="center" gap={15}>
-            <Text color={colors.primary} fontFamily={"ArialB"} fontSize={fontSizes.SM}>
+            <Text
+              color={colors.primary}
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.SM}
+            >
               Swipe for more
             </Text>
             <AntDesign name="rightcircle" size={20} color={colors.primary} />

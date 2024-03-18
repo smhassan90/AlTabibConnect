@@ -9,16 +9,16 @@ import { url } from "~/env";
 import { useDispatch } from "react-redux";
 import { addPatient } from "../context/actions/patientActions";
 import { tokenCache } from "../getToken";
+import * as SecureStore from "expo-secure-store";
 
 const BookingComponents = () => {
   const dispatch = useDispatch();
 
   const [patients, setPatients] = useState([]);
-  const [token, setToken] = useState("");
 
-  tokenCache.getToken("token").then((token) => {
-    setToken(token as string);
-  });
+
+  const token = SecureStore.getItem("token")
+
 
   //const PATIENT:any[] = [];
 
@@ -79,13 +79,20 @@ const BookingComponents = () => {
       });
   }, []);
 
+  const checkHistory = (patientId:string) => {
+
+    SecureStore.setItem("patientId", patientId);
+    
+    router.push("/(auth)/(tabs)/(family)/getHistory");
+  }
+
   const dispactBooked = (id: any, name: any) => {
     const reduxPatients = dispatch(addPatient({ id, name }));
-    router.push("/(drawer)/(tabs)/(Ahome)/GetAppointment");
+    router.push("/(auth)/(tabs)/(home)/GetAppointment");
   };
   return (
     <>
-      <MenuBar title=" Your Family Details" />
+      <MenuBar title=" Choose Patient" />
       <Card
         padding={10}
         flex={1}
@@ -126,11 +133,12 @@ const BookingComponents = () => {
                       Name:{" "}
                     </Text>
                     <Text color={colors.primary} fontFamily={"ArialB"} fontSize={fontSizes.SM}>
-                      {item.name}
+                      {item.name} id
+                      {item.id}
                     </Text>
                   </XStack>
 
-                  <XStack marginLeft={5}>
+                  {/* <XStack marginLeft={5}>
                     <Text
                       color={colors.yellow}
                       fontFamily={"ArialB"}
@@ -141,7 +149,7 @@ const BookingComponents = () => {
                    <Text color={colors.primary} fontFamily={"ArialB"} fontSize={fontSizes.SM}>
                       {item.age}
                     </Text>
-                  </XStack>
+                  </XStack> */}
 
                   <XStack marginLeft={5}>
                     <Text
@@ -164,12 +172,12 @@ const BookingComponents = () => {
               </XStack> */}
 
               <XStack gap={5}>
-                <Button backgroundColor={colors.yellow} flex={1}>
+                <Button onPress={()=>checkHistory(item.id.toString())} backgroundColor={colors.primary} flex={1}>
                   <ButtonText>Check History</ButtonText>
                 </Button>
                 <Button
                   onPress={() => dispactBooked(item.id, item.name)}
-                  backgroundColor={colors.primary}
+                  backgroundColor={colors.yellow}
                   flex={1}
                 >
                   <ButtonText>Select Patient</ButtonText>
