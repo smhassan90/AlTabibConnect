@@ -30,6 +30,7 @@ export default function RootLayout() {
     Arial: require("../assets/fonts/Arial-Regular.ttf"),
     ArialB: require("../assets/fonts/Arial-Bold.ttf"),
     ArialL: require("../assets/fonts/Arial-Light.ttf"),
+    ArialXB: require("../assets/fonts/Arial-XBold.ttf"),
   });
 
   const InitialLayout = () => {

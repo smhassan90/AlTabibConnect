@@ -4,13 +4,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  View,
   Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Card, Text, XStack } from "tamagui";
+import { Text, View, YStack } from "tamagui";
 import { Pagination } from "react-native-snap-carousel";
-import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useDispatch } from "react-redux";
 import { addAppointment } from "../../context/actions/appointmentActions";
@@ -20,7 +18,7 @@ import * as Progress from "react-native-progress";
 import { url } from "~/env";
 import * as SecureStore from "expo-secure-store";
 
-const cardWidth = (Dimensions.get("window").width / 2.2) * 2 + 10;
+const cardWidth = Dimensions.get("window").width;
 
 interface DocDetailsProps {
   heading: string;
@@ -67,28 +65,25 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
   };
 
   return (
-    <Card
-      unstyled
-      borderWidth={1}
-      borderColor={colors.primary}
-      flex={1}
-      padding={10}
-      justifyContent="center"
-      alignItems="center"
-      backgroundColor={"white"}
-      animation="bouncy"
-    >
+    <YStack flex={1}>
       {loading ? (
         <View
-          style={{
-            alignSelf: "center",
-            position: "absolute",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 20,
-            height: cardWidth * 1.3,
-            width: cardWidth,
-          }}
+          gap={20}
+          alignItems="center"
+          position="absolute"
+          justifyContent="center"
+          alignSelf="center"
+          height={cardWidth * 1.3}
+          width={cardWidth}
+          // style={{
+          //   alignSelf: "center",
+          //   position: "absolute",
+          //   justifyContent: "center",
+          //   alignItems: "center",
+          //   gap: 20,
+          //   height: cardWidth * 1.3,
+          //   width: cardWidth,
+          // }}
         >
           <Text
             color={colors.primary}
@@ -104,36 +99,44 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
           />
         </View>
       ) : (
-        <View style={{ alignItems: "center" }}>
+        <>
           <Text
-            color={colors.yellow}
+          textAlign="center"
+          marginVertical={5}
+            color={"#ffffff"}
             fontFamily={"ArialB"}
-            fontSize={fontSizes.XL}
+            fontSize={fontSizes.L}
           >
             {heading}
           </Text>
           <FlatList
             horizontal={false}
-            style={{ marginBottom: 10 }}
+            contentContainerStyle={{ gap: 10 }}
             decelerationRate="normal"
             data={doctorsData}
             keyExtractor={(item: any) => item.id.toString()}
             renderItem={({ item }) => (
-              <View style={{ paddingVertical: 15, gap: 15 }}>
+              <View
+                //alignItems="center"
+                paddingHorizontal={10}
+                alignSelf="center"
+                gap={15}
+                width="100%"
+                backgroundColor={colors.white}
+                borderRadius={10}
+                paddingVertical={15}
+              >
                 {/* Doctor's information */}
                 <View
-                  style={{
-                    gap: 10,
-                    paddingLeft: 20,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
+                  gap={10}
+                  flexDirection="row"
+                  alignItems="center"
                 >
                   <Image
                     source={require("../../../assets/doctor.png")}
-                    style={{ borderRadius: 50, width: 100, height: 100 }}
+                    style={{ borderWidth:1, borderColor:"#d6d6d6", borderRadius: 50, width: 75, height: 75 }}
                   />
-                  <View style={{ marginLeft: 10 }}>
+                  <View gap={5}>
                     <Text
                       color={colors.primary}
                       fontFamily={"ArialB"}
@@ -143,10 +146,17 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                     </Text>
                     <Text
                       color={colors.yellow}
-                      fontFamily={"ArialB"}
-                      fontSize={fontSizes.SM}
+                      fontFamily={"Arial"}
+                      fontSize={fontSizes.M}
                     >
-                      {item.address}
+                      {item.qualifications.map((qual: string) => qual.name + " | ")}
+                    </Text>
+                    <Text
+                      color={colors.yellow}
+                      fontFamily={"Arial"}
+                      fontSize={fontSizes.M}
+                    >
+                      14 years of experince
                     </Text>
                   </View>
                 </View>
@@ -154,27 +164,25 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                 {/* Clinics FlatList */}
                 <FlatList
                   snapToAlignment="center"
-                  snapToInterval={cardWidth - 22}
+                  snapToInterval={cardWidth - 20 - 20}
                   decelerationRate={"fast"}
-                  style={{ width: cardWidth - 22 }}
+                  style={{ width: "100%" }}
                   showsHorizontalScrollIndicator={false}
                   horizontal
                   data={item.doctorClinicDALS}
                   keyExtractor={(clinic) => clinic.id.toString()}
                   renderItem={({ item: clinic }) => (
                     <View
-                      style={{
-                        borderColor: "#ebebeb",
-                        borderWidth: 2,
-                        borderRadius: 10,
-                        padding: 10,
-                        width: cardWidth - 22,
-                        gap: 5,
-                      }}
+                      borderColor={"#ebebeb"}
+                      borderWidth={2}
+                      borderRadius={10}
+                      padding={10}
+                      width={cardWidth - 20 - 20}
+                      gap={5}
                     >
                       <Text
                         color={colors.yellow}
-                        fontFamily={"ArialB"}
+                        fontFamily={"Arial"}
                         fontSize={fontSizes.SM}
                       >
                         Clinic Name:
@@ -188,7 +196,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       </Text>
                       <Text
                         color={colors.yellow}
-                        fontFamily={"ArialB"}
+                        fontFamily={"Arial"}
                         fontSize={fontSizes.SM}
                       >
                         Charges:
@@ -198,11 +206,11 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                         fontFamily={"ArialB"}
                         fontSize={fontSizes.SM}
                       >
-                        ${clinic.charges}
+                        PKR {clinic.charges}
                       </Text>
                       <Text
                         color={colors.yellow}
-                        fontFamily={"ArialB"}
+                        fontFamily={"Arial"}
                         fontSize={fontSizes.SM}
                       >
                         Timings:
@@ -214,14 +222,13 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       >
                         {clinic.startTime} - {clinic.endTime}
                       </Text>
+
                       {/* Additional clinic information can be displayed here */}
                       <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          marginTop: 10,
-                          gap: 10,
-                        }}
+                        flexDirection="row"
+                        justifyContent="space-between"
+                        marginTop={10}
+                        gap={10}
                       >
                         {/* Buttons for actions */}
                         <TouchableOpacity
@@ -271,34 +278,24 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                 <Pagination
                   dotsLength={item.doctorClinicDALS.length}
                   activeDotIndex={activeSlide}
-                  containerStyle={styles.paginationContainer}
-                  dotStyle={styles.paginationDot}
-                  inactiveDotStyle={styles.paginationInactiveDot}
+                  containerStyle={style.paginationContainer}
+                  dotStyle={style.paginationDot}
+                  inactiveDotStyle={style.paginationInactiveDot}
                   inactiveDotOpacity={0.8}
                   inactiveDotScale={0.7}
                 />
               </View>
             )}
           />
-          <XStack alignSelf="center" alignItems="center" gap={15}>
-            <Text
-              color={colors.primary}
-              fontFamily={"ArialB"}
-              fontSize={fontSizes.SM}
-            >
-              Swipe for more
-            </Text>
-            <AntDesign name="rightcircle" size={20} color={colors.primary} />
-          </XStack>
-        </View>
+        </>
       )}
-    </Card>
+    </YStack>
   );
 };
 
 export default DocDetails;
 
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
   paginationContainer: {
     width: cardWidth - 22,
     paddingVertical: 8,

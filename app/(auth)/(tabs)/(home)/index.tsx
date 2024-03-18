@@ -6,7 +6,7 @@ import { colors } from "~/app/styles";
 
 const Page = () => {
   return (
-    <SafeAreaView style={{flex:1, backgroundColor:colors.primary,paddingHorizontal:10,paddingBottom:10}}>
+    <SafeAreaView style={{flex:1, backgroundColor:colors.primary,paddingHorizontal:10}}>
       <MenuBar title="" />
       <DocDetails heading="Well Known Doctors" />
     </SafeAreaView>
