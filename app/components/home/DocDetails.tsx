@@ -75,15 +75,6 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
           alignSelf="center"
           height={cardWidth * 1.3}
           width={cardWidth}
-          // style={{
-          //   alignSelf: "center",
-          //   position: "absolute",
-          //   justifyContent: "center",
-          //   alignItems: "center",
-          //   gap: 20,
-          //   height: cardWidth * 1.3,
-          //   width: cardWidth,
-          // }}
         >
           <Text
             color={colors.primary}
@@ -129,7 +120,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                 {/* Doctor's information */}
                 <View gap={10} flexDirection="row" alignItems="center">
                   <Image
-                    source={require("../../../assets/doctor.png")}
+                    source={item.gender=="male"? require("~/assets/docMale.png"):require("~/assets/docFemale.png")}
                     style={{
                       borderWidth: 1,
                       borderColor: "#d6d6d6",
@@ -159,7 +150,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       fontSize={fontSizes.M}
                     >
                       {item.qualifications.map(
-                        (qual: string) =>qual.name + " | ",
+                        (qual: string) => qual.name + " | ",
                       )}
                     </Text>
                   </View>
@@ -168,33 +159,57 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                 <XStack
                   justifyContent="center"
                   flexDirection="row"
-                  padding={20}
+                  padding={10}
                 >
                   <YStack ai={"center"}>
-                    <Text fontSize={fontSizes.SM} color={"gray"} fontFamily={"ArialB"}>397</Text>
-                    <Text fontSize={fontSizes.SM} color={"gray"}>Checkups</Text>
+                    <Text
+                      fontSize={fontSizes.SM}
+                      color={colors.primary}
+                      fontFamily={"ArialB"}
+                    >
+                      397
+                    </Text>
+                    <Text fontSize={fontSizes.SM} color={colors.yellow}>
+                      Checkups
+                    </Text>
                   </YStack>
                   <Separator
-                  borderColor={"lightgray"}
-                  borderWidth={0.5}
+                    borderColor={"lightgray"}
+                    borderWidth={0.5}
                     alignSelf="stretch"
                     vertical
                     marginHorizontal={15}
                   />
                   <YStack ai={"center"}>
-                    <Text fontSize={fontSizes.SM} color={"gray"}  fontFamily={"ArialB"}>12 Years</Text>
-                    <Text fontSize={fontSizes.SM} color={"gray"}>Experience</Text>
+                    <Text
+                      fontSize={fontSizes.SM}
+                      color={colors.primary}
+                      fontFamily={"ArialB"}
+                    >
+                      12 Years
+                    </Text>
+                    <Text fontSize={fontSizes.SM} color={colors.yellow}>
+                      Experience
+                    </Text>
                   </YStack>
                   <Separator
-                  borderColor={"lightgray"}
-                  borderWidth={0.5}
+                    borderColor={"lightgray"}
+                    borderWidth={0.5}
                     alignSelf="stretch"
                     vertical
                     marginHorizontal={15}
                   />
                   <YStack ai={"center"}>
-                    <Text fontSize={fontSizes.SM} color={"gray"}  fontFamily={"ArialB"}>91% (45)</Text>
-                    <Text fontSize={fontSizes.SM} color={"gray"}>Satisfied</Text>
+                    <Text
+                      fontSize={fontSizes.SM}
+                      color={colors.primary}
+                      fontFamily={"ArialB"}
+                    >
+                      91% (45)
+                    </Text>
+                    <Text fontSize={fontSizes.SM} color={colors.yellow}>
+                      Satisfied
+                    </Text>
                   </YStack>
                 </XStack>
 
@@ -312,15 +327,17 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                   }}
                 />
                 {/* Pagination dots */}
-                <Pagination
-                  dotsLength={item.doctorClinicDALS.length}
-                  activeDotIndex={activeSlide}
-                  containerStyle={style.paginationContainer}
-                  dotStyle={style.paginationDot}
-                  inactiveDotStyle={style.paginationInactiveDot}
-                  inactiveDotOpacity={0.8}
-                  inactiveDotScale={0.7}
-                />
+                <View alignSelf="center">
+                  <Pagination
+                    dotsLength={item.doctorClinicDALS.length}
+                    activeDotIndex={activeSlide}
+                    containerStyle={style.paginationContainer}
+                    dotStyle={style.paginationDot}
+                    inactiveDotStyle={style.paginationInactiveDot}
+                    inactiveDotOpacity={0.8}
+                    inactiveDotScale={0.7}
+                  />
+                </View>
               </View>
             )}
           />
