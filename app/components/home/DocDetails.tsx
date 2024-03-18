@@ -7,7 +7,7 @@ import {
   Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Text, View, YStack } from "tamagui";
+import { Separator, Text, View, XStack, YStack } from "tamagui";
 import { Pagination } from "react-native-snap-carousel";
 import { router } from "expo-router";
 import { useDispatch } from "react-redux";
@@ -101,8 +101,8 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
       ) : (
         <>
           <Text
-          textAlign="center"
-          marginVertical={5}
+            textAlign="center"
+            marginVertical={5}
             color={"#ffffff"}
             fontFamily={"ArialB"}
             fontSize={fontSizes.L}
@@ -127,14 +127,16 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                 paddingVertical={15}
               >
                 {/* Doctor's information */}
-                <View
-                  gap={10}
-                  flexDirection="row"
-                  alignItems="center"
-                >
+                <View gap={10} flexDirection="row" alignItems="center">
                   <Image
                     source={require("../../../assets/doctor.png")}
-                    style={{ borderWidth:1, borderColor:"#d6d6d6", borderRadius: 50, width: 75, height: 75 }}
+                    style={{
+                      borderWidth: 1,
+                      borderColor: "#d6d6d6",
+                      borderRadius: 50,
+                      width: 75,
+                      height: 75,
+                    }}
                   />
                   <View gap={5}>
                     <Text
@@ -149,17 +151,52 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       fontFamily={"Arial"}
                       fontSize={fontSizes.M}
                     >
-                      {item.qualifications.map((qual: string) => qual.name + " | ")}
+                      Dentist
                     </Text>
                     <Text
                       color={colors.yellow}
                       fontFamily={"Arial"}
                       fontSize={fontSizes.M}
                     >
-                      14 years of experince
+                      {item.qualifications.map(
+                        (qual: string) =>qual.name + " | ",
+                      )}
                     </Text>
                   </View>
                 </View>
+
+                <XStack
+                  justifyContent="center"
+                  flexDirection="row"
+                  padding={20}
+                >
+                  <YStack ai={"center"}>
+                    <Text fontSize={fontSizes.SM} color={"gray"} fontFamily={"ArialB"}>397</Text>
+                    <Text fontSize={fontSizes.SM} color={"gray"}>Checkups</Text>
+                  </YStack>
+                  <Separator
+                  borderColor={"lightgray"}
+                  borderWidth={0.5}
+                    alignSelf="stretch"
+                    vertical
+                    marginHorizontal={15}
+                  />
+                  <YStack ai={"center"}>
+                    <Text fontSize={fontSizes.SM} color={"gray"}  fontFamily={"ArialB"}>12 Years</Text>
+                    <Text fontSize={fontSizes.SM} color={"gray"}>Experience</Text>
+                  </YStack>
+                  <Separator
+                  borderColor={"lightgray"}
+                  borderWidth={0.5}
+                    alignSelf="stretch"
+                    vertical
+                    marginHorizontal={15}
+                  />
+                  <YStack ai={"center"}>
+                    <Text fontSize={fontSizes.SM} color={"gray"}  fontFamily={"ArialB"}>91% (45)</Text>
+                    <Text fontSize={fontSizes.SM} color={"gray"}>Satisfied</Text>
+                  </YStack>
+                </XStack>
 
                 {/* Clinics FlatList */}
                 <FlatList
