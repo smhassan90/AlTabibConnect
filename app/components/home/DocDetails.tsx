@@ -108,14 +108,15 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
             keyExtractor={(item: any) => item.id.toString()}
             renderItem={({ item }) => (
               <View
-                //alignItems="center"
                 paddingHorizontal={10}
                 alignSelf="center"
                 gap={15}
                 width="100%"
+                marginBottom={10}
                 backgroundColor={colors.white}
                 borderRadius={10}
-                paddingVertical={15}
+                paddingTop={15}
+                paddingBottom={5}
               >
                 {/* Doctor's information */}
                 <View gap={10} flexDirection="row" alignItems="center">
@@ -169,7 +170,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                     >
                       397
                     </Text>
-                    <Text fontSize={fontSizes.SM} color={colors.yellow}>
+                    <Text fontFamily={"Arial"}  fontSize={fontSizes.SM} color={colors.yellow}>
                       Checkups
                     </Text>
                   </YStack>
@@ -188,7 +189,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                     >
                       12 Years
                     </Text>
-                    <Text fontSize={fontSizes.SM} color={colors.yellow}>
+                    <Text fontFamily={"Arial"}  fontSize={fontSizes.SM} color={colors.yellow}>
                       Experience
                     </Text>
                   </YStack>
@@ -207,7 +208,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                     >
                       91% (45)
                     </Text>
-                    <Text fontSize={fontSizes.SM} color={colors.yellow}>
+                    <Text fontFamily={"Arial"} fontSize={fontSizes.SM} color={colors.yellow}>
                       Satisfied
                     </Text>
                   </YStack>

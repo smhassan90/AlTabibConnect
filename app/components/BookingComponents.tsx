@@ -120,7 +120,7 @@ const BookingComponents = () => {
               {/*{PATIENT.push({id:item.id, name:item.name})}*/}
               <XStack>
                 <Image
-                  source={require("~/assets/doctor.png")}
+                  source={require("~/assets/man.png")}
                   style={{ borderRadius: 50, width: 100, height: 100 }}
                 />
                 <YStack justifyContent="center" paddingLeft gap={10}>

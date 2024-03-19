@@ -1,23 +1,27 @@
 import axios from "axios";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Modal } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, ButtonText, Card, Text, XStack, YStack } from "tamagui";
-import { colors } from "~/app/styles";
+import { buttons, colors, fontSizes } from "~/app/styles";
 import MenuBar from "~/app/components/MenuBar";
 import { url } from "~/env";
 import * as SecureStore from "expo-secure-store";
 import dayjs from "dayjs";
+import DateTimePicker, { DateType } from "react-native-ui-datepicker";
+import { BlurView } from "expo-blur";
 
 export default function Page() {
+  const [date, setDate] = useState<DateType>(dayjs());
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const currDate = date ? dayjs(date).format("YYYY-MM-DD") : "Date of Birth";
+
   const [activeTab, setActiveTab] = useState("PENDING");
 
   const token = SecureStore.getItem("token");
-
-  const [clinicId, setClinicId] = useState<number>();
-  const [dateOfApp, setDateOfApp] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [appData, setAppData] = useState([]);
@@ -35,26 +39,28 @@ export default function Page() {
     setLoading(true);
     axios
       .get(
-        `${url}viewAppointments?token=${token}&visitDate=&clinicId=0&patientId=0&doctorId=0&appointmentId=0&followupDate`,
+        `${url}viewAppointments?token=${token}&visitDate=${currDate}&clinicId=0&patientId=0&doctorId=0&appointmentId=0&followupDate`,
       )
       .then((res) => {
-        //console.log('Response:', JSON.stringify(res.data.data, null, 2));
+        console.log("Date Chosen:", currDate);
+        console.log("Response:", JSON.stringify(res.data.data, null, 2));
         setAppData(res.data.data.appointments);
-        //console.log('Response Appointment Data:', JSON.stringify(appData, null, 2));sssssssss
 
-        res.data.data.appointments.map((item: any) => {
-          if (
-            !successApps.some((app: any) => app.id === item.id) &&
-            item.status === 1
-          ) {
-            successApps.push(item);
-          } else if (
-            !pendingApps.some((app: any) => app.id === item.id) &&
-            item.status !== 1
-          ) {
-            pendingApps.push(item);
+        const successAppsArray: any[] = [];
+        const pendingAppsArray: any[] = [];
+
+        res.data.data.appointments.forEach((item: any) => {
+          if (item.status === 1) {
+            // Replace existing items in successApps array with new items
+            successAppsArray.push(item);
+          } else {
+            // Replace existing items in pendingApps array with new items
+            pendingAppsArray.push(item);
           }
         });
+
+        setSuccessApps(successAppsArray);
+        setPendingApps(pendingAppsArray);
 
         console.log("Pending Apps:", JSON.stringify(pendingApps, null, 2));
         console.log("Successfull Apps:", JSON.stringify(successApps, null, 2));
@@ -63,7 +69,7 @@ export default function Page() {
       .catch((error) => {
         console.error("Error fetching Succ/Pen Appointments:", error);
       });
-  }, []);
+  }, [currDate]);
 
   const goToHisory = (val: string) => {
     SecureStore.setItem("patientId", val);
@@ -81,15 +87,21 @@ export default function Page() {
       {/* Title Bar */}
       <MenuBar title="Your Appointments" />
 
-      {/* Tab Bar */}
-
       {/* Content */}
       <YStack gap={10} flex={1}>
-        <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={[buttons.secBtn]}
+          onPress={() => setIsModalVisible(true)}
+        >
+          <Text color={"white"} fontFamily={"ArialB"}>
+            {date ? dayjs(date).format("MMMM DD, YYYY") : "Date of Birth"}
+          </Text>
+        </TouchableOpacity>
+        <View style={tabStyles.tabBar}>
           <TouchableOpacity
             style={[
-              styles.tabItem,
-              activeTab === "PENDING" && styles.activeTabItem,
+              tabStyles.tabItem,
+              activeTab === "PENDING" && tabStyles.activeTabItem,
             ]}
             onPress={() => handleTabPress("PENDING")}
           >
@@ -99,8 +111,8 @@ export default function Page() {
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.tabItem,
-              activeTab === "SUCCESSFUL" && styles.activeTabItem,
+              tabStyles.tabItem,
+              activeTab === "SUCCESSFUL" && tabStyles.activeTabItem,
             ]}
             onPress={() => handleTabPress("SUCCESSFUL")}
           >
@@ -109,13 +121,38 @@ export default function Page() {
             </Text>
           </TouchableOpacity>
         </View>
+        {activeTab === "PENDING" && pendingApps.length === 0 && (
+          <YStack alignItems="center" flex={1} justifyContent="center">
+            <Text
+              textAlign="center"
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.M}
+              color={"white"}
+            >
+              No appointments for this day
+            </Text>
+          </YStack>
+        )}
+        {activeTab === "SUCCESSFUL" && successApps.length === 0 && (
+          <YStack alignItems="center" flex={1} justifyContent="center">
+            <Text
+              textAlign="center"
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.M}
+              color={"white"}
+            >
+              No completed appointments on this day
+            </Text>
+          </YStack>
+        )}
         {activeTab === "PENDING" ? (
-            <FlatList
-              horizontal={false}
-              decelerationRate="normal"
-              data={pendingApps}
-              //keyExtractor={(item: any) => item.id.toString()}
-              renderItem={({ item }) => (
+          <FlatList
+            horizontal={false}
+            decelerationRate="normal"
+            data={pendingApps}
+            //keyExtractor={(item: any) => item.id.toString()}
+            renderItem={({ item }) => (
+              <>
                 <Card
                   marginBottom={10}
                   padded
@@ -188,8 +225,9 @@ export default function Page() {
                     </Button>
                   </XStack>
                 </Card>
-              )}
-            />
+              </>
+            )}
+          />
         ) : (
           <FlatList
             style={{ width: "100%" }}
@@ -291,7 +329,7 @@ export default function Page() {
                   <Button
                     onPress={() => goToHisory(item.patientId.toString())}
                     flex={1}
-                    backgroundColor={colors.yellow}
+                    backgroundColor={colors.primary}
                   >
                     <ButtonText
                       fontFamily={"ArialB"}
@@ -305,13 +343,81 @@ export default function Page() {
               </Card>
             )}
           />
+          
+
         )}
+        
+        {/* MODAL */}
+
+        <Modal
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={() => setIsModalVisible(false)}
+          animationType="fade"
+        >
+          <BlurView
+            style={{
+              padding: 15,
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            experimentalBlurMethod="dimezisBlurView"
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                padding: 10,
+                borderRadius: 10,
+                gap: 10,
+              }}
+            >
+              <DateTimePicker
+                dayContainerStyle={{
+                  borderWidth: 2,
+                  borderRadius: 10,
+                  borderColor: "#f3f3f3",
+                }}
+                headerButtonStyle={{
+                  backgroundColor: "white",
+                  borderRadius: 7,
+                }}
+                headerContainerStyle={{
+                  paddingHorizontal: 5,
+                  backgroundColor: "#0066a1",
+                  borderRadius: 10,
+                }}
+                headerTextStyle={{
+                  color: "white",
+                  fontSize: 20,
+                  fontWeight: "bold",
+                }}
+                displayFullDays={true}
+                headerButtonColor="#0066a1"
+                selectedItemColor="#0066a1"
+                mode="single"
+                date={date}
+                onChange={(date) => setDate(date.date)}
+              />
+              <XStack>
+                <TouchableOpacity
+                  style={[buttons.primaryBtn, { flex: 1 }]}
+                  onPress={() => setIsModalVisible(false)}
+                >
+                  <Text color={"white"} fontFamily={"ArialB"}>
+                    Close
+                  </Text>
+                </TouchableOpacity>
+              </XStack>
+            </View>
+          </BlurView>
+        </Modal>
       </YStack>
     </SafeAreaView>
   );
 }
 
-const styles = {
+const tabStyles = {
   cardText: {
     fontSize: 16,
     fontWeight: "bold",

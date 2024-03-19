@@ -1,11 +1,10 @@
-import { Image, ScrollView } from "react-native";
+import { Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MenuBar from "~/app/components/MenuBar";
-import { Button, ButtonText, Card, Text, XStack, YStack } from "tamagui";
+import { Button, ButtonText, Text, XStack, YStack } from "tamagui";
 import { FlatList } from "react-native-gesture-handler";
 import { colors } from "~/app/styles";
-import { FontColors, fonts } from "~/app/constants";
 import { url } from "~/env";
 import axios from "axios";
 import { Link, router } from "expo-router";
@@ -114,7 +113,7 @@ const Page = () => {
             >
               <XStack>
                 <Image
-                  source={require("~/assets/doctor.png")}
+                  source={require("~/assets/man.png")}
                   style={{ borderRadius: 50, width: 100, height: 100 }}
                 />
                 <YStack justifyContent="center" paddingLeft gap={10}>
