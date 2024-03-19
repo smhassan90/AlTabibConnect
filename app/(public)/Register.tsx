@@ -31,7 +31,7 @@ const Register = () => {
             }}
             keyboardShouldPersistTaps="handled"
           >
-            <Text style={[textStyles.heading]}>Register</Text>
+            <Text style={[textStyles.heading,{textAlign:"center"}]}>Register</Text>
             <Text style={[textStyles.normal, { textAlign: "center" }]}>
               You can search Doctors, Book Appointments & check Medical History
             </Text>

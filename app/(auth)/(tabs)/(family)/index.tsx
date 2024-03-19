@@ -15,28 +15,8 @@ const Page = () => {
   const token = SecureStore.getItem("token");
 
   const parseDateString = (dateString: string) => {
-    const months: { [key: string]: number } = {
-      Jan: 0,
-      Feb: 1,
-      Mar: 2,
-      Apr: 3,
-      May: 4,
-      Jun: 5,
-      Jul: 6,
-      Aug: 7,
-      Sep: 8,
-      Oct: 9,
-      Nov: 10,
-      Dec: 11,
-    };
-    const parts = dateString.split("-");
-    const day = parseInt(parts[0]);
-    const month = months[parts[1].substr(0, 3)]; // Get the month index from the months object
-    const year =
-      parseInt(parts[2]) < 50
-        ? 2000 + parseInt(parts[2])
-        : 1900 + parseInt(parts[2]); // Assume 20th or 21st century based on year
-    return new Date(year, month, day);
+    const [year, month, day] = dateString.split("-").map(Number);
+    return new Date(year, month - 1, day);
   };
 
   useEffect(() => {
@@ -49,18 +29,20 @@ const Page = () => {
         const updatedPatients = patients.map((patient: any) => {
           const dobDate = parseDateString(patient.dob);
           const currentDate = new Date();
+
           console.log("Org array Date: ", patient.dob);
           console.log("array Date: ", dobDate.toString());
-          const age = currentDate.getFullYear() - dobDate.getFullYear();
+
+          let age = currentDate.getFullYear() - dobDate.getFullYear();
+          const birthMonth = dobDate.getMonth() + 1;
           if (
-            currentDate.getMonth() < dobDate.getMonth() ||
-            (currentDate.getMonth() === dobDate.getMonth() &&
+            currentDate.getMonth() + 1 < birthMonth ||
+            (currentDate.getMonth() + 1 === birthMonth &&
               currentDate.getDate() < dobDate.getDate())
           ) {
-            patient.age = age - 1;
-          } else {
-            patient.age = age;
+            age--; // decrease ager pending bday
           }
+          patient.age = age;
           return patient;
         });
         setPatients(updatedPatients);
@@ -75,8 +57,8 @@ const Page = () => {
   }, []);
 
   const checkHistory = (patientId: string) => {
-    SecureStore.setItem("patientId",patientId)
-    router.push("/(auth)/(tabs)/(family)/getHistory")
+    SecureStore.setItem("patientId", patientId);
+    router.push("/(auth)/(tabs)/(family)/getHistory");
   };
 
   return (
@@ -113,7 +95,15 @@ const Page = () => {
             >
               <XStack>
                 <Image
-                  source={require("~/assets/man.png")}
+                  source={
+                    item.age > 18 && item.gender === "male"
+                      ? require("~/assets/man.png")
+                      : item.age > 18 && item.gender === "female"
+                        ? require("~/assets/woman.png")
+                        : item.age <= 18 && item.gender === "male"
+                          ? require("~/assets/boy.png")
+                          : require("~/assets/girl.png")
+                  }
                   style={{ borderRadius: 50, width: 100, height: 100 }}
                 />
                 <YStack justifyContent="center" paddingLeft gap={10}>
@@ -154,7 +144,11 @@ const Page = () => {
               </XStack>
 
               <XStack gap={5}>
-                <Button onPress={()=>checkHistory(item.id.toString())} backgroundColor={colors.primary} flex={1}>
+                <Button
+                  onPress={() => checkHistory(item.id.toString())}
+                  backgroundColor={colors.primary}
+                  flex={1}
+                >
                   <Text color={colors.white} fontFamily={"ArialB"}>
                     Check History
                   </Text>

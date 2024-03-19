@@ -44,8 +44,8 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
         //console.log("Doctors Data: ", JSON.stringify(res.data.data.doctors[0], null, 2));
         setDoctorsData(res.data.data.doctors);
         setTimeout(() => {
-          setLoading(false);
-        }, 1500);
+        setLoading(false);
+        }, 2000);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -65,7 +65,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
   };
 
   return (
-    <YStack flex={1}>
+    <YStack flex={1} justifyContent="center">
       {loading ? (
         <View
           gap={20}
@@ -73,11 +73,11 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
           position="absolute"
           justifyContent="center"
           alignSelf="center"
-          height={cardWidth * 1.3}
+          height={cardWidth}
           width={cardWidth}
         >
           <Text
-            color={colors.primary}
+            color={colors.white}
             fontFamily={"ArialB"}
             fontSize={fontSizes.L}
           >
@@ -86,7 +86,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
           <Progress.CircleSnail
             thickness={7}
             size={100}
-            color={[colors.primary, colors.yellow]}
+            color={[colors.white, colors.yellow]}
           />
         </View>
       ) : (

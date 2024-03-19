@@ -101,9 +101,12 @@ const FormLogin = () => {
             "Response TOKEN: ",
             JSON.stringify(response.data.data.token, null, 2),
           );
-          tokenCache.setToken("token", response.data.data.token)
+          tokenCache
+            .setToken("token", response.data.data.token)
             .then(() => {
-              console.log(`Login Token Storage successfull: ${tokenCache.getToken("token")}`);
+              console.log(
+                `Login Token Storage successfull: ${tokenCache.getToken("token")}`,
+              );
               router.replace("/(auth)/(tabs)/(home)");
             })
             .catch((error) => {
@@ -179,7 +182,11 @@ const FormLogin = () => {
         </XStack>
       </XStack>
       <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
-        {loading?<ActivityIndicator color={"white"}  />:<Text style={[fonts.subBold, FontColors.whiteFont]}>Login</Text>}
+        {loading ? (
+          <ActivityIndicator color={"white"} />
+        ) : (
+          <Text style={[fonts.subBold, FontColors.whiteFont]}>Login</Text>
+        )}
       </TouchableOpacity>
 
       <View style={[RegLog.onPressStyle, { zIndex: -1000 }]}>
@@ -194,21 +201,19 @@ const FormLogin = () => {
         >
           Don't have an account?
         </Text>
-        <Link href="/Register" asChild>
-          <TouchableOpacity>
-            <Text
-              style={[
-                {
-                  fontSize: fontSizes.SM,
-                  fontFamily: fontsFams.ArialB,
-                  color: colors.linkBlue,
-                },
-              ]}
-            >
-              Register
-            </Text>
-          </TouchableOpacity>
-        </Link>
+        <TouchableOpacity onPress={() => router.push("/Register")}>
+          <Text
+            style={[
+              {
+                fontSize: fontSizes.SM,
+                fontFamily: fontsFams.ArialB,
+                color: colors.linkBlue,
+              },
+            ]}
+          >
+            Register
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

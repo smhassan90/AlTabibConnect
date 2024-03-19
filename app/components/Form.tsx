@@ -321,7 +321,15 @@ const Form = () => {
         />
       </XStack>
       <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
-        <Text style={[fonts.sub, FontColors.whiteFont, {textAlignVertical:"center"}]}>Register</Text>
+        <Text
+          style={[
+            fonts.sub,
+            FontColors.whiteFont,
+            { textAlignVertical: "center" },
+          ]}
+        >
+          Register
+        </Text>
       </TouchableOpacity>
 
       <View style={RegLog.onPressStyle}>
@@ -336,21 +344,19 @@ const Form = () => {
         >
           Already have an account?
         </Text>
-        <Link href="/LoginScreen" asChild>
-          <TouchableOpacity>
-            <Text
-              style={[
-                {
-                  fontSize: fontSizes.SM,
-                  fontFamily: fontsFams.ArialB,
-                  color: colors.linkBlue,
-                },
-              ]}
-            >
-              Login
-            </Text>
-          </TouchableOpacity>
-        </Link>
+        <TouchableOpacity onPress={() => router.push("/Login")}>
+          <Text
+            style={[
+              {
+                fontSize: fontSizes.SM,
+                fontFamily: fontsFams.ArialB,
+                color: colors.linkBlue,
+              },
+            ]}
+          >
+            Login
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* MODAL */}
