@@ -6,7 +6,8 @@
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "ios": "expo run:ios",
     "start": "expo start",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "expo-nodev": "expo start --no-dev --minify"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
@@ -30,6 +31,7 @@
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",
     "expo-web-browser": "~12.8.2",
+    "lottie-react-native": "6.5.1",
     "qs": "^6.11.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",

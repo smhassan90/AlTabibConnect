@@ -1,15 +1,17 @@
 import axios from "axios";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Modal, Animated } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, ButtonText, Card, Text, XStack, YStack } from "tamagui";
-import { colors } from "~/app/styles";
+import { colors, fontSizes } from "~/app/styles";
 import MenuBar from "~/app/components/MenuBar";
 import { url } from "~/env";
 import * as SecureStore from "expo-secure-store";
 import dayjs from "dayjs";
+import LottieView from "lottie-react-native";
+import { BlurView } from "expo-blur";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState("PENDING");
@@ -24,6 +26,15 @@ export default function Page() {
 
   const [successApps, setSuccessApps] = useState<any>([]);
   const [pendingApps, setPendingApps] = useState<any>([]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+    setTimeout(() => {
+      setModalVisible(false);
+    }, 4000);
+  };
 
   const handleTabPress = (tab: string) => {
     setActiveTab(tab);
@@ -224,10 +235,71 @@ export default function Page() {
             </Card>
           )}
         />
+        <Button title="Open Modal" onPress={toggleModal}>
+          <ButtonText>Open Modal</ButtonText>
+        </Button>
       </YStack>
+      <CustomModal visible={modalVisible} onClose={toggleModal} />
     </SafeAreaView>
   );
 }
+
+const CustomModal = ({ visible, onClose }) => {
+  return (
+    <Modal
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+      animationType="fade"
+    >
+      <BlurView
+        experimentalBlurMethod="dimezisBlurView"
+        style={{
+          flexDirection: "column",
+          padding: 15,
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <View style={styles.modalContent}>
+          <LottieView
+            speed={0.5}
+            autoPlay
+            loop={false}
+            style={{
+              width: 200,
+              height: 200,
+            }}
+            source={require("~/assets/Success.json")}
+          />
+          <Text
+            color={colors.primary}
+            fontFamily={"ArialB"}
+            fontSize={fontSizes.XL}
+          >
+            Success
+          </Text>
+          <Text
+            color={colors.yellow}
+            fontFamily={"ArialB"}
+            fontSize={fontSizes.SM}
+          >
+            Appointment Booked Successfully
+          </Text>
+          <Button
+            width={"80%"}
+            title="Close"
+            onPress={onClose}
+            backgroundColor={colors.primary}
+          >
+            <ButtonText>Close</ButtonText>
+          </Button>
+        </View>
+      </BlurView>
+    </Modal>
+  );
+};
 
 const styles = {
   cardText: {
@@ -249,5 +321,18 @@ const styles = {
     paddingVertical: 10,
     borderBottomWidth: 3,
     borderBottomColor: colors.yellow,
+  },
+  blurView: {
+    padding: 15,
+    flex: 1,
+    justifyContent: "center",
+  },
+  modalContent: {
+    width: "90%",
+    alignItems: "center",
+    backgroundColor: "white",
+    paddingBottom: 20,
+    borderRadius: 10,
+    gap: 20,
   },
 };

@@ -5,17 +5,20 @@ import {
   DrawerItem,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { Button, ButtonText, Text, View, Image } from "tamagui";
+import { Button, ButtonText, Text, View, Image, YStack } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as SecureStore from "expo-secure-store";
 import { router, useNavigation } from "expo-router";
-import { colors } from "~/app/styles";
+import { colors, fontSizes } from "~/app/styles";
 import { FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { DrawerActions } from "@react-navigation/native";
+import constants from "expo-constants";
+import { userData } from "~/app/(auth)/(tabs)/(profile)";
 
 export const CustomContent = (props: any) => {
   const navigation = useNavigation();
   const { top, bottom } = useSafeAreaInsets();
+  const topSpace = constants.statusBarHeight;
 
   const handleLogout = () => {
     Alert.alert(
@@ -30,7 +33,7 @@ export const CustomContent = (props: any) => {
           text: "Yes",
           onPress: () => {
             SecureStore.deleteItemAsync("token");
-            router.replace("/LoginScreen");
+            router.replace("/Login");
           },
         },
       ],
@@ -42,37 +45,45 @@ export const CustomContent = (props: any) => {
     <View flex={1}>
       <DrawerContentScrollView {...props}>
         <View
-          marginHorizontal={10}
-          paddingVertical={20}
-          borderRadius={10}
-          //backgroundColor={"lightgray"}
+          marginTop={-topSpace - 10}
+          width={"100%"}
+          paddingHorizontal={20}
+          paddingTop={50}
+          paddingBottom={20}
+          backgroundColor={colors.yellow}
           marginBottom={10}
-          alignItems="center"
           gap={10}
         >
           <Image
             height={100}
             width={100}
-            //alignSelf="center"
             borderRadius={50}
-            source={{
-              uri: "https://lh3.googleusercontent.com/pw/ABLVV87DzwHP62UImU7R1nHuilbogC05sWMFkxIszzTzyME0YlXojhRgXQsDdn6S-ZQLVJhAlabuAEXUhNfJKTk5yYeYEGOmcfj0usKvHCrRv_SwepxHDhKCoVInKg-4nhSkmOMjjWtXDTZu-ut6e-NtC3fnhQ=w607-h607-s-no-gm",
-            }}
+            source={require("~/assets/man.png")}
           />
-          <Text color={colors.primary} fontSize={24} fontFamily={"ArialB"}>
-            Syed Anas Ahmed
-          </Text>
+          <YStack gap={3}>
+            <Text
+              color={colors.white}
+              fontSize={fontSizes.M}
+              fontFamily={"ArialB"}
+            >
+              {userData.name}
+            </Text>
+            <Text
+              color={colors.white}
+              fontSize={fontSizes.SM}
+              fontFamily={"Arial"}
+            >
+              {userData.cellNumber}
+            </Text>
+          </YStack>
         </View>
         <DrawerItemList {...props} />
         <DrawerItem
           style={{ marginLeft: 20 }}
-          labelStyle={{ fontFamily: "ArialB", color: colors.yellow }}
-          // activeTintColor={colors.primary}
-          // inactiveTintColor={colors.white}
+          labelStyle={{ fontFamily: "ArialB", color: colors.white }}
           activeBackgroundColor={colors.primary}
-          inactiveBackgroundColor={colors.white}
           icon={({ size, color }) => (
-            <MaterialIcons name="home" size={size} color={colors.primary} />
+            <MaterialIcons name="home" size={size} color={colors.yellow} />
           )}
           label={"Get Appointment"}
           onPress={() => {
@@ -82,16 +93,12 @@ export const CustomContent = (props: any) => {
         />
         <DrawerItem
           style={{ marginLeft: 20 }}
-          labelStyle={{ fontFamily: "ArialB", color: colors.yellow }}
-          // activeTintColor={colors.primary}
-          // inactiveTintColor={colors.white}
-          // activeBackgroundColor={colors.primary}
-          // inactiveBackgroundColor={colors.white}
+          labelStyle={{ fontFamily: "ArialB", color: colors.white }}
           icon={({ size, color }) => (
             <FontAwesome6
               name="house-medical-circle-exclamation"
               size={20}
-              color={colors.primary}
+              color={colors.yellow}
             />
           )}
           label={"My Appointments"}
@@ -102,16 +109,12 @@ export const CustomContent = (props: any) => {
         />
         <DrawerItem
           style={{ marginLeft: 20 }}
-          labelStyle={{ fontFamily: "ArialB", color: colors.yellow }}
-          // activeTintColor={colors.primary}
-          // inactiveTintColor={colors.white}
-          // activeBackgroundColor={colors.primary}
-          // inactiveBackgroundColor={colors.white}
+          labelStyle={{ fontFamily: "ArialB", color: colors.white }}
           icon={({ size, color }) => (
             <MaterialIcons
               name="family-restroom"
               size={size}
-              color={colors.primary}
+              color={colors.yellow}
             />
           )}
           label={"My Family"}
@@ -122,16 +125,12 @@ export const CustomContent = (props: any) => {
         />
         <DrawerItem
           style={{ marginLeft: 20 }}
-          labelStyle={{ fontFamily: "ArialB", color: colors.yellow }}
-          // activeTintColor={colors.primary}
-          // inactiveTintColor={colors.white}
-          // activeBackgroundColor={colors.primary}
-          // inactiveBackgroundColor={colors.white}
+          labelStyle={{ fontFamily: "ArialB", color: colors.white }}
           icon={({ size, color }) => (
             <MaterialIcons
               name="follow-the-signs"
               size={size}
-              color={colors.primary}
+              color={colors.yellow}
             />
           )}
           label={"My Follow-ups"}
@@ -142,13 +141,9 @@ export const CustomContent = (props: any) => {
         />
         <DrawerItem
           style={{ marginLeft: 20 }}
-          labelStyle={{ fontFamily: "ArialB", color: colors.yellow }}
-          // activeTintColor={colors.primary}
-          // inactiveTintColor={colors.white}
-          // activeBackgroundColor={colors.primary}
-          // inactiveBackgroundColor={colors.white}
+          labelStyle={{ fontFamily: "ArialB", color: colors.white }}
           icon={({ size, color }) => (
-            <FontAwesome name="user-md" size={size} color={colors.primary} />
+            <FontAwesome name="user-md" size={size} color={colors.yellow} />
           )}
           label={"My Profile"}
           onPress={() => {
@@ -160,7 +155,7 @@ export const CustomContent = (props: any) => {
 
       <View paddingBottom={bottom + 20}>
         <Button
-          backgroundColor={colors.yellow}
+          backgroundColor={"$red9Light"}
           marginHorizontal={10}
           onPress={handleLogout}
         >

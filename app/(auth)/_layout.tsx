@@ -2,7 +2,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Drawer } from "expo-router/drawer";
 import { colors } from "../styles";
 import { CustomContent } from "~/app/components/home/CustomContent";
-import { DrawerItem } from "@react-navigation/drawer";
 
 const DrawerLayout = () => (
   <>
@@ -10,7 +9,7 @@ const DrawerLayout = () => (
       drawerContent={CustomContent}
       screenOptions={{
         drawerStyle: {
-          //backgroundColor: colors.primary,
+          backgroundColor: colors.primary,
         },
         headerShown: false,
         drawerActiveBackgroundColor: colors.primary,

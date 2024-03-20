@@ -1,7 +1,5 @@
 import {
   ActivityIndicator,
-  Dimensions,
-  Keyboard,
   Text,
   TextInput,
   TouchableOpacity,
@@ -12,16 +10,13 @@ import { FontColors, RegLog, fonts, form } from "../constants";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 import { Separator, XStack } from "tamagui";
 import { AntDesign } from "@expo/vector-icons";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import axios from "axios";
-import * as Progress from "react-native-progress";
 import { buttons, colors, fontSizes, fontsFams } from "../styles";
 import { url } from "~/env";
 import { useDispatch } from "react-redux";
 import { addUser } from "../context/actions/userActions";
 import { tokenCache } from "../getToken";
-
-const screenwidth = Dimensions.get("screen").width;
 
 const FormLogin = () => {
   const dispatch = useDispatch();

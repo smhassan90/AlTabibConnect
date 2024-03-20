@@ -1,17 +1,17 @@
-import { Platform, ToastAndroid, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import React from "react";
 import { Card, Text, XStack } from "tamagui";
 import dayjs from "dayjs";
 import "dayjs/locale/en";
 import { Dimensions } from "react-native";
-import { themeColors } from "../constants";
 import { router } from "expo-router";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { url } from "~/env";
 import MenuBar from "./MenuBar";
-import { colors, fontSizes } from "../styles";
+import { buttons, colors, fontSizes } from "../styles";
 import * as SecureStore from "expo-secure-store";
+import { ALERT_TYPE, AlertNotificationRoot, Dialog } from "react-native-alert-notification";
 
 dayjs.locale("en");
 
@@ -48,49 +48,55 @@ const GetAppComponent = () => {
   console.log("Patient Name: ", patient.name);
   console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
 
-
   const setAppObj = {
-    "id":0,
-    "patientName":"",
-    "clinicName":"",
-    "doctorName":"",
-    "visitDate":"",
-    "tokenNumber":0,
-    "status":0,
-    "clinicTotalAppointments":0,
-    "clinicLastAppointmentToken":0,
-    "charges":0,
-    "prescription":"",
-    "diagnosis":"",
-    "age":0,
-    "weight":0,
-    "bloodPressure":"",
-    "followupDate":"",
-    "patientId":patientId,
-    "clinicId":clinicId,
-    "doctorId":docId,
+    id: 0,
+    patientName: "",
+    clinicName: "",
+    doctorName: "",
+    visitDate: "",
+    tokenNumber: 0,
+    status: 0,
+    clinicTotalAppointments: 0,
+    clinicLastAppointmentToken: 0,
+    charges: 0,
+    prescription: "",
+    diagnosis: "",
+    age: 0,
+    weight: 0,
+    bloodPressure: "",
+    followupDate: "",
+    patientId: patientId,
+    clinicId: clinicId,
+    doctorId: docId,
     //"treatments":[]
-  }
+  };
 
   const encodedApp = encodeURIComponent(JSON.stringify(setAppObj));
 
   const dispactBooked = () => {
     axios
-      .get(
-        `${url}setAppointment?token=${token}&appointment=${encodedApp}`,
-      )
+      .get(`${url}setAppointment?token=${token}&appointment=${encodedApp}`)
       .then((res) => {
         console.log("Appointment Booked: ", res.data);
-        {
-          Platform.OS === "ios"
-            ? alert("Appointment Booked")
-            : ToastAndroid.show("Appointment Booked", ToastAndroid.LONG);
-        }
+        Dialog.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: "Appointment Booked",
+          textBody: "Your appointment was booked successfully!",
+        });
         setTimeout(() => {
+          Dialog.hide();
           router.push("/(auth)/(tabs)/(home)/");
         }, 2000);
       })
       .catch((error) => {
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error Changing Password",
+          textBody: "Something went wrong",
+        });
+        setTimeout(() => {
+          Dialog.hide();
+        }, 2000);
         console.error("Error setting appointment: ", error);
       });
   };
@@ -104,128 +110,115 @@ const GetAppComponent = () => {
   return (
     <>
       <MenuBar title="Confirm Appointment" />
-      <Card
-        width={cardWidth}
-        padding={10}
-        gap={15}
-        marginBottom={10}
-        backgroundColor={"white"}
-        overflow="scroll"
-      >
-        <XStack gap={5}>
-          <Text
-            color={colors.yellow}
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.SM}
-          >
-            Date:
-          </Text>
-          <Text
-            color={colors.primary}
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.SM}
-          >
-            {dayjs().format("DD-MMM-YYYY")}
-          </Text>
-        </XStack>
-        <XStack gap={5}>
-          <Text
-            color={colors.yellow}
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.SM}
-          >
-            Doctor Name:
-          </Text>
-          <Text
-            color={colors.primary}
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.SM}
-          >
-            {docName}
-          </Text>
-        </XStack>
-        <XStack gap={5}>
-          <Text
-            color={colors.yellow}
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.SM}
-          >
-            Qualification:
-          </Text>
-          {/* {docs.qualifications.map((item: any) => (
+      <AlertNotificationRoot>
+        <Card
+          width={cardWidth}
+          padding={10}
+          gap={15}
+          marginBottom={10}
+          backgroundColor={"white"}
+          overflow="scroll"
+        >
+          <XStack gap={5}>
+            <Text
+              color={colors.yellow}
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.SM}
+            >
+              Date:
+            </Text>
+            <Text
+              color={colors.primary}
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.SM}
+            >
+              {dayjs().format("DD-MMM-YYYY")}
+            </Text>
+          </XStack>
+          <XStack gap={5}>
+            <Text
+              color={colors.yellow}
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.SM}
+            >
+              Doctor Name:
+            </Text>
+            <Text
+              color={colors.primary}
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.SM}
+            >
+              {docName}
+            </Text>
+          </XStack>
+          <XStack gap={5}>
+            <Text
+              color={colors.yellow}
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.SM}
+            >
+              Qualification:
+            </Text>
+            {/* {docs.qualifications.map((item: any) => (
                     <Text
             color={colors.primary}
             fontFamily={"ArialB"}
             fontSize={fontSizes.SM}
           >{item.name}</Text>
         ))} */}
-        </XStack>
-        <XStack gap={5}>
-          <Text
-            color={colors.yellow}
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.SM}
-          >
-            Clinic Name:
-          </Text>
-          <Text
-            color={colors.primary}
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.SM}
-          >
-            {clinicName}
-          </Text>
-        </XStack>
-        <XStack gap={5}>
-          <Text
-            color={colors.yellow}
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.SM}
-          >
-            Patient Name:
-          </Text>
-          <Text
-            color={colors.primary}
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.SM}
-          >
-            {patient.name}
-          </Text>
-        </XStack>
-        <XStack gap={5} justifyContent="space-between">
-          <TouchableOpacity
-            onPress={() => cancelBooking()}
-            style={[
-              themeColors.yellow,
-              {
-                justifyContent:"center",
-                borderRadius: 7,
-                padding: 10,
-                flex: 1,
-                alignItems: "center",
-              },
-            ]}
-          >
-            <Text fontFamily={"ArialB"} color={colors.white}>Cancel</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => dispactBooked()}
-            style={{
-              flex: 1,
-              backgroundColor: "#0066a1",
-              borderRadius: 5,
-              height: 40,
-              alignItems: "center",
-              justifyContent: "center",
-              paddingHorizontal: 10,
-            }}
-          >
-            <Text fontFamily={"ArialB"} color={colors.white}>
-              Get Appointment
+          </XStack>
+          <XStack gap={5}>
+            <Text
+              color={colors.yellow}
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.SM}
+            >
+              Clinic Name:
             </Text>
-          </TouchableOpacity>
-        </XStack>
-      </Card>
+            <Text
+              color={colors.primary}
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.SM}
+            >
+              {clinicName}
+            </Text>
+          </XStack>
+          <XStack gap={5}>
+            <Text
+              color={colors.yellow}
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.SM}
+            >
+              Patient Name:
+            </Text>
+            <Text
+              color={colors.primary}
+              fontFamily={"ArialB"}
+              fontSize={fontSizes.SM}
+            >
+              {patient.name}
+            </Text>
+          </XStack>
+          <XStack gap={5}>
+            <TouchableOpacity
+              onPress={() => cancelBooking()}
+              style={[buttons.secBtn, { flex: 1 }]}
+            >
+              <Text fontFamily={"ArialB"} color={colors.white}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => dispactBooked()}
+              style={[buttons.terBtn, { flex: 1 }]}
+            >
+              <Text fontFamily={"ArialB"} color={colors.white}>
+                Get Appointment
+              </Text>
+            </TouchableOpacity>
+          </XStack>
+        </Card>
+      </AlertNotificationRoot>
     </>
   );
 };

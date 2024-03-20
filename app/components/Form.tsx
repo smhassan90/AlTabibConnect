@@ -13,7 +13,7 @@ import { FontColors, RegLog, fonts } from "../constants";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 import { Separator, XStack } from "tamagui";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { YStack } from "tamagui";
 import DateTimePicker, { DateType } from "react-native-ui-datepicker";
 import GenderPick from "./GenderPick";

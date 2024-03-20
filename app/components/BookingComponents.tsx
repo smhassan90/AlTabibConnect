@@ -8,7 +8,6 @@ import axios from "axios";
 import { url } from "~/env";
 import { useDispatch } from "react-redux";
 import { addPatient } from "../context/actions/patientActions";
-import { tokenCache } from "../getToken";
 import * as SecureStore from "expo-secure-store";
 
 const BookingComponents = () => {

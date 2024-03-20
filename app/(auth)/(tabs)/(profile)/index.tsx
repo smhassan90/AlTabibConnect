@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MenuBar from "~/app/components/MenuBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { buttons, colors } from "~/app/styles";
@@ -15,7 +15,10 @@ import {
 } from "react-native-alert-notification";
 import { router } from "expo-router";
 
+export let userData = {};
+
 export default function Page() {
+  const animation = React.useRef(null);
   const token = SecureStore.getItem("token");
   const [phone, setPhone] = useState("");
   const [userName, setUserName] = useState("");
@@ -66,31 +69,44 @@ export default function Page() {
             type: ALERT_TYPE.SUCCESS,
             title: "Password Changed",
             textBody: "Password has been changed successfully",
-            //button: "Close",
           });
           setTimeout(() => {
             Dialog.hide();
             setChangePassState(false);
-          }
-          , 2000);
+          }, 2000);
         } else {
           Dialog.show({
             type: ALERT_TYPE.DANGER,
             title: "Error Changing Password",
             textBody: "Something went wrong",
-            //button: "Close",
           });
           setTimeout(() => {
             Dialog.hide();
             setChangePassState(false);
-          }
-          , 2000);
+          }, 2000);
         }
       })
       .catch((err: any) => {
         console.log("ERROR CHANGING PW: ", err);
       });
   };
+
+  useEffect(() => {
+    axios
+      .get(`${url}getProfile?token=${token}`)
+      .then((res) => {
+        userData = res.data.data.patients[0];
+        // setPhone(res.data.data.patients[0].phone);
+        // setUserName(res.data.data.patients[0].name);
+        // setAddress(res.data.data.patients[0].address);
+        // setQualifications(res.data.data.patients[0].qualifications);
+        // setAge(res.data.data.patients[0].age);
+        console.log("PROFILE DATA: ", JSON.stringify(userData, null, 2));
+      })
+      .catch((err) => {
+        console.log("ERROR GETTING PROFILE: ", err);
+      });
+  }, [token]);
 
   return (
     <AlertNotificationRoot>
@@ -109,32 +125,22 @@ export default function Page() {
             height={100}
             width={100}
             borderRadius={50}
-            source={{
-              uri: "https://lh3.googleusercontent.com/pw/ABLVV87DzwHP62UImU7R1nHuilbogC05sWMFkxIszzTzyME0YlXojhRgXQsDdn6S-ZQLVJhAlabuAEXUhNfJKTk5yYeYEGOmcfj0usKvHCrRv_SwepxHDhKCoVInKg-4nhSkmOMjjWtXDTZu-ut6e-NtC3fnhQ=w607-h607-s-no-gm",
-            }}
+            source={require("~/assets/man.png")}
           />
-          <XStack>
+          <XStack gap={5}>
             <Text color={colors.yellow} fontFamily={"ArialB"}>
-              Name:{" "}
+              Name:
             </Text>
             <Text color={colors.primary} fontFamily={"ArialB"}>
-              Name here
+              {userData.name}
             </Text>
           </XStack>
-          <XStack>
+          <XStack gap={5}>
             <Text color={colors.yellow} fontFamily={"ArialB"}>
-              Number:{" "}
+              Phone:
             </Text>
             <Text color={colors.primary} fontFamily={"ArialB"}>
-              Number here
-            </Text>
-          </XStack>
-          <XStack>
-            <Text color={colors.yellow} fontFamily={"ArialB"}>
-              Address:{" "}
-            </Text>
-            <Text color={colors.primary} fontFamily={"ArialB"}>
-              Address Here
+              {userData.cellNumber}
             </Text>
           </XStack>
           {changePassState ? (
@@ -196,7 +202,7 @@ export default function Page() {
               </Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={buttons.secBtn} onPress={handleLogout}>
+          <TouchableOpacity style={buttons.redBtn} onPress={handleLogout}>
             <Text fontFamily={"ArialB"} color={colors.white}>
               Logout
             </Text>

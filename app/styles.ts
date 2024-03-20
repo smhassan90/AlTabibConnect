@@ -9,8 +9,8 @@ export const colors = {
   labelGray: "#a1a1a1",
   linkBlue: "#00a2ff",
   yellow: "#ffa600",
-  green: "#0ab99c",
-  red: "#ff0000",
+  green: "#3bad6d",
+  red: "#ff5757",
   lightGray: "#f5f5f5",
   border: "#e6e6e6",
 };
@@ -31,7 +31,6 @@ export { fontSizes };
 
 const buttons = StyleSheet.create({
   primaryBtn: {
-    //flex:1,
     borderRadius: 5,
     backgroundColor: colors.primary,
     paddingVertical: 10,
@@ -39,7 +38,6 @@ const buttons = StyleSheet.create({
     justifyContent: "center",
   },
   secBtn: {
-    //flex:1,
     borderRadius: 5,
     backgroundColor: colors.yellow,
     paddingVertical: 10,
@@ -47,20 +45,16 @@ const buttons = StyleSheet.create({
     justifyContent: "center",
   },
   terBtn: {
-    width: 300,
-    //flex:1,
-    borderRadius: 10,
+    borderRadius: 5,
     backgroundColor: colors.green,
-    padding: 15,
+    paddingVertical: 10,
     alignItems: "center",
     justifyContent: "center",
   },
   redBtn: {
-    width: 300,
-    //flex:1,
-    borderRadius: 10,
+    borderRadius: 5,
     backgroundColor: colors.red,
-    padding: 15,
+    paddingVertical: 10,
     alignItems: "center",
     justifyContent: "center",
   },

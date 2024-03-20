@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, Modal } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, ButtonText, Card, Text, XStack, YStack } from "tamagui";
 import { buttons, colors, fontSizes } from "~/app/styles";
 import MenuBar from "~/app/components/MenuBar";
@@ -12,6 +11,7 @@ import * as SecureStore from "expo-secure-store";
 import dayjs from "dayjs";
 import DateTimePicker, { DateType } from "react-native-ui-datepicker";
 import { BlurView } from "expo-blur";
+import constants from "expo-constants";
 
 export default function Page() {
   const [date, setDate] = useState<DateType>(dayjs());
@@ -75,20 +75,26 @@ export default function Page() {
     SecureStore.setItem("patientId", val);
     router.push("/patientHistory");
   };
+  const statusBarHeight = constants.statusBarHeight;
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: colors.primary,
-        paddingHorizontal: 10,
-      }}
-    >
-      {/* Title Bar */}
-      <MenuBar title="Your Appointments" />
-
+    <View style={{ flex: 1, backgroundColor: colors.primary }}>
+      <View
+        style={{
+          paddingTop: statusBarHeight,
+          paddingHorizontal: 10,
+          width: "100%",
+          backgroundColor: colors.yellow,
+          paddingBottom: 5,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {/* Title Bar */}
+        <MenuBar title="Your Appointments" />
+      </View>
       {/* Content */}
-      <YStack gap={10} flex={1}>
+      <YStack marginTop={10} paddingHorizontal={10} gap={10} flex={1}>
         <TouchableOpacity
           style={[buttons.secBtn]}
           onPress={() => setIsModalVisible(true)}
@@ -343,10 +349,8 @@ export default function Page() {
               </Card>
             )}
           />
-          
-
         )}
-        
+
         {/* MODAL */}
 
         <Modal
@@ -413,7 +417,7 @@ export default function Page() {
           </BlurView>
         </Modal>
       </YStack>
-    </SafeAreaView>
+    </View>
   );
 }
 
