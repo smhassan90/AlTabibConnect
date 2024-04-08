@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
+import { colors, fontSizes, spacingPrim } from "../styles";
 
 const MenuBar = ({title}:{title?:string}) => {
   const navigation = useNavigation();
@@ -13,16 +14,16 @@ const MenuBar = ({title}:{title?:string}) => {
   };
 
   return (
-    <XStack alignItems="center" marginVertical={10}>
+    <XStack backgroundColor={colors.yellow} alignItems="center" marginVertical={10}>
       <TouchableOpacity onPress={onToggle}>
         <Ionicons name="menu" size={28} color="white" />
       </TouchableOpacity>
-      <XStack gap={5} flex={1}>
+      <XStack gap={spacingPrim} flex={1}>
         {title ? (
           <Text
-            marginLeft={10}
+            marginLeft={spacingPrim}
             color={"white"}
-            fontSize={22}
+            fontSize={fontSizes.L}
             fontFamily={"ArialB"}
           >
             {title}
@@ -30,8 +31,8 @@ const MenuBar = ({title}:{title?:string}) => {
         ) : (
           <Text
             color={"white"}
-            fontSize={22}
-            marginLeft={10}
+            fontSize={fontSizes.XL}
+            marginLeft={spacingPrim}
             fontFamily={"ArialB"}
           >
             Al-Tabib Connect

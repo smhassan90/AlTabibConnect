@@ -2,17 +2,18 @@ import React from "react";
 import { View } from "tamagui";
 import DocDetails from "~/app/components/home/DocDetails";
 import MenuBar from "~/app/components/MenuBar";
-import { colors } from "~/app/styles";
+import { colors, spacingPrim } from "~/app/styles";
 import constants from "expo-constants";
 
 const statusBarHeight = constants.statusBarHeight;
 
 const Page = () => {
+
   return (
     <View flex={1} backgroundColor={colors.primary}>
       <View
         paddingTop={statusBarHeight}
-        paddingHorizontal={10}
+        paddingHorizontal={spacingPrim}
         width={"100%"}
         backgroundColor={colors.yellow}
       >

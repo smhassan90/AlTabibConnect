@@ -1,5 +1,5 @@
-import { Alert } from "react-native";
-import React from "react";
+import { Alert, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
 import {
   DrawerContentScrollView,
   DrawerItem,
@@ -13,9 +13,25 @@ import { colors, fontSizes } from "~/app/styles";
 import { FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { DrawerActions } from "@react-navigation/native";
 import constants from "expo-constants";
-import { userData } from "~/app/(auth)/(tabs)/(profile)";
+import axios from "axios";
+import { url } from "~/env";
+
+export let userData = {};
 
 export const CustomContent = (props: any) => {
+  useEffect(() => {
+    const token = SecureStore.getItem("token");
+    axios
+      .get(`${url}getProfile?token=${token}`)
+      .then((res) => {
+        userData = res.data.data.patients[0];
+        console.log("PROFILE DATA: ", JSON.stringify(userData, null, 2));
+      })
+      .catch((err) => {
+        console.log("ERROR GETTING PROFILE: ", err);
+      });
+  }, []);
+
   const navigation = useNavigation();
   const { top, bottom } = useSafeAreaInsets();
   const topSpace = constants.statusBarHeight;
@@ -44,15 +60,19 @@ export const CustomContent = (props: any) => {
   return (
     <View flex={1}>
       <DrawerContentScrollView {...props}>
-        <View
-          marginTop={-topSpace - 10}
-          width={"100%"}
-          paddingHorizontal={20}
-          paddingTop={50}
-          paddingBottom={20}
-          backgroundColor={colors.yellow}
-          marginBottom={10}
-          gap={10}
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => router.push("/(auth)/(tabs)/(profile)")}
+          style={{
+            marginTop: -topSpace - 10,
+            width: "100%",
+            paddingHorizontal: 20,
+            paddingTop: 50,
+            paddingBottom: 20,
+            backgroundColor: colors.yellow,
+            marginBottom: 10,
+            gap: 10,
+          }}
         >
           <Image
             height={100}
@@ -76,7 +96,7 @@ export const CustomContent = (props: any) => {
               {userData.cellNumber}
             </Text>
           </YStack>
-        </View>
+        </TouchableOpacity>
         <DrawerItemList {...props} />
         <DrawerItem
           style={{ marginLeft: 20 }}

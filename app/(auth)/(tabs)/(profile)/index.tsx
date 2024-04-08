@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MenuBar from "~/app/components/MenuBar";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { buttons, colors } from "~/app/styles";
+import { buttons, colors, fontSizes } from "~/app/styles";
 import { Card, Image, Text, XStack } from "tamagui";
-import { Alert, StyleSheet, TouchableOpacity } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import axios from "axios";
 import { url } from "~/env";
 import { TextInput } from "react-native";
@@ -14,17 +13,12 @@ import {
   Dialog,
 } from "react-native-alert-notification";
 import { router } from "expo-router";
-
-export let userData = {};
+import { userData } from "~/app/components/home/CustomContent";
+import Header from "~/app/components/ParentView";
+import dayjs from "dayjs";
 
 export default function Page() {
-  const animation = React.useRef(null);
   const token = SecureStore.getItem("token");
-  const [phone, setPhone] = useState("");
-  const [userName, setUserName] = useState("");
-  const [address, setAddress] = useState("");
-  const [qualifications, setQualifications] = useState([]);
-  const [age, setAge] = useState("");
 
   const [password, setPassword] = useState("");
   const [newPw, setNewPw] = useState("");
@@ -60,7 +54,7 @@ export default function Page() {
   const changePw = (oldPw: string, newPw: string) => {
     axios
       .get(
-        `${url}changePassword?token=170978430072307-03-2024-09-04-58&oldPassword=${oldPw}&newPassword=${newPw}`,
+        `${url}changePassword?token=${token}&oldPassword=${oldPw}&newPassword=${newPw}`,
       )
       .then((res) => {
         console.log(JSON.stringify(res.data, null, 2));
@@ -91,35 +85,20 @@ export default function Page() {
       });
   };
 
-  useEffect(() => {
-    axios
-      .get(`${url}getProfile?token=${token}`)
-      .then((res) => {
-        userData = res.data.data.patients[0];
-        // setPhone(res.data.data.patients[0].phone);
-        // setUserName(res.data.data.patients[0].name);
-        // setAddress(res.data.data.patients[0].address);
-        // setQualifications(res.data.data.patients[0].qualifications);
-        // setAge(res.data.data.patients[0].age);
-        console.log("PROFILE DATA: ", JSON.stringify(userData, null, 2));
-      })
-      .catch((err) => {
-        console.log("ERROR GETTING PROFILE: ", err);
-      });
-  }, [token]);
-
   return (
     <AlertNotificationRoot>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          backgroundColor: colors.primary,
-          paddingHorizontal: 10,
-          paddingBottom: 10,
-        }}
-      >
-        <MenuBar title="Profile" />
-        <Card gap={15} unstyled padded backgroundColor={colors.lightGray}>
+      <View style={{ flex: 1, backgroundColor: colors.primary }}>
+        <Header>
+          <MenuBar title="Profile" />
+        </Header>
+        <Card
+          marginTop={10}
+          marginHorizontal={10}
+          gap={15}
+          unstyled
+          padded
+          backgroundColor={colors.lightGray}
+        >
           <Image
             alignSelf="center"
             height={100}
@@ -128,19 +107,68 @@ export default function Page() {
             source={require("~/assets/man.png")}
           />
           <XStack gap={5}>
-            <Text color={colors.yellow} fontFamily={"ArialB"}>
+            <Text
+              fontSize={fontSizes.SM}
+              color={colors.yellow}
+              fontFamily={"ArialB"}
+            >
               Name:
             </Text>
-            <Text color={colors.primary} fontFamily={"ArialB"}>
+            <Text
+              fontSize={fontSizes.SM}
+              color={colors.primary}
+              fontFamily={"ArialB"}
+            >
+              {/* {userData.name} */}
               {userData.name}
             </Text>
           </XStack>
           <XStack gap={5}>
-            <Text color={colors.yellow} fontFamily={"ArialB"}>
+            <Text
+              fontSize={fontSizes.SM}
+              color={colors.yellow}
+              fontFamily={"ArialB"}
+            >
               Phone:
             </Text>
-            <Text color={colors.primary} fontFamily={"ArialB"}>
+            <Text
+              fontSize={fontSizes.SM}
+              color={colors.primary}
+              fontFamily={"ArialB"}
+            >
               {userData.cellNumber}
+            </Text>
+          </XStack>
+          <XStack gap={5}>
+            <Text
+              fontSize={fontSizes.SM}
+              color={colors.yellow}
+              fontFamily={"ArialB"}
+            >
+              Gender:
+            </Text>
+            <Text
+              fontSize={fontSizes.SM}
+              color={colors.primary}
+              fontFamily={"ArialB"}
+            >
+              {userData.gender}
+            </Text>
+          </XStack>
+          <XStack gap={5}>
+            <Text
+              fontSize={fontSizes.SM}
+              color={colors.yellow}
+              fontFamily={"ArialB"}
+            >
+              DOB:
+            </Text>
+            <Text
+              fontSize={fontSizes.SM}
+              color={colors.primary}
+              fontFamily={"ArialB"}
+            >
+              {dayjs(userData.dob).format("DD MMM YYYY")}
             </Text>
           </XStack>
           {changePassState ? (
@@ -208,7 +236,7 @@ export default function Page() {
             </Text>
           </TouchableOpacity>
         </Card>
-      </SafeAreaView>
+      </View>
     </AlertNotificationRoot>
   );
 }

@@ -2,12 +2,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import GetAppComponent from "~/app/components/GetAppComponent";
 import { colors } from "~/app/styles";
+import { View } from "tamagui";
 
 const Page = () => {
   return (
-    <SafeAreaView style={{flex:1, backgroundColor:colors.primary,paddingHorizontal:10,paddingBottom:10}}>
+    <View flex={1} backgroundColor={colors.primary}>
       <GetAppComponent />
-    </SafeAreaView>
+    </View>
   );
 };
 

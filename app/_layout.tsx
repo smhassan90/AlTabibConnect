@@ -9,18 +9,14 @@ import store from "~/app/context/store";
 import { tokenCache } from "./getToken";
 
 export default function RootLayout() {
-  const [token, setToken] = useState("");
+  const [TOKEN, setTOKEN] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
-
   const router = useRouter();
 
-  tokenCache.getToken("token").then((res) => {
-    if (res) {
-      setToken(res);
+  tokenCache.getToken("token").then((token) => {
+    if (token) {
+      setTOKEN(token);
       setLoggedIn(true);
-    } else {
-      console.log("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-      console.log("No token found");
     }
   });
 
@@ -36,15 +32,13 @@ export default function RootLayout() {
   const InitialLayout = () => {
     useEffect(() => {
       if (loggedIn) {
-        console.log("Local Token: ", token);
-        console.log("Authenticated! Going to Home Page");
-        router.replace("/(auth)/(tabs)/(home)");
+        //console.log("Authenticated! Going to Home Page");
+        return router.replace("/(auth)/(tabs)/(home)");
       } else {
         console.log("Going to Login");
-        router.replace("/Login");
+        return router.replace("/Login");
       }
-    }, [token]);
-
+    }, [TOKEN, loggedIn]);
     return <Slot />;
   };
 

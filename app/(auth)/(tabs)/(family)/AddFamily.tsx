@@ -1,6 +1,6 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { Modal, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal, Platform, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker, { DateType } from "react-native-ui-datepicker";
 import {
@@ -9,12 +9,13 @@ import {
   Card,
   Separator,
   Text,
+  View,
   XStack,
   YStack,
 } from "tamagui";
 import GenderPick from "~/app/components/GenderPick";
 import MenuBar from "~/app/components/MenuBar";
-import { buttons, colors, fontSizes } from "~/app/styles";
+import { buttons, colors, fontSizes, spacingPrim } from "~/app/styles";
 import { useState } from "react";
 import dayjs from "dayjs";
 import {
@@ -27,13 +28,25 @@ import axios from "axios";
 import { url } from "~/env";
 import { tokenCache } from "~/app/getToken";
 import LottieView from "lottie-react-native";
+import Header from "~/app/components/ParentView";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
 
 const Page = () => {
+  const [date, setDate] = useState(new Date());
+  const formatDate = dayjs(date).format("YYYY-MM-DD");
+
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [token, setToken] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [modalErrVisible, setModalErrVisible] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
+
+  const handleDate = (event: any, selectedDate: Date) => {
+    const currentDate = selectedDate || date;
+    setShowPicker(Platform.OS === "ios");
+    setDate(currentDate);
+  };
 
   const toggleErrModal = () => {
     setModalErrVisible(!modalErrVisible);
@@ -45,11 +58,6 @@ const Page = () => {
   tokenCache.getToken("token").then((token) => {
     setToken(token as string);
   });
-
-  const [date, setDate] = useState<DateType>(dayjs());
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const currDate = date ? dayjs(date).format("YYYY-MM-DD") : "Date of Birth";
 
   const isEmptyString = (str: string) => str.trim() === "";
 
@@ -72,7 +80,7 @@ const Page = () => {
   };
 
   const handleSubmit = () => {
-    if (!validateSubmit(name, gender, currDate)) {
+    if (!validateSubmit(name, gender, formatDate)) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: "Error",
@@ -88,16 +96,16 @@ const Page = () => {
     id: 1,
     name: `${name}`,
     gender: `${gender}`,
-    dob: `${currDate}`,
+    dob: `${formatDate}`,
   };
 
   const encodedPatient = encodeURIComponent(JSON.stringify(patient));
 
-  const loginUrl = `${url}addPatient?token=${token}&patient=${encodedPatient}`;
+  const addPUrl = `${url}addPatient?token=${token}&patient=${encodedPatient}`;
 
   const addPatientData = () => {
     axios
-      .get(loginUrl)
+      .get(addPUrl)
       .then((response) => {
         if (response.status === 200) {
           console.log(
@@ -108,15 +116,6 @@ const Page = () => {
             "TOKEN: ",
             JSON.stringify(response.data.data.token, null, 2),
           );
-          // Dialog.show({
-          //   type: ALERT_TYPE.SUCCESS,
-          //   title: "Family member added",
-          //   textBody: "Your family member was added successfully!",
-          // });
-          // setTimeout(() => {
-          //   Dialog.hide();
-          //   router.push("/(auth)/(tabs)/(family)/");
-          // }, 2000);
           toggleModal();
         } else {
           toggleErrModal();
@@ -143,47 +142,33 @@ const Page = () => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: colors.primary,
-        flex: 1,
-        paddingHorizontal: 10,
-      }}
-    >
-      <MenuBar title="Add Family Member" />
-      <AlertNotificationRoot>
+    <View flex={1} backgroundColor={colors.primary}>
+      <Header>
+        <MenuBar title="Add Family Member" />
+      </Header>
+      <View flex={1}>
         <Card
+          top={"5%"}
           unstyled
-          justifyContent="center"
           width={"100%"}
-          padding={10}
-          gap={15}
-          flex={1}
+          padding={spacingPrim}
           alignItems="center"
-          //backgroundColor={"#eeeeee"}
         >
-          <Text
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.L}
-            color={colors.white}
-          >
-            Please fill out the details
-          </Text>
           <YStack
             justifyContent="center"
-            borderRadius={10}
-            padding={15}
+            borderRadius={spacingPrim}
+            padding={spacingPrim}
             backgroundColor={"white"}
-            gap={15}
+            gap={spacingPrim}
             width={"100%"}
           >
             <XStack
               borderColor={"#ebebeb"}
               borderWidth={1}
-              gap={10}
+              gap={spacingPrim}
               backgroundColor={"white"}
               borderRadius={5}
-              padding={10}
+              padding={spacingPrim}
             >
               <AntDesign name="user" size={24} color={colors.primary} />
               <Separator vertical borderColor={"lightgray"} />
@@ -199,10 +184,10 @@ const Page = () => {
               borderColor={"#ebebeb"}
               borderWidth={1}
               zIndex={100}
-              gap={10}
+              gap={spacingPrim}
               backgroundColor={"white"}
               borderRadius={5}
-              padding={10}
+              padding={spacingPrim}
               alignItems="center"
             >
               <AntDesign name="calendar" size={24} color={colors.primary} />
@@ -214,9 +199,20 @@ const Page = () => {
 
               {/* DATE PICKER */}
 
+              {showPicker && (
+                <RNDateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode="date"
+                  is24Hour={true}
+                  display="default"
+                  onChange={handleDate}
+                />
+              )}
+
               <TouchableOpacity
                 style={[buttons.primaryBtn, { flex: 1 }]}
-                onPress={() => setIsModalVisible(true)}
+                onPress={() => setShowPicker(!showPicker)}
               >
                 <Text color={colors.white} fontFamily={"ArialB"}>
                   {date ? dayjs(date).format("MMMM DD, YYYY") : "Date of Birth"}
@@ -224,14 +220,14 @@ const Page = () => {
               </TouchableOpacity>
             </XStack>
             <XStack
+              zIndex={100}
               borderColor={"#ebebeb"}
               borderWidth={1}
-              zIndex={100}
-              gap={10}
+              gap={spacingPrim}
               backgroundColor={"white"}
               ai="center"
               borderRadius={5}
-              padding={10}
+              padding={spacingPrim}
             >
               <Ionicons name="male-female" size={24} color={colors.primary} />
               <Separator als={"stretch"} vertical borderColor={"lightgray"} />
@@ -250,80 +246,16 @@ const Page = () => {
               </Text>
             </TouchableOpacity>
             {/* MODAL */}
-
-            <Modal
-              transparent={true}
-              visible={isModalVisible}
-              onRequestClose={() => setIsModalVisible(false)}
-              animationType="fade"
-            >
-              <BlurView
-                style={{
-                  padding: 15,
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                experimentalBlurMethod="dimezisBlurView"
-              >
-                <View
-                  style={{
-                    backgroundColor: "white",
-                    padding: 10,
-                    borderRadius: 10,
-                    gap: 10,
-                  }}
-                >
-                  <DateTimePicker
-                    dayContainerStyle={{
-                      borderWidth: 2,
-                      borderRadius: 10,
-                      borderColor: "#f3f3f3",
-                    }}
-                    headerButtonStyle={{
-                      backgroundColor: "white",
-                      borderRadius: 7,
-                    }}
-                    headerContainerStyle={{
-                      paddingHorizontal: 5,
-                      backgroundColor: "#0066a1",
-                      borderRadius: 10,
-                    }}
-                    headerTextStyle={{
-                      color: "white",
-                      fontSize: 20,
-                      fontWeight: "bold",
-                    }}
-                    displayFullDays={true}
-                    headerButtonColor="#0066a1"
-                    selectedItemColor="#0066a1"
-                    mode="single"
-                    date={date}
-                    onChange={(date) => setDate(date.date)}
-                  />
-                  <XStack>
-                    <TouchableOpacity
-                      style={[buttons.primaryBtn, { flex: 1 }]}
-                      onPress={() => setIsModalVisible(false)}
-                    >
-                      <Text color={colors.white} fontFamily={"ArialB"}>
-                        Close
-                      </Text>
-                    </TouchableOpacity>
-                  </XStack>
-                </View>
-              </BlurView>
-            </Modal>
           </YStack>
         </Card>
-      </AlertNotificationRoot>
+      </View>
       <CustomModal visible={modalVisible} onClose={toggleModal} type="1" />
       <CustomModal
         visible={modalErrVisible}
         onClose={toggleErrModal}
         type="2"
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -345,7 +277,14 @@ const CustomModal = ({ visible, onClose, type }) => {
           justifyContent: "center",
         }}
       >
-        <View style={styles.modalContent}>
+        <View
+          width={"90%"}
+          alignItems={"center"}
+          backgroundColor={"white"}
+          paddingBottom={20}
+          borderRadius={10}
+          gap={20}
+        >
           <LottieView
             speed={type == "1" ? 0.5 : 2.0}
             autoPlay
@@ -374,7 +313,7 @@ const CustomModal = ({ visible, onClose, type }) => {
           >
             {type == "1"
               ? "Family Member Added Successfully"
-              : "Something Went Wrong!"}
+              : "Error Adding Family member"}
           </Text>
           <Button
             width={"80%"}

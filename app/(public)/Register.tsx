@@ -2,41 +2,34 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
-  Text,
   TouchableWithoutFeedback,
 } from "react-native";
 import Form from "../components/Form";
 import { containers } from "../constants";
 import { AlertNotificationRoot } from "react-native-alert-notification";
-import { colors, textStyles } from "../styles";
+import { colors } from "../styles";
+import { CusText } from "../components/CusText";
 
 const Register = () => {
   return (
     <AlertNotificationRoot>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
-          style={[containers.fullScreen]}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <ScrollView
-            contentContainerStyle={{
+          style={[
+            containers.fullScreen,
+            {
               gap: 15,
               padding: 15,
-              alignContent: "center",
+              alignItems: "center",
               justifyContent: "center",
-              flex: 1,
               backgroundColor: colors.primary,
-              flexGrow: 1,
-            }}
-            keyboardShouldPersistTaps="handled"
-          >
-            <Text style={[textStyles.heading,{textAlign:"center"}]}>Register</Text>
-            <Text style={[textStyles.normal, { textAlign: "center" }]}>
-              You can search Doctors, Book Appointments & check Medical History
-            </Text>
-            <Form />
-          </ScrollView>
+            },
+          ]}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <CusText color="white" bold xl>Register</CusText>
+          <CusText color="white" sm>Get Doctors, Appointments & Medical History</CusText>
+          <Form />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </AlertNotificationRoot>

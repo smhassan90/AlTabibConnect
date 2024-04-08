@@ -14,5 +14,3 @@ const FindDoctor = () => {
 };
 
 export default FindDoctor;
-
-const styles = StyleSheet.create({});

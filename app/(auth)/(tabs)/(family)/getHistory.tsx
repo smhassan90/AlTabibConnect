@@ -2,17 +2,20 @@ import React, { useEffect, useState } from "react";
 import MenuBar from "~/app/components/MenuBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "~/app/styles";
-import { Card, Text, XStack } from "tamagui";
+import { Card, Text, View, XStack, YStack } from "tamagui";
 import axios from "axios";
 import { url } from "~/env";
 import * as SecureStore from "expo-secure-store";
 import { DateType } from "react-native-ui-datepicker";
 import dayjs from "dayjs";
+import Header from "~/app/components/ParentView";
 
 const Page = () => {
   const token = SecureStore.getItem("token");
   const patientId = SecureStore.getItem("patientId");
   const doctorId = SecureStore.getItem("doctorId");
+
+  const [empty, setEmpty] = useState(true);
 
   const [patientName, setPatientName] = useState("");
   const [appDate, setAppDate] = useState("");
@@ -35,6 +38,10 @@ const Page = () => {
           "GET HISTORY RESPONSE: ",
           JSON.stringify(res.data.data, null, 2),
         );
+
+        {
+          res.data.data.appointments ? setEmpty(true) : setEmpty(false);
+        }
 
         res.data.data.appointments.map((item: any) => {
           setPatientName(item.patientName);
@@ -61,8 +68,7 @@ const Page = () => {
       .catch((err) => {
         console.log("ERROR FETCHING HISTORY:", err);
         console.log("patientId Async:", patientId);
-        console.log("doctorId Async:",  doctorId);
-
+        console.log("doctorId Async:", doctorId);
       });
   };
 
@@ -75,33 +81,37 @@ const Page = () => {
   }, []);
 
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: colors.primary,
-        flex: 1,
-        paddingHorizontal: 10,
-      }}
-    >
-      <MenuBar title="Patient History" />
-      <Card
-        unstyled
-        borderWidth={1}
-        borderColor={colors.white}
-        padded
-        justifyContent="center"
-        backgroundColor={colors.lightGray}
-        animation="bouncy"
-        gap={10}
-      >
-        <XStack gap={10}>
-          <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-            Name:
+    <View backgroundColor={colors.primary} flex={1}>
+      <Header>
+        <MenuBar title="Patient History" />
+      </Header>
+
+      {empty ? (
+        <YStack position="absolute" alignSelf="center" top={"50%"}>
+          <Text color={colors.white} fontSize={20} fontFamily={"ArialB"}>
+            No History Found
           </Text>
-          <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-            {patientName}
-          </Text>
-        </XStack>
-        {/* <XStack gap={10}>
+        </YStack>
+      ) : (
+        <Card
+          unstyled
+          borderWidth={1}
+          borderColor={colors.white}
+          padded
+          justifyContent="center"
+          backgroundColor={colors.lightGray}
+          animation="bouncy"
+          gap={10}
+        >
+          <XStack gap={10}>
+            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
+              Name:
+            </Text>
+            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
+              {patientName}
+            </Text>
+          </XStack>
+          {/* <XStack gap={10}>
           <Text color={colors.yellow} fontSize={16} fontFamily={'ArialB'}>
             Age:
           </Text>
@@ -109,64 +119,65 @@ const Page = () => {
             null
           </Text>
         </XStack> */}
-        <XStack gap={10}>
-          <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-            Appointment Date:
-          </Text>
-          <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-            {appDate}
-          </Text>
-        </XStack>
-        <XStack gap={10}>
-          <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-            Follow-up Date:
-          </Text>
-          <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-            {followupDate}
-          </Text>
-        </XStack>
-        <XStack gap={10}>
-          <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-            Diagnosis
-          </Text>
-          <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-            {diagnosis}
-          </Text>
-        </XStack>
-        <XStack gap={10}>
-          <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-            Prescription:
-          </Text>
-          <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-            {prescription}
-          </Text>
-        </XStack>
-        <XStack gap={10}>
-          <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-            Charges:
-          </Text>
-          <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-            {charges}
-          </Text>
-        </XStack>
-        <XStack gap={10}>
-          <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-            BP:
-          </Text>
-          <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-            {bloodPressure}
-          </Text>
-        </XStack>
-        <XStack gap={10}>
-          <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-            Weight:
-          </Text>
-          <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-            {weight}
-          </Text>
-        </XStack>
-      </Card>
-    </SafeAreaView>
+          <XStack gap={10}>
+            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
+              Appointment Date:
+            </Text>
+            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
+              {appDate}
+            </Text>
+          </XStack>
+          <XStack gap={10}>
+            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
+              Follow-up Date:
+            </Text>
+            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
+              {followupDate}
+            </Text>
+          </XStack>
+          <XStack gap={10}>
+            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
+              Diagnosis
+            </Text>
+            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
+              {diagnosis}
+            </Text>
+          </XStack>
+          <XStack gap={10}>
+            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
+              Prescription:
+            </Text>
+            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
+              {prescription}
+            </Text>
+          </XStack>
+          <XStack gap={10}>
+            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
+              Charges:
+            </Text>
+            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
+              {charges}
+            </Text>
+          </XStack>
+          <XStack gap={10}>
+            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
+              BP:
+            </Text>
+            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
+              {bloodPressure}
+            </Text>
+          </XStack>
+          <XStack gap={10}>
+            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
+              Weight:
+            </Text>
+            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
+              {weight}
+            </Text>
+          </XStack>
+        </Card>
+      )}
+    </View>
   );
 };
 

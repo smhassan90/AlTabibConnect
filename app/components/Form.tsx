@@ -1,6 +1,5 @@
 import {
   Dimensions,
-  Keyboard,
   Modal,
   Text,
   TextInput,
@@ -18,15 +17,14 @@ import { YStack } from "tamagui";
 import DateTimePicker, { DateType } from "react-native-ui-datepicker";
 import GenderPick from "./GenderPick";
 import axios from "axios";
-import * as Progress from "react-native-progress";
-import { buttons, colors, fontSizes, fontsFams } from "../styles";
+import { buttons, colors, fontSizes, fontsFams, spacingPrim } from "../styles";
 import { BlurView } from "expo-blur";
 import { url } from "~/env";
 import { useDispatch } from "react-redux";
 import { addToken } from "../context/actions/tokenActions";
 import { tokenCache } from "../getToken";
-
-const screenwidth = Dimensions.get("screen").width;
+import { Spinner } from "./Animations";
+import { LinkText, PrimBold, WhiteBold } from "./CusText";
 
 const Form = () => {
   const dispatch = useDispatch();
@@ -102,11 +100,11 @@ const Form = () => {
   const encodedPatient = encodeURIComponent(JSON.stringify(patient));
 
   //USE YOUR OWN URL!!
-  const loginUrl = `${url}registerPatient?patient=${encodedPatient}&uuid=123&type=2`;
+  const registerUrl = `${url}registerPatient?patient=${encodedPatient}&uuid=123&type=2`;
 
   const fetchRegisterData = () => {
     axios
-      .get(loginUrl)
+      .get(registerUrl)
       .then((response) => {
         if (response.status === 200) {
           dispatch(addToken(response.data.data.token));
@@ -126,17 +124,16 @@ const Form = () => {
                 console.log(
                   `Register Token stored successfully: ${tokenCache.getToken("token")}`,
                 );
-                router.replace("/LoginScreen");
+                router.replace("/Login");
                 setLoading(false);
               }, 2000);
             })
             .catch((error: any) => {
               console.error("Error storing token: ", error);
             });
-          setLoading(false);
         } else {
           console.log("Error, Status code: ", response.status);
-          setLoading(false);
+          //setLoading(false);
         }
       })
       .catch((error) => {
@@ -152,58 +149,25 @@ const Form = () => {
           console.error("Request Error:", error.message);
           setLoading(false);
         }
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
 
   return (
     <YStack
       justifyContent="center"
-      borderRadius={10}
+      borderRadius={spacingPrim}
       padding={15}
       backgroundColor={"white"}
       gap={15}
       width={"100%"}
     >
-      {loading
-        ? (Keyboard.dismiss(),
-          (
-            <View
-              style={{
-                borderColor: "lightgray",
-                borderRadius: 10,
-                borderWidth: 2,
-                alignSelf: "center",
-                position: "absolute",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "white",
-                zIndex: 1000,
-                gap: 20,
-                height: screenwidth * 0.75,
-                width: screenwidth * 0.75,
-              }}
-            >
-              <Text style={[fonts.headingSmall, FontColors.primaryFont]}>
-                Logging In
-              </Text>
-              <Progress.CircleSnail
-                thickness={7}
-                size={100}
-                color={["#0ab99c", "#0044ff", "#ffa600"]}
-              />
-            </View>
-          ))
-        : null}
       <XStack
         borderColor={"#ebebeb"}
         borderWidth={1}
         borderRadius={5}
-        gap={10}
+        gap={spacingPrim}
         backgroundColor={"white"}
-        padding={10}
+        padding={spacingPrim}
       >
         <AntDesign name="phone" size={24} color={colors.primary} />
         <Separator vertical borderColor={"lightgray"} />
@@ -221,10 +185,10 @@ const Form = () => {
       <XStack
         borderColor={"#ebebeb"}
         borderWidth={1}
-        gap={10}
+        gap={spacingPrim}
         backgroundColor={"white"}
         borderRadius={5}
-        padding={10}
+        padding={spacingPrim}
       >
         <AntDesign name="user" size={24} color={colors.primary} />
         <Separator vertical borderColor={"lightgray"} />
@@ -240,10 +204,10 @@ const Form = () => {
         borderColor={"#ebebeb"}
         borderWidth={1}
         zIndex={100}
-        gap={10}
+        gap={spacingPrim}
         backgroundColor={"white"}
         borderRadius={5}
-        padding={10}
+        padding={spacingPrim}
         alignItems="center"
       >
         <AntDesign name="calendar" size={24} color={colors.primary} />
@@ -255,20 +219,20 @@ const Form = () => {
           style={[buttons.primaryBtn, { flex: 1 }]}
           onPress={() => setIsModalVisible(true)}
         >
-          <Text style={{ color: "white", fontFamily: "ArialB" }}>
+          <WhiteBold>
             {date ? dayjs(date).format("MMMM DD, YYYY") : "Choose Date"}
-          </Text>
+          </WhiteBold>
         </TouchableOpacity>
       </XStack>
       <XStack
         borderColor={"#ebebeb"}
         borderWidth={1}
         zIndex={100}
-        gap={10}
+        gap={spacingPrim}
         backgroundColor={"white"}
         ai="center"
         borderRadius={5}
-        padding={10}
+        padding={spacingPrim}
       >
         <Ionicons name="male-female" size={24} color={colors.primary} />
         <Separator als={"stretch"} vertical borderColor={"lightgray"} />
@@ -277,10 +241,10 @@ const Form = () => {
       <XStack
         borderColor={"#ebebeb"}
         borderWidth={1}
-        gap={10}
+        gap={spacingPrim}
         backgroundColor={"white"}
         borderRadius={5}
-        padding={10}
+        padding={spacingPrim}
       >
         <AntDesign name="lock" size={24} color={colors.primary} />
         <Separator vertical borderColor={"lightgray"} />
@@ -300,10 +264,10 @@ const Form = () => {
       <XStack
         borderColor={"#ebebeb"}
         borderWidth={1}
-        gap={10}
+        gap={spacingPrim}
         backgroundColor={"white"}
         borderRadius={5}
-        padding={10}
+        padding={spacingPrim}
       >
         <AntDesign name="lock" size={24} color={colors.primary} />
         <Separator vertical borderColor={"lightgray"} />
@@ -321,41 +285,13 @@ const Form = () => {
         />
       </XStack>
       <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
-        <Text
-          style={[
-            fonts.sub,
-            FontColors.whiteFont,
-            { textAlignVertical: "center" },
-          ]}
-        >
-          Register
-        </Text>
+        {loading ? <Spinner /> : <WhiteBold>Register</WhiteBold>}
       </TouchableOpacity>
 
       <View style={RegLog.onPressStyle}>
-        <Text
-          style={[
-            {
-              fontSize: fontSizes.SM,
-              fontFamily: fontsFams.ArialB,
-              color: colors.primary,
-            },
-          ]}
-        >
-          Already have an account?
-        </Text>
+        <PrimBold>Already have an account?</PrimBold>
         <TouchableOpacity onPress={() => router.push("/Login")}>
-          <Text
-            style={[
-              {
-                fontSize: fontSizes.SM,
-                fontFamily: fontsFams.ArialB,
-                color: colors.linkBlue,
-              },
-            ]}
-          >
-            Login
-          </Text>
+          <LinkText>Login</LinkText>
         </TouchableOpacity>
       </View>
 
@@ -377,27 +313,32 @@ const Form = () => {
           experimentalBlurMethod="dimezisBlurView"
         >
           <View
-            style={{ backgroundColor: "white", padding: 10, borderRadius: 10 }}
+            style={{
+              gap: spacingPrim,
+              backgroundColor: "white",
+              padding: spacingPrim,
+              borderRadius: spacingPrim,
+            }}
           >
             <DateTimePicker
               dayContainerStyle={{
                 borderWidth: 2,
-                borderRadius: 10,
+                borderRadius: spacingPrim,
                 borderColor: "#f3f3f3",
               }}
               headerButtonStyle={{ backgroundColor: "white", borderRadius: 7 }}
               headerContainerStyle={{
                 paddingHorizontal: 5,
-                backgroundColor: "#4E54DA",
-                borderRadius: 10,
+                backgroundColor: "#0066a1",
+                borderRadius: spacingPrim,
               }}
               headerTextStyle={{
                 color: "white",
                 fontSize: 20,
                 fontWeight: "bold",
               }}
-              headerButtonColor="#4E54DA"
-              selectedItemColor="#4E54DA"
+              headerButtonColor="#0066a1"
+              selectedItemColor="#0066a1"
               mode="single"
               date={date}
               onChange={(date) => setDate(date.date)}
@@ -407,9 +348,7 @@ const Form = () => {
                 style={[buttons.primaryBtn, { flex: 1 }]}
                 onPress={() => setIsModalVisible(false)}
               >
-                <Text style={{ color: "white", fontFamily: "ArialB" }}>
-                  Close
-                </Text>
+                <WhiteBold>Close</WhiteBold>
               </TouchableOpacity>
             </XStack>
           </View>

@@ -1,22 +1,17 @@
-import {
-  ActivityIndicator,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
-import { FontColors, RegLog, fonts, form } from "../constants";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
-import { Separator, XStack } from "tamagui";
+import { Separator, XStack, YStack } from "tamagui";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import axios from "axios";
-import { buttons, colors, fontSizes, fontsFams } from "../styles";
+import { borders, buttons, colors, spacingPrim } from "../styles";
 import { url } from "~/env";
 import { useDispatch } from "react-redux";
 import { addUser } from "../context/actions/userActions";
 import { tokenCache } from "../getToken";
+import { Spinner } from "./Animations";
+import { LinkText, PrimBold, WhiteBold } from "./CusText";
 
 const FormLogin = () => {
   const dispatch = useDispatch();
@@ -129,88 +124,65 @@ const FormLogin = () => {
   };
 
   return (
-    <View style={form.layout}>
-      <XStack alignItems="center" gap={5}>
-        <XStack
-          gap={10}
-          backgroundColor={"white"}
-          flex={1}
-          borderColor={"#ebebeb"}
-          borderWidth={1}
-          borderRadius={5}
-          padding={10}
-        >
-          <AntDesign name="user" size={24} color={colors.primary} />
-          <Separator vertical borderColor={"lightgray"} />
-          <TextInput
-            value={num}
-            keyboardType="numeric"
-            maxLength={11}
-            style={{ padding: 0, flex: 1, fontFamily: "ArialB" }}
-            placeholder="Enter Your Username"
-            onChangeText={handleNumChange}
-            placeholderTextColor="#808080a4"
-          />
-        </XStack>
+    <YStack
+      width={"100%"}
+      justifyContent="center"
+      backgroundColor={colors.white}
+      gap={spacingPrim}
+      padding={spacingPrim + 10}
+      borderRadius={borders.SM}
+    >
+      <XStack
+        gap={10}
+        backgroundColor={"white"}
+        borderColor={"#ebebeb"}
+        borderWidth={1}
+        borderRadius={5}
+        padding={10}
+      >
+        <AntDesign name="user" size={24} color={colors.primary} />
+        <Separator vertical borderColor={"lightgray"} />
+        <TextInput
+          value={num}
+          keyboardType="numeric"
+          maxLength={11}
+          style={{ padding: 0, flex: 1, fontFamily: "ArialB" }}
+          placeholder="Enter Your Username"
+          onChangeText={handleNumChange}
+          placeholderTextColor="#808080a4"
+        />
       </XStack>
-      <XStack alignItems="center" gap={5}>
-        <XStack
-          gap={10}
-          backgroundColor={"white"}
-          flex={1}
-          borderColor={"#ebebeb"}
-          borderWidth={1}
-          borderRadius={5}
-          padding={10}
-        >
-          <AntDesign name="lock" size={24} color={colors.primary} />
-          <Separator vertical borderColor={"lightgray"} />
-          <TextInput
-            value={pass}
-            style={{ padding: 0, flex: 1, fontFamily: "ArialB" }}
-            placeholder="Enter Your Password"
-            onChangeText={handlePassChange}
-            placeholderTextColor="#808080a4"
-            autoCapitalize="none"
-            secureTextEntry={true}
-          />
-        </XStack>
+      <XStack
+        gap={10}
+        backgroundColor={"white"}
+        borderColor={"#ebebeb"}
+        borderWidth={1}
+        borderRadius={5}
+        padding={10}
+      >
+        <AntDesign name="lock" size={24} color={colors.primary} />
+        <Separator vertical borderColor={"lightgray"} />
+        <TextInput
+          value={pass}
+          style={{ flex: 1, fontFamily: "ArialB" }}
+          placeholder="Enter Your Password"
+          onChangeText={handlePassChange}
+          placeholderTextColor="#808080a4"
+          autoCapitalize="none"
+          secureTextEntry={true}
+        />
       </XStack>
       <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
-        {loading ? (
-          <ActivityIndicator color={"white"} />
-        ) : (
-          <Text style={[fonts.subBold, FontColors.whiteFont]}>Login</Text>
-        )}
+        {loading ? <Spinner /> : <WhiteBold>Login</WhiteBold>}
       </TouchableOpacity>
 
-      <View style={[RegLog.onPressStyle, { zIndex: -1000 }]}>
-        <Text
-          style={[
-            {
-              fontSize: fontSizes.SM,
-              fontFamily: fontsFams.ArialB,
-              color: colors.primary,
-            },
-          ]}
-        >
-          Don't have an account?
-        </Text>
+      <XStack alignItems="center" justifyContent="center" gap={spacingPrim}>
+        <PrimBold>Don't have an account?</PrimBold>
         <TouchableOpacity onPress={() => router.push("/Register")}>
-          <Text
-            style={[
-              {
-                fontSize: fontSizes.SM,
-                fontFamily: fontsFams.ArialB,
-                color: colors.linkBlue,
-              },
-            ]}
-          >
-            Register
-          </Text>
+          <LinkText>Register</LinkText>
         </TouchableOpacity>
-      </View>
-    </View>
+      </XStack>
+    </YStack>
   );
 };
 export default FormLogin;

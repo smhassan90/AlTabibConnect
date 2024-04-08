@@ -1,10 +1,23 @@
 import axios from "axios";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, TouchableOpacity, Modal } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import { Button, ButtonText, Card, Text, XStack, YStack } from "tamagui";
-import { buttons, colors, fontSizes } from "~/app/styles";
+import {
+  TouchableOpacity,
+  Modal,
+  RefreshControl,
+  Platform,
+} from "react-native";
+import { FlatList } from "react-native";
+import { Button, ButtonText, Card, Text, View, XStack, YStack } from "tamagui";
+import {
+  borders,
+  buttons,
+  colors,
+  fontFamily,
+  fontSizes,
+  paddingL,
+  spacingPrim,
+} from "~/app/styles";
 import MenuBar from "~/app/components/MenuBar";
 import { url } from "~/env";
 import * as SecureStore from "expo-secure-store";
@@ -12,22 +25,33 @@ import dayjs from "dayjs";
 import DateTimePicker, { DateType } from "react-native-ui-datepicker";
 import { BlurView } from "expo-blur";
 import constants from "expo-constants";
+import { HeartLoader } from "~/app/components/Animations";
+import { WhiteBold } from "~/app/components/CusText";
+import Header from "~/app/components/ParentView";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
 
 export default function Page() {
-  const [date, setDate] = useState<DateType>(dayjs());
+  const [date, setDate] = useState(new Date());
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
 
-  const currDate = date ? dayjs(date).format("YYYY-MM-DD") : "Date of Birth";
+  const currDate = dayjs(date).format("YYYY-MM-DD");
 
   const [activeTab, setActiveTab] = useState("PENDING");
 
   const token = SecureStore.getItem("token");
 
   const [loading, setLoading] = useState(false);
-  const [appData, setAppData] = useState([]);
 
   const [successApps, setSuccessApps] = useState<any>([]);
   const [pendingApps, setPendingApps] = useState<any>([]);
+
+  const handleDate = (event: any, selectedDate: Date) => {
+    const currentDate = selectedDate || date;
+    setShowPicker(Platform.OS === "ios");
+    setDate(currentDate);
+  };
 
   const handleTabPress = (tab: string) => {
     setActiveTab(tab);
@@ -37,318 +61,370 @@ export default function Page() {
   useEffect(() => {
     // Axios GET request to fetch doctors data
     setLoading(true);
-    axios
-      .get(
-        `${url}viewAppointments?token=${token}&visitDate=${currDate}&clinicId=0&patientId=0&doctorId=0&appointmentId=0&followupDate`,
-      )
-      .then((res) => {
-        console.log("Date Chosen:", currDate);
-        console.log("Response:", JSON.stringify(res.data.data, null, 2));
-        setAppData(res.data.data.appointments);
+    if (!refresh) {
+      axios
+        .get(
+          `${url}viewAppointments?token=${token}&visitDate=${currDate}&clinicId=0&patientId=0&doctorId=0&appointmentId=0&followupDate`,
+        )
+        .then((res) => {
+          console.log("Date Chosen:", currDate);
+          console.log("Response:", JSON.stringify(res.data.data, null, 2));
 
-        const successAppsArray: any[] = [];
-        const pendingAppsArray: any[] = [];
+          const successAppsArray: any[] = [];
+          const pendingAppsArray: any[] = [];
 
-        res.data.data.appointments.forEach((item: any) => {
-          if (item.status === 1) {
-            // Replace existing items in successApps array with new items
-            successAppsArray.push(item);
-          } else {
-            // Replace existing items in pendingApps array with new items
-            pendingAppsArray.push(item);
-          }
+          res.data.data.appointments.forEach((item: any) => {
+            if (item.status === 1) {
+              // Replace existing items in successApps array with new items
+              successAppsArray.push(item);
+            } else {
+              // Replace existing items in pendingApps array with new items
+              pendingAppsArray.push(item);
+            }
+          });
+
+          setSuccessApps(successAppsArray);
+          setPendingApps(pendingAppsArray);
+
+          console.log("Pending Apps:", JSON.stringify(pendingApps, null, 2));
+          console.log(
+            "Successfull Apps:",
+            JSON.stringify(successApps, null, 2),
+          );
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching Succ/Pen Appointments:", error);
+          setLoading(false);
         });
-
-        setSuccessApps(successAppsArray);
-        setPendingApps(pendingAppsArray);
-
-        console.log("Pending Apps:", JSON.stringify(pendingApps, null, 2));
-        console.log("Successfull Apps:", JSON.stringify(successApps, null, 2));
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching Succ/Pen Appointments:", error);
-      });
-  }, [currDate]);
+    }
+    setLoading(false);
+    setRefresh(false);
+  }, [currDate, refresh]);
 
   const goToHisory = (val: string) => {
     SecureStore.setItem("patientId", val);
-    router.push("/patientHistory");
+    router.push("/(auth)/(tabs)/(family)/getHistory");
   };
   const statusBarHeight = constants.statusBarHeight;
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.primary }}>
-      <View
-        style={{
-          paddingTop: statusBarHeight,
-          paddingHorizontal: 10,
-          width: "100%",
-          backgroundColor: colors.yellow,
-          paddingBottom: 5,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+    <View flex={1} backgroundColor={colors.primary}>
+      <Header>
         {/* Title Bar */}
         <MenuBar title="Your Appointments" />
-      </View>
+      </Header>
       {/* Content */}
-      <YStack marginTop={10} paddingHorizontal={10} gap={10} flex={1}>
-        <TouchableOpacity
-          style={[buttons.secBtn]}
-          onPress={() => setIsModalVisible(true)}
-        >
-          <Text color={"white"} fontFamily={"ArialB"}>
-            {date ? dayjs(date).format("MMMM DD, YYYY") : "Date of Birth"}
-          </Text>
-        </TouchableOpacity>
-        <View style={tabStyles.tabBar}>
-          <TouchableOpacity
-            style={[
-              tabStyles.tabItem,
-              activeTab === "PENDING" && tabStyles.activeTabItem,
-            ]}
-            onPress={() => handleTabPress("PENDING")}
+
+      {showPicker && (
+        <RNDateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode="date"
+          is24Hour={true}
+          display="default"
+          onChange={handleDate}
+        />
+      )}
+
+      <YStack
+        marginTop={spacingPrim}
+        paddingHorizontal={spacingPrim}
+        gap={spacingPrim}
+        flex={1}
+      >
+        {loading ? (
+          <View
+            gap={spacingPrim}
+            alignItems="center"
+            position="absolute"
+            justifyContent="center"
+            alignSelf="center"
+            height={cardWidth}
+            width={cardWidth}
           >
-            <Text fontFamily={"ArialB"} fontSize={18} color={colors.yellow}>
-              Pending
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              tabStyles.tabItem,
-              activeTab === "SUCCESSFUL" && tabStyles.activeTabItem,
-            ]}
-            onPress={() => handleTabPress("SUCCESSFUL")}
-          >
-            <Text fontFamily={"ArialB"} fontSize={18} color={colors.yellow}>
-              Successful
-            </Text>
-          </TouchableOpacity>
-        </View>
-        {activeTab === "PENDING" && pendingApps.length === 0 && (
-          <YStack alignItems="center" flex={1} justifyContent="center">
-            <Text
-              textAlign="center"
-              fontFamily={"ArialB"}
-              fontSize={fontSizes.M}
-              color={"white"}
-            >
-              No appointments for this day
-            </Text>
-          </YStack>
-        )}
-        {activeTab === "SUCCESSFUL" && successApps.length === 0 && (
-          <YStack alignItems="center" flex={1} justifyContent="center">
-            <Text
-              textAlign="center"
-              fontFamily={"ArialB"}
-              fontSize={fontSizes.M}
-              color={"white"}
-            >
-              No completed appointments on this day
-            </Text>
-          </YStack>
-        )}
-        {activeTab === "PENDING" ? (
-          <FlatList
-            horizontal={false}
-            decelerationRate="normal"
-            data={pendingApps}
-            //keyExtractor={(item: any) => item.id.toString()}
-            renderItem={({ item }) => (
-              <>
-                <Card
-                  marginBottom={10}
-                  padded
-                  gap={10}
-                  width={"100%"}
-                  flexDirection="column"
-                  backgroundColor={colors.white}
-                >
-                  <XStack gap={5}>
-                    <Text
-                      fontFamily={"ArialB"}
-                      fontSize={16}
-                      color={colors.yellow}
-                    >
-                      Patient Name:
-                    </Text>
-                    <Text
-                      fontFamily={"ArialB"}
-                      fontSize={16}
-                      color={colors.primary}
-                    >
-                      {item.patientName}
-                    </Text>
-                  </XStack>
-                  <XStack gap={5}>
-                    <Text
-                      fontFamily={"ArialB"}
-                      fontSize={16}
-                      color={colors.yellow}
-                    >
-                      Appointment Token:
-                    </Text>
-                    <Text
-                      fontFamily={"ArialB"}
-                      fontSize={16}
-                      color={colors.primary}
-                    >
-                      {item.tokenNumber}
-                    </Text>
-                  </XStack>
-                  <XStack gap={5}>
-                    <Text
-                      fontFamily={"ArialB"}
-                      fontSize={16}
-                      color={colors.yellow}
-                    >
-                      Appointment Date:
-                    </Text>
-                    <Text
-                      fontFamily={"ArialB"}
-                      fontSize={16}
-                      color={colors.primary}
-                    >
-                      {dayjs(item.visitDate).format("DD-MMM-YYYY")}
-                    </Text>
-                  </XStack>
-                  <XStack gap={10}>
-                    <Button
-                      onPress={() => goToHisory(item.patientId.toString())}
-                      flex={1}
-                      backgroundColor={colors.primary}
-                    >
-                      <ButtonText
-                        fontFamily={"ArialB"}
-                        fontSize={16}
-                        color={colors.white}
-                      >
-                        Patient History
-                      </ButtonText>
-                    </Button>
-                  </XStack>
-                </Card>
-              </>
-            )}
-          />
+            <WhiteBold>Loading Doctors</WhiteBold>
+            <HeartLoader />
+          </View>
         ) : (
-          <FlatList
-            style={{ width: "100%" }}
-            refreshing={true}
-            horizontal={false}
-            decelerationRate="normal"
-            data={successApps}
-            //keyExtractor={(item: any) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Card
-                marginBottom={10}
-                padded
-                gap={10}
-                width={"100%"}
-                flexDirection="column"
-                backgroundColor={colors.white}
+          <>
+            <TouchableOpacity
+              style={[buttons.secBtn]}
+              onPress={() => setShowPicker(!showPicker)}
+            >
+              <Text color={colors.white} fontFamily={fontFamily.bold}>
+                {date ? dayjs(date).format("DD MMM YYYY") : "Select Date"}
+              </Text>
+            </TouchableOpacity>
+            <View
+              paddingHorizontal={spacingPrim}
+              flexDirection={"row"}
+              justifyContent={"space-around"}
+              alignItems={"center"}
+            >
+              <TouchableOpacity
+                style={[
+                  tabStyles.tabItem,
+                  activeTab === "PENDING" && tabStyles.activeTabItem,
+                ]}
+                onPress={() => handleTabPress("PENDING")}
               >
-                <XStack gap={5}>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={16}
-                    color={colors.yellow}
-                  >
-                    Patient Name:
-                  </Text>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={16}
-                    color={colors.primary}
-                  >
-                    {item.patientName}
-                  </Text>
-                </XStack>
-                <XStack gap={5}>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={16}
-                    color={colors.yellow}
-                  >
-                    Appointment Token:
-                  </Text>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={16}
-                    color={colors.primary}
-                  >
-                    {item.tokenNumber}
-                  </Text>
-                </XStack>
-                <XStack gap={5}>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={16}
-                    color={colors.yellow}
-                  >
-                    Doctor:
-                  </Text>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={16}
-                    color={colors.primary}
-                  >
-                    {item.doctorName}
-                  </Text>
-                </XStack>
-                <XStack gap={5}>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={16}
-                    color={colors.yellow}
-                  >
-                    Clinic:
-                  </Text>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={16}
-                    color={colors.primary}
-                  >
-                    {item.clinicName}
-                  </Text>
-                </XStack>
-                <XStack gap={5}>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={16}
-                    color={colors.yellow}
-                  >
-                    Diagnosis:
-                  </Text>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={16}
-                    color={colors.primary}
-                  >
-                    {item.diagnosis}
-                  </Text>
-                </XStack>
-                <XStack gap={10}>
-                  <Button
-                    onPress={() => goToHisory(item.patientId.toString())}
-                    flex={1}
-                    backgroundColor={colors.primary}
-                  >
-                    <ButtonText
-                      fontFamily={"ArialB"}
-                      fontSize={14}
-                      color={colors.white}
-                    >
-                      Patient History
-                    </ButtonText>
-                  </Button>
-                </XStack>
-              </Card>
+                <Text
+                  fontFamily={fontFamily.bold}
+                  fontSize={18}
+                  color={colors.white}
+                >
+                  Pending
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  tabStyles.tabItem,
+                  activeTab === "SUCCESSFUL" && tabStyles.activeTabItem,
+                ]}
+                onPress={() => handleTabPress("SUCCESSFUL")}
+              >
+                <Text
+                  fontFamily={fontFamily.bold}
+                  fontSize={18}
+                  color={colors.white}
+                >
+                  Successful
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {activeTab === "PENDING" && pendingApps.length === 0 && (
+              <YStack alignItems="center" flex={1} justifyContent="center">
+                <Text
+                  textAlign="center"
+                  fontFamily={fontFamily.bold}
+                  fontSize={fontSizes.M}
+                  color={"white"}
+                >
+                  No appointments for this day
+                </Text>
+              </YStack>
             )}
-          />
+            {activeTab === "SUCCESSFUL" && successApps.length === 0 && (
+              <YStack alignItems="center" flex={1} justifyContent="center">
+                <Text
+                  textAlign="center"
+                  fontFamily={fontFamily.bold}
+                  fontSize={fontSizes.M}
+                  color={"white"}
+                >
+                  No completed appointments on this day
+                </Text>
+              </YStack>
+            )}
+            {activeTab === "PENDING" ? (
+              <FlatList
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refresh}
+                    onRefresh={() => setRefresh(true)}
+                    colors={[colors.yellow]}
+                    tintColor={colors.white}
+                  />
+                }
+                horizontal={false}
+                decelerationRate="normal"
+                data={pendingApps}
+                //keyExtractor={(item: any) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <>
+                    <Card
+                      marginBottom={10}
+                      padding={paddingL}
+                      gap={10}
+                      width={"100%"}
+                      flexDirection="column"
+                      backgroundColor={colors.white}
+                    >
+                      <XStack gap={5}>
+                        <Text
+                          fontFamily={fontFamily.bold}
+                          fontSize={16}
+                          color={colors.yellow}
+                        >
+                          Patient Name:
+                        </Text>
+                        <Text
+                          fontFamily={fontFamily.bold}
+                          fontSize={16}
+                          color={colors.primary}
+                        >
+                          {item.patientName}
+                        </Text>
+                      </XStack>
+                      <XStack gap={5}>
+                        <Text
+                          fontFamily={fontFamily.bold}
+                          fontSize={16}
+                          color={colors.yellow}
+                        >
+                          Appointment Token:
+                        </Text>
+                        <Text
+                          fontFamily={fontFamily.bold}
+                          fontSize={16}
+                          color={colors.primary}
+                        >
+                          {item.tokenNumber}
+                        </Text>
+                      </XStack>
+                      <XStack gap={5}>
+                        <Text
+                          fontFamily={fontFamily.bold}
+                          fontSize={16}
+                          color={colors.yellow}
+                        >
+                          Appointment Date:
+                        </Text>
+                        <Text
+                          fontFamily={fontFamily.bold}
+                          fontSize={16}
+                          color={colors.primary}
+                        >
+                          {dayjs(item.visitDate).format("DD-MMM-YYYY")}
+                        </Text>
+                      </XStack>
+                      <XStack gap={10}>
+                        <Button
+                          onPress={() => goToHisory(item.patientId.toString())}
+                          flex={1}
+                          backgroundColor={colors.primary}
+                        >
+                          <ButtonText
+                            fontFamily={fontFamily.bold}
+                            fontSize={16}
+                            color={colors.white}
+                          >
+                            Patient History
+                          </ButtonText>
+                        </Button>
+                      </XStack>
+                    </Card>
+                  </>
+                )}
+              />
+            ) : (
+              <FlatList
+                style={{ width: "100%" }}
+                refreshing={true}
+                horizontal={false}
+                decelerationRate="normal"
+                data={successApps}
+                //keyExtractor={(item: any) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <Card
+                    marginBottom={10}
+                    padded
+                    gap={10}
+                    width={"100%"}
+                    flexDirection="column"
+                    backgroundColor={colors.white}
+                  >
+                    <XStack gap={5}>
+                      <Text
+                        fontFamily={fontFamily.bold}
+                        fontSize={16}
+                        color={colors.yellow}
+                      >
+                        Patient Name:
+                      </Text>
+                      <Text
+                        fontFamily={fontFamily.bold}
+                        fontSize={16}
+                        color={colors.primary}
+                      >
+                        {item.patientName}
+                      </Text>
+                    </XStack>
+                    <XStack gap={5}>
+                      <Text
+                        fontFamily={fontFamily.bold}
+                        fontSize={16}
+                        color={colors.yellow}
+                      >
+                        Appointment Token:
+                      </Text>
+                      <Text
+                        fontFamily={fontFamily.bold}
+                        fontSize={16}
+                        color={colors.primary}
+                      >
+                        {item.tokenNumber}
+                      </Text>
+                    </XStack>
+                    <XStack gap={5}>
+                      <Text
+                        fontFamily={fontFamily.bold}
+                        fontSize={16}
+                        color={colors.yellow}
+                      >
+                        Doctor:
+                      </Text>
+                      <Text
+                        fontFamily={fontFamily.bold}
+                        fontSize={16}
+                        color={colors.primary}
+                      >
+                        {item.doctorName}
+                      </Text>
+                    </XStack>
+                    <XStack gap={5}>
+                      <Text
+                        fontFamily={fontFamily.bold}
+                        fontSize={16}
+                        color={colors.yellow}
+                      >
+                        Clinic:
+                      </Text>
+                      <Text
+                        fontFamily={fontFamily.bold}
+                        fontSize={16}
+                        color={colors.primary}
+                      >
+                        {item.clinicName}
+                      </Text>
+                    </XStack>
+                    <XStack gap={5}>
+                      <Text
+                        fontFamily={fontFamily.bold}
+                        fontSize={16}
+                        color={colors.yellow}
+                      >
+                        Diagnosis:
+                      </Text>
+                      <Text
+                        fontFamily={fontFamily.bold}
+                        fontSize={16}
+                        color={colors.primary}
+                      >
+                        {item.diagnosis}
+                      </Text>
+                    </XStack>
+                    <XStack gap={10}>
+                      <Button
+                        onPress={() => goToHisory(item.patientId.toString())}
+                        flex={1}
+                        backgroundColor={colors.primary}
+                      >
+                        <ButtonText
+                          fontFamily={fontFamily.bold}
+                          fontSize={14}
+                          color={colors.white}
+                        >
+                          Patient History
+                        </ButtonText>
+                      </Button>
+                    </XStack>
+                  </Card>
+                )}
+              />
+            )}
+          </>
         )}
 
         {/* MODAL */}
@@ -440,6 +516,6 @@ const tabStyles = {
   activeTabItem: {
     paddingVertical: 10,
     borderBottomWidth: 3,
-    borderBottomColor: colors.yellow,
+    borderBottomColor: colors.white,
   },
 };

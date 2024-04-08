@@ -1,4 +1,5 @@
 import { StyleSheet,Dimensions } from "react-native";
+import { spacingPrim } from "./styles";
 const cardWidth = Dimensions.get("screen").width;
 
 const primColor="#0ab99c";
@@ -186,14 +187,12 @@ export const dateModal = StyleSheet.create({
 
 export const form = StyleSheet.create({
   layout: {
-    borderColor: "#ebebeb",
-    borderWidth: 1,
     justifyContent: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: "red",
     width: "100%",
-    borderRadius: 10,
-    gap: 10,
-    padding: 15,
+    borderRadius: spacingPrim,
+    gap: spacingPrim,
+    padding: spacingPrim,
   },
 });
 export const btns = StyleSheet.create({

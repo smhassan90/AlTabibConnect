@@ -1,5 +1,15 @@
 import { StyleSheet } from "react-native";
 
+export const spacingS = 5;
+export const spacingPrim = 10;
+export const spacingM = 15;
+export const spacingL = 20;
+
+export const paddingS = 5;
+export const paddingM = 10;
+export const paddingL = 15;
+export const paddingXL = 20;
+
 export const colors = {
   primary: "#0066a1",
   primaryDark: "#2d3181",
@@ -21,16 +31,30 @@ const fontsFams = {
 export { fontsFams };
 
 const fontSizes = {
-  XL: 32,
-  L: 22,
-  M: 18,
+  XSM: 15,
   SM: 16,
-  XSM: 12,
+  M: 18, //Doc Name,
+  L: 20,
+  XL: 24,
 };
 export { fontSizes };
 
+const borders = {
+  SM: 5,
+  M: 10,
+  L: 15,
+};
+export { borders };
+
+const fontFamily = {
+  bold: "ArialB",
+  regular: "Arial",
+};
+export { fontFamily };
+
 const buttons = StyleSheet.create({
   primaryBtn: {
+    //flex:1,
     borderRadius: 5,
     backgroundColor: colors.primary,
     paddingVertical: 10,
@@ -38,6 +62,7 @@ const buttons = StyleSheet.create({
     justifyContent: "center",
   },
   secBtn: {
+    //flex:1,
     borderRadius: 5,
     backgroundColor: colors.yellow,
     paddingVertical: 10,

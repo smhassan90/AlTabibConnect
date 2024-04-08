@@ -3,9 +3,13 @@
     "version": ">= 7.3.0"
   },
   "build": {
-    "production":{},
+    "development": {
+      "developmentClient": false,
+      "distribution": "internal"
+    },
     "preview": {
-      "android":{
+      "distribution": "internal",
+      "android": {
         "buildType": "apk"
       }
     },
@@ -13,7 +17,8 @@
       "android": {
         "gradleCommand": ":app:assembleRelease"
       }
-    }
+    },
+    "production": {}
   },
   "submit": {
     "production": {}

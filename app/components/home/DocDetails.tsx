@@ -2,11 +2,11 @@ import {
   Dimensions,
   FlatList,
   StyleSheet,
-  TouchableOpacity,
   Image,
   Linking,
   TextInput,
   Animated,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Separator, Text, View, XStack, YStack } from "tamagui";
@@ -15,22 +15,29 @@ import { router } from "expo-router";
 import { useDispatch } from "react-redux";
 import { addAppointment } from "../../context/actions/appointmentActions";
 import axios from "axios";
-import { colors, fontSizes } from "~/app/styles";
+import {
+  borders,
+  colors,
+  fontFamily,
+  fontSizes,
+  spacingL,
+  spacingPrim,
+  spacingS,
+} from "~/app/styles";
 import { url } from "~/env";
 import * as SecureStore from "expo-secure-store";
 import { Feather } from "@expo/vector-icons";
-import LottieView from "lottie-react-native";
+import { PrimBtn, SecBtn } from "../CusButtons";
+import { WhiteBold } from "../CusText";
+import { HeartLoader } from "../Animations";
 
 const cardWidth = Dimensions.get("window").width;
 
-interface DocDetailsProps {
-  heading: string;
-}
-
-const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
+const DocDetails: React.FC = () => {
   const dispatch = useDispatch();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [refresh, setRefresh] = useState(false);
 
   const [activeSlide, setActiveSlide] = React.useState(0);
   const [doctorsData, setDoctorsData] = useState([]);
@@ -39,24 +46,29 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
 
   useEffect(() => {
     // Axios GET request to fetch doctors data
-    axios
-      .get(
-        //USE YOUR OWN URL!!
-        `${url}getAllBasicData?token=${token}`,
-      )
-      .then((res) => {
-        console.log("DOCDETAILS RES:", JSON.stringify(res.data, null, 2));
-        //console.log("Doctors Data: ", JSON.stringify(res.data.data.doctors[0], null, 2));
-        setDoctorsData(res.data.data.doctors);
-        setTimeout(() => {
+    if (!refresh) {
+      axios
+        .get(
+          //USE YOUR OWN URL!!
+          `${url}getAllBasicData?token=${token}`,
+        )
+        .then((res) => {
+          console.log(
+            "DOCDETAILS RES:",
+            JSON.stringify(res.data.data, null, 2),
+          );
+          //console.log("Doctors Data: ", JSON.stringify(res.data.data.doctors[0], null, 2));
+          setDoctorsData(res.data.data.doctors);
           setLoading(false);
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      });
-  }, []);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          setLoading(false);
+        });
+      setRefresh(false);
+    }
+    setRefresh(false);
+  }, [refresh]);
 
   const handleGetAppointment = (doc: any, clinic: any, doctorId: string) => {
     dispatch(addAppointment(doc, clinic));
@@ -64,9 +76,10 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
     router.push("/(auth)/(tabs)/(home)/SetAppointment");
   };
 
-  const handleOpenMaps = (lat: string, long: string) => {
-    const url = `https://www.google.com/maps/search/?api=1&query=34.0050561,71.9912959`;
-    Linking.openURL(url);
+  const handleOpenMaps = () => {
+    console.log("Directions Pressed");
+    const link = `https://www.google.com/maps/search/?api=1&query=34.0050561,71.9912959`;
+    Linking.openURL(link);
   };
 
   const filteredDoctors = doctorsData.filter((doctor) =>
@@ -77,7 +90,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
     <YStack flex={1} justifyContent="center">
       {loading ? (
         <View
-          gap={20}
+          gap={spacingPrim}
           alignItems="center"
           position="absolute"
           justifyContent="center"
@@ -85,45 +98,31 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
           height={cardWidth}
           width={cardWidth}
         >
-          <Text
-            color={colors.white}
-            fontFamily={"ArialB"}
-            fontSize={fontSizes.L}
-          >
-            Loading Doctors
-          </Text>
-          <LottieView
-            speed={2.0}
-            autoPlay
-            style={{
-              width: 100,
-              height: 100,
-            }}
-            source={require("~/assets/HeartLoader.json")}
-          />
+          <WhiteBold>Loading Doctors</WhiteBold>
+          <HeartLoader />
         </View>
       ) : (
         <YStack flex={1}>
           <XStack
-            paddingHorizontal={10}
+            paddingHorizontal={spacingPrim}
             backgroundColor={colors.yellow}
-            paddingBottom={10}
-            borderBottomLeftRadius={15}
-            borderBottomRightRadius={15}
+            paddingBottom={spacingPrim}
+            borderBottomLeftRadius={borders.L}
+            borderBottomRightRadius={borders.L}
           >
             <View
               flexDirection="row"
               alignItems="center"
-              borderRadius={20}
+              borderRadius={borders.L}
               backgroundColor={colors.white}
-              padding={10}
+              padding={spacingPrim}
               flex={1}
             >
               <Feather
                 name="search"
                 size={20}
                 color={colors.primary}
-                style={{ marginRight: 10 }}
+                style={{ marginRight: spacingPrim }}
               />
               <TextInput
                 onChangeText={setSearchQuery}
@@ -133,27 +132,35 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
               />
             </View>
           </XStack>
-          <YStack paddingHorizontal={10}>
-            <Animated.FlatList
+          <YStack paddingHorizontal={spacingPrim}>
+            <FlatList
+              refreshControl={
+                <RefreshControl
+                  refreshing={refresh}
+                  onRefresh={() => setRefresh(true)}
+                  colors={[colors.yellow]}
+                  tintColor={colors.white}
+                />
+              }
               horizontal={false}
-              contentContainerStyle={{ gap: 10 }}
               decelerationRate="normal"
               data={filteredDoctors}
               keyExtractor={(item: any) => item.id.toString()}
               renderItem={({ item }) => (
                 <View
-                  paddingHorizontal={10}
-                  gap={15}
+                  padding={spacingPrim}
+                  gap={spacingPrim}
                   width="100%"
-                  marginBottom={10}
                   backgroundColor={colors.white}
-                  borderRadius={10}
-                  paddingTop={15}
-                  paddingBottom={5}
-                  marginTop={10}
+                  borderRadius={borders.L}
+                  marginTop={spacingPrim}
                 >
                   {/* Doctor's information */}
-                  <View gap={10} flexDirection="row" alignItems="center">
+                  <View
+                    gap={spacingPrim}
+                    flexDirection="row"
+                    alignItems="center"
+                  >
                     <Image
                       source={
                         item.gender == "male"
@@ -168,24 +175,24 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                         height: 75,
                       }}
                     />
-                    <View gap={5}>
+                    <View gap={spacingS}>
                       <Text
                         color={colors.primary}
-                        fontFamily={"ArialB"}
-                        fontSize={20}
+                        fontFamily={fontFamily.bold}
+                        fontSize={fontSizes.L}
                       >
                         {item.name}
                       </Text>
                       <Text
                         color={colors.yellow}
-                        fontFamily={"Arial"}
+                        fontFamily={fontFamily.regular}
                         fontSize={fontSizes.M}
                       >
                         Dentist
                       </Text>
                       <Text
                         color={colors.yellow}
-                        fontFamily={"Arial"}
+                        fontFamily={fontFamily.regular}
                         fontSize={fontSizes.M}
                       >
                         {item.qualifications.map(
@@ -198,18 +205,18 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                   <XStack
                     justifyContent="center"
                     flexDirection="row"
-                    padding={10}
+                    padding={spacingPrim}
                   >
-                    <YStack ai={"center"}>
+                    <YStack gap={spacingS} ai={"center"}>
                       <Text
                         fontSize={fontSizes.SM}
                         color={colors.primary}
-                        fontFamily={"ArialB"}
+                        fontFamily={fontFamily.bold}
                       >
                         397
                       </Text>
                       <Text
-                        fontFamily={"Arial"}
+                        fontFamily={fontFamily.regular}
                         fontSize={fontSizes.SM}
                         color={colors.yellow}
                       >
@@ -221,18 +228,18 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       borderWidth={0.5}
                       alignSelf="stretch"
                       vertical
-                      marginHorizontal={15}
+                      marginHorizontal={spacingPrim}
                     />
-                    <YStack ai={"center"}>
+                    <YStack gap={spacingS} ai={"center"}>
                       <Text
                         fontSize={fontSizes.SM}
                         color={colors.primary}
-                        fontFamily={"ArialB"}
+                        fontFamily={fontFamily.bold}
                       >
                         12 Years
                       </Text>
                       <Text
-                        fontFamily={"Arial"}
+                        fontFamily={fontFamily.regular}
                         fontSize={fontSizes.SM}
                         color={colors.yellow}
                       >
@@ -244,18 +251,18 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       borderWidth={0.5}
                       alignSelf="stretch"
                       vertical
-                      marginHorizontal={15}
+                      marginHorizontal={spacingPrim}
                     />
-                    <YStack ai={"center"}>
+                    <YStack gap={spacingS} ai={"center"}>
                       <Text
                         fontSize={fontSizes.SM}
                         color={colors.primary}
-                        fontFamily={"ArialB"}
+                        fontFamily={fontFamily.bold}
                       >
                         91% (45)
                       </Text>
                       <Text
-                        fontFamily={"Arial"}
+                        fontFamily={fontFamily.regular}
                         fontSize={fontSizes.SM}
                         color={colors.yellow}
                       >
@@ -267,7 +274,7 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                   {/* Clinics FlatList */}
                   <FlatList
                     snapToAlignment="center"
-                    snapToInterval={cardWidth - 20 - 20}
+                    snapToInterval={cardWidth - spacingL - spacingL}
                     decelerationRate={"fast"}
                     style={{ width: "100%" }}
                     showsHorizontalScrollIndicator={false}
@@ -278,49 +285,49 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                       <View
                         borderColor={"#ebebeb"}
                         borderWidth={2}
-                        borderRadius={10}
+                        borderRadius={borders.L}
                         padding={10}
-                        width={cardWidth - 20 - 20}
-                        gap={5}
+                        width={cardWidth - spacingL - spacingL}
+                        gap={spacingS}
                       >
                         <Text
                           color={colors.yellow}
-                          fontFamily={"Arial"}
+                          fontFamily={fontFamily.regular}
                           fontSize={fontSizes.SM}
                         >
                           Clinic Name:
                         </Text>
                         <Text
                           color={colors.primary}
-                          fontFamily={"ArialB"}
+                          fontFamily={fontFamily.bold}
                           fontSize={fontSizes.SM}
                         >
                           {clinic.clinic.name}
                         </Text>
                         <Text
                           color={colors.yellow}
-                          fontFamily={"Arial"}
+                          fontFamily={fontFamily.regular}
                           fontSize={fontSizes.SM}
                         >
                           Charges:
                         </Text>
                         <Text
                           color={colors.primary}
-                          fontFamily={"ArialB"}
+                          fontFamily={fontFamily.bold}
                           fontSize={fontSizes.SM}
                         >
                           PKR {clinic.charges}
                         </Text>
                         <Text
                           color={colors.yellow}
-                          fontFamily={"Arial"}
+                          fontFamily={fontFamily.regular}
                           fontSize={fontSizes.SM}
                         >
                           Timings:
                         </Text>
                         <Text
                           color={colors.primary}
-                          fontFamily={"ArialB"}
+                          fontFamily={fontFamily.bold}
                           fontSize={fontSizes.SM}
                         >
                           {clinic.startTime} - {clinic.endTime}
@@ -330,25 +337,14 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                         <View
                           flexDirection="row"
                           justifyContent="space-between"
-                          marginTop={10}
-                          gap={10}
+                          marginTop={spacingPrim}
+                          gap={spacingPrim}
                         >
                           {/* Buttons for actions */}
-                          <TouchableOpacity
-                            onPress={() => handleOpenMaps}
-                            style={{
-                              flex: 1,
-                              backgroundColor: "#0066a1",
-                              borderRadius: 5,
-                              height: 40,
-                              alignItems: "center",
-                              justifyContent: "center",
-                              paddingHorizontal: 10,
-                            }}
-                          >
-                            <Text color={colors.white}>Get Directions</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
+                          <PrimBtn onPress={handleOpenMaps}>
+                            <WhiteBold>Get Directions</WhiteBold>
+                          </PrimBtn>
+                          <SecBtn
                             onPress={() =>
                               handleGetAppointment(
                                 item,
@@ -356,18 +352,14 @@ const DocDetails: React.FC<DocDetailsProps> = ({ heading }) => {
                                 item.id.toString(),
                               )
                             }
-                            style={{
-                              flex: 1,
-                              backgroundColor: "#ffa600",
-                              borderRadius: 5,
-                              height: 40,
-                              alignItems: "center",
-                              justifyContent: "center",
-                              paddingHorizontal: 10,
-                            }}
                           >
-                            <Text color={colors.white}>Get Appointment</Text>
-                          </TouchableOpacity>
+                            <Text
+                              fontFamily={fontFamily.bold}
+                              color={colors.white}
+                            >
+                              Get Appointment
+                            </Text>
+                          </SecBtn>
                         </View>
                       </View>
                     )}
