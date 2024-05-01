@@ -7,8 +7,9 @@ import {
 import Form from "../components/Form";
 import { containers } from "../constants";
 import { AlertNotificationRoot } from "react-native-alert-notification";
-import { colors } from "../styles";
-import { CusText } from "../components/CusText";
+import { colors, fontSizes } from "../styles";
+import { WhiteBold } from "../components/CusText";
+import { Text } from "tamagui";
 
 const Register = () => {
   return (
@@ -27,8 +28,12 @@ const Register = () => {
           ]}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <CusText color="white" bold xl>Register</CusText>
-          <CusText color="white" sm>Get Doctors, Appointments & Medical History</CusText>
+          <Text fontFamily={"ArialB"} fontSize={fontSizes.XL} color="white">
+            Register
+          </Text>
+          <Text fontFamily={"ArialB"} fontSize={fontSizes.SM} color="white">
+            Get Doctors, Appointments & Medical History
+          </Text>
           <Form />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
