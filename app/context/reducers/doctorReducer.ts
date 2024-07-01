@@ -1,11 +1,11 @@
-import { Doctor } from '../types';
+import { Doctor } from "../types";
 
-const initialState: Doctor[] = [];
+const initialState: Doctor | null = null;
 
 const doctorReducer = (state = initialState, action: any) => {
   switch (action.type) {
-    case 'ADD_DOCTOR':
-      return [...state, action.payload];
+    case "ADD_DOCTOR":
+      return action.payload;
     default:
       return state;
   }

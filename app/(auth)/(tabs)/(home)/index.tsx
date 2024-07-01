@@ -8,7 +8,6 @@ import constants from "expo-constants";
 const statusBarHeight = constants.statusBarHeight;
 
 const Page = () => {
-
   return (
     <View flex={1} backgroundColor={colors.primary}>
       <View

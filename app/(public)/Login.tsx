@@ -7,9 +7,10 @@ import {
 import { containers } from "../constants";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import FormLogin from "../components/FormLogin";
-import { colors, spacingM, spacingPrim } from "../styles";
+import { colors, fontSizes, spacingM, spacingPrim } from "../styles";
 import React from "react";
 import { WhiteBold } from "../components/CusText";
+import { Text } from "tamagui";
 
 const Login = () => {
   return (
@@ -28,7 +29,9 @@ const Login = () => {
           ]}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <WhiteBold>Login</WhiteBold>
+          <Text fontFamily={"ArialB"} color={"white"} fontSize={fontSizes.XL}>
+            Login
+          </Text>
           <WhiteBold>Get Doctors, Appointments & Medical History</WhiteBold>
           <FormLogin />
         </KeyboardAvoidingView>

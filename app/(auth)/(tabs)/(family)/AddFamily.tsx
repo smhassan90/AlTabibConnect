@@ -259,7 +259,15 @@ const Page = () => {
   );
 };
 
-const CustomModal = ({ visible, onClose, type }) => {
+const CustomModal = ({
+  visible,
+  onClose,
+  type,
+}: {
+  visible: boolean;
+  onClose: void;
+  type: string;
+}) => {
   return (
     <Modal
       transparent={true}
@@ -329,19 +337,3 @@ const CustomModal = ({ visible, onClose, type }) => {
 };
 
 export default Page;
-
-const styles = {
-  blurView: {
-    padding: 15,
-    flex: 1,
-    justifyContent: "center",
-  },
-  modalContent: {
-    width: "90%",
-    alignItems: "center",
-    backgroundColor: "white",
-    paddingBottom: 20,
-    borderRadius: 10,
-    gap: 20,
-  },
-};

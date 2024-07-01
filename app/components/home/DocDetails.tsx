@@ -5,8 +5,9 @@ import {
   Image,
   Linking,
   TextInput,
-  Animated,
   RefreshControl,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Separator, Text, View, XStack, YStack } from "tamagui";
@@ -30,6 +31,7 @@ import { Feather } from "@expo/vector-icons";
 import { PrimBtn, SecBtn } from "../CusButtons";
 import { WhiteBold } from "../CusText";
 import { HeartLoader } from "../Animations";
+import { selectDoctor } from "~/app/context/actions/selectDoctorAction";
 
 const cardWidth = Dimensions.get("window").width;
 
@@ -53,15 +55,16 @@ const DocDetails: React.FC = () => {
           `${url}getAllBasicData?token=${token}`,
         )
         .then((res) => {
-          console.log(
-            "DOCDETAILS RES:",
-            JSON.stringify(res.data.data, null, 2),
-          );
+          // console.log(
+          //   "DOCDETAILS RES:",
+          //   JSON.stringify(res.data.data, null, 2),
+          // );
           //console.log("Doctors Data: ", JSON.stringify(res.data.data.doctors[0], null, 2));
           setDoctorsData(res.data.data.doctors);
           setLoading(false);
         })
         .catch((error) => {
+          Alert.alert("Error", "Error fetching data");
           console.error("Error fetching data:", error);
           setLoading(false);
         });
@@ -74,6 +77,12 @@ const DocDetails: React.FC = () => {
     dispatch(addAppointment(doc, clinic));
     SecureStore.setItem("doctorId", doctorId);
     router.push("/(auth)/(tabs)/(home)/SetAppointment");
+  };
+
+  const navigateToDoctorProfile = (doctor: any) => {
+    const reduxStore = dispatch(selectDoctor(doctor));
+    router.push("/(auth)/(tabs)/(home)/DoctorProfile");
+    console.log("Doctor Profile: ", JSON.stringify(reduxStore, null, 2));
   };
 
   const handleOpenMaps = () => {
@@ -156,10 +165,13 @@ const DocDetails: React.FC = () => {
                   marginTop={spacingPrim}
                 >
                   {/* Doctor's information */}
-                  <View
-                    gap={spacingPrim}
-                    flexDirection="row"
-                    alignItems="center"
+                  <TouchableOpacity
+                    onPress={() => navigateToDoctorProfile(item)}
+                    style={{
+                      gap: spacingPrim,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
                   >
                     <Image
                       source={
@@ -200,7 +212,7 @@ const DocDetails: React.FC = () => {
                         )}
                       </Text>
                     </View>
-                  </View>
+                  </TouchableOpacity>
 
                   <XStack
                     justifyContent="center"

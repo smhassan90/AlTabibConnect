@@ -1,4 +1,4 @@
-import { TextInput, TouchableOpacity } from "react-native";
+import { Alert, TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 import { Separator, XStack, YStack } from "tamagui";
@@ -12,6 +12,8 @@ import { addUser } from "../context/actions/userActions";
 import { tokenCache } from "../getToken";
 import { Spinner } from "./Animations";
 import { LinkText, PrimBold, WhiteBold } from "./CusText";
+import { initializeSslPinning } from "react-native-ssl-public-key-pinning";
+import * as SecureStore from "expo-secure-store";
 
 const FormLogin = () => {
   const dispatch = useDispatch();
@@ -19,7 +21,7 @@ const FormLogin = () => {
 
   const [loading, setLoading] = useState(false);
   const [num, setNum] = useState("03323403109");
-  const [pass, setPass] = useState("password123");
+  const [pass, setPass] = useState("password1234");
 
   const validateNum = (num: string) => num.length >= 11;
   const isEmptyString = (str: string) => str.trim() === "";
@@ -66,8 +68,7 @@ const FormLogin = () => {
 
   const currentTimeStamp = getCurrentTimestamp();
 
-  //USE YOUR OWN URL!!
-
+  // USE YOUR OWN URL!!
   const loginUrl = `${url}login?username=${num}&password=${pass}&UUID=${currentTimeStamp}&type=2`;
 
   const fetchLoginData = () => {
@@ -91,11 +92,10 @@ const FormLogin = () => {
             "Response TOKEN: ",
             JSON.stringify(response.data.data.token, null, 2),
           );
-          tokenCache
-            .setToken("token", response.data.data.token)
+          SecureStore.setItemAsync("token", response.data.data.token)
             .then(() => {
               console.log(
-                `Login Token Storage successfull: ${tokenCache.getToken("token")}`,
+                `Login Token Storage successfull: ${SecureStore.getItem("token")}`,
               );
               router.replace("/(auth)/(tabs)/(home)");
             })
@@ -118,6 +118,7 @@ const FormLogin = () => {
           setLoading(false);
         } else {
           console.error("Request Error: ", error.message);
+
           setLoading(false);
         }
       });
