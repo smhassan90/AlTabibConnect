@@ -54,7 +54,7 @@ const BookingComponents = () => {
       );
       setTimeout(() => {
         setLoading(false);
-      }, 3000);
+      }, 0);
     });
   }, []);
 

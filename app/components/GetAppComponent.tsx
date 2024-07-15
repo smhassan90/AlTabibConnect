@@ -1,5 +1,5 @@
 import { Alert, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Card, Text, View, XStack } from "tamagui";
 import dayjs from "dayjs";
 import "dayjs/locale/en";
@@ -17,12 +17,15 @@ import {
   Dialog,
 } from "react-native-alert-notification";
 import Header from "./ParentView";
+import { WhiteBold } from "./CusText";
+import { HeartLoader } from "./Animations";
 
 dayjs.locale("en");
 
 const cardWidth = Dimensions.get("window").width - 30;
 
 const GetAppComponent = () => {
+  const [loading, setLoading] = useState<boolean>();
   const token = SecureStore.getItem("token");
 
   const data = useSelector((state: any) => state.appointments);
@@ -43,17 +46,17 @@ const GetAppComponent = () => {
   const patient = patientRedux[0];
   const patientId = patientRedux[0].id;
 
-  console.log("User Token: ", token);
-  console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
-  console.log("Doctor ID: ", parseInt(docId));
-  console.log("Doctor Name: ", docName);
-  console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
-  console.log("Clinic Id: ", parseInt(clinicId));
-  console.log("Clinic Name: ", clinicName);
-  console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
-  console.log("Patient ID: ", parseInt(patient.id));
-  console.log("Patient Name: ", patient.name);
-  console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
+  // console.log("User Token: ", token);
+  // console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
+  // console.log("Doctor ID: ", parseInt(docId));
+  // console.log("Doctor Name: ", docName);
+  // console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
+  // console.log("Clinic Id: ", parseInt(clinicId));
+  // console.log("Clinic Name: ", clinicName);
+  // console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
+  // console.log("Patient ID: ", parseInt(patient.id));
+  // console.log("Patient Name: ", patient.name);
+  // console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
 
   const setAppObj = {
     id: 0,
@@ -65,43 +68,65 @@ const GetAppComponent = () => {
     status: 0,
     clinicTotalAppointments: 0,
     clinicLastAppointmentToken: 0,
-    charges: 0,
-    prescription: "",
-    diagnosis: "",
+    charges: 500,
+    prescription: "ABC",
+    diagnosis: "ABC",
     age: 0,
-    weight: 0,
-    bloodPressure: "",
-    followupDate: "",
+    weight: 80,
+    bloodPressure: "120/80",
+    followupDate: "2024-12-12",
     patientId: patientId,
     clinicId: clinicId,
     doctorId: docId,
-    //"treatments":[]
+    treatments: [
+      { id: 1, name: "Treatment A", detail: "Details A" },
+      { id: 2, name: "Treatment B", detail: "Details B" },
+    ],
   };
 
   const encodedApp = encodeURIComponent(JSON.stringify(setAppObj));
 
   const dispactBooked = () => {
+    setLoading(true);
+    console.log("Encoded Appointment: ", JSON.stringify(setAppObj, null, 2));
+    console.log("TOKEN:", token);
+
     axios
       .get(`${url}setAppointment?token=${token}&appointment=${encodedApp}`)
       .then((res) => {
-        console.log("Appointment Booked: ", res.data);
-        Dialog.show({
-          type: ALERT_TYPE.SUCCESS,
-          title: "Appointment Booked",
-          textBody: "Your appointment was booked successfully!",
-        });
-        setTimeout(() => {
-          Dialog.hide();
-          router.push("/(auth)/(tabs)/(home)/");
-        }, 2000);
+        console.log("Response: ", res.data);
+        if (res.data.status === 200) {
+          console.log("Set Appointment status: ", res.data);
+          Dialog.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: "Appointment Booked",
+            textBody: "Your appointment was booked successfully!",
+          });
+          setTimeout(() => {
+            setLoading(false);
+            Dialog.hide();
+            //router.push("/(auth)/(tabs)/(home)/");
+          }, 2000);
+        } else {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: "Error setting appointment",
+            textBody: "Something went wrong",
+          });
+          setTimeout(() => {
+            setLoading(false);
+            Dialog.hide();
+          }, 2000);
+        }
       })
       .catch((error) => {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
-          title: "Error Changing Password",
+          title: "Error setting appointment",
           textBody: "Something went wrong",
         });
         setTimeout(() => {
+          setLoading(false);
           Dialog.hide();
         }, 2000);
         console.error("Error setting appointment: ", error);
@@ -224,7 +249,7 @@ const GetAppComponent = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => dispactBooked()}
-                style={[buttons.terBtn, { flex: 1 }]}
+                style={[buttons.primaryBtn, { flex: 1 }]}
               >
                 <Text fontFamily={"ArialB"} color={colors.white}>
                   Get Appointment
@@ -233,6 +258,19 @@ const GetAppComponent = () => {
             </XStack>
           </Card>
         </View>
+        {loading && (
+          <View
+            gap={10}
+            alignItems="center"
+            justifyContent="center"
+            alignSelf="center"
+            height={cardWidth}
+            width={cardWidth}
+          >
+            <WhiteBold>Booking your Appointment</WhiteBold>
+            <HeartLoader />
+          </View>
+        )}
       </View>
     </AlertNotificationRoot>
   );
