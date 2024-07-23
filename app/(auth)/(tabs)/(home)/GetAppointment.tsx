@@ -1,4 +1,3 @@
-import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import GetAppComponent from "~/app/components/GetAppComponent";
 import { colors } from "~/app/styles";

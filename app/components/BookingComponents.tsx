@@ -67,6 +67,7 @@ const BookingComponents = () => {
   const dispactBooked = (id: any, name: any) => {
     const reduxPatients = dispatch(addPatient({ id, name }));
     router.push("/(auth)/(tabs)/(home)/GetAppointment");
+    console.log("Redux Patient selected: ", reduxPatients);
   };
   return (
     <View flex={1} backgroundColor={colors.primary}>

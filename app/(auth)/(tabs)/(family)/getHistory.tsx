@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import MenuBar from "~/app/components/MenuBar";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { colors } from "~/app/styles";
+import {
+  colors,
+  fontSizes,
+  paddingL,
+  paddingM,
+  spacingPrim,
+  spacingS,
+} from "~/app/styles";
 import { Card, Text, View, XStack, YStack } from "tamagui";
 import axios from "axios";
 import { url } from "~/env";
 import * as SecureStore from "expo-secure-store";
-import { DateType } from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import Header from "~/app/components/ParentView";
+import { FlatList, RefreshControl } from "react-native";
 
 const Page = () => {
   const token = SecureStore.getItem("token");
@@ -17,53 +23,28 @@ const Page = () => {
 
   const [empty, setEmpty] = useState(true);
 
-  const [patientName, setPatientName] = useState("");
-  const [appDate, setAppDate] = useState("");
-  const [charges, setCharges] = useState("");
-  const [prescription, setPrescription] = useState("");
-  const [diagnosis, setDiagnosis] = useState("");
-  const [weight, setWeight] = useState("");
-  const [bloodPressure, setBloodPressure] = useState("");
-  const [followupDate, setFollowupDate] = useState("");
+  const [refresh, setRefresh] = useState(false);
 
-  const [date, setDate] = useState<DateType>(dayjs());
+  const [history, setHistory] = useState([]);
 
   const fetchHistory = () => {
     axios
       .get(
-        `${url}getPatientHistory?token=${token}&patientId=${patientId}&doctorId=${doctorId}`,
+        `${url}getPatientHistory?token=${token}&patientId=${patientId}&doctorId=0`,
       )
       .then((res) => {
         console.log(
           "GET HISTORY RESPONSE: ",
-          JSON.stringify(res.data.data, null, 2),
+          JSON.stringify(res.data, null, 2),
         );
 
         {
-          res.data.data.appointments ? setEmpty(true) : setEmpty(false);
+          res.data.data.appointments.length > 0
+            ? setEmpty(false)
+            : setEmpty(true);
         }
 
-        res.data.data.appointments.map((item: any) => {
-          setPatientName(item.patientName);
-          setAppDate(item.visitDate);
-          //setTokenNumber(item.tokenNumber);
-          setCharges(item.charges);
-          setPrescription(item.prescription);
-          setDiagnosis(item.diagnosis);
-          setWeight(item.weight);
-          setBloodPressure(item.bloodPressure);
-          setFollowupDate(item.followupDate);
-
-          // console.log('Patient Name:', patientName);
-          // console.log('Visit Date:', appDate);
-          // console.log('Token Number:', tokenNumber);
-          // console.log('Charges:', charges);
-          // console.log('Prescription:', prescription);
-          // console.log('Diagnosis:', diagnosis);
-          // console.log('Weight:', weight);
-          // console.log('Blood Pressure:', bloodPressure);
-          // console.log('Followup Date:', followupDate);
-        });
+        setHistory(res.data.data.appointments);
       })
       .catch((err) => {
         console.log("ERROR FETCHING HISTORY:", err);
@@ -93,89 +74,117 @@ const Page = () => {
           </Text>
         </YStack>
       ) : (
-        <Card
-          unstyled
-          borderWidth={1}
-          borderColor={colors.white}
-          padded
-          justifyContent="center"
-          backgroundColor={colors.lightGray}
-          animation="bouncy"
-          gap={10}
-        >
-          <XStack gap={10}>
-            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-              Name:
-            </Text>
-            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-              {patientName}
-            </Text>
-          </XStack>
-          {/* <XStack gap={10}>
-          <Text color={colors.yellow} fontSize={16} fontFamily={'ArialB'}>
-            Age:
-          </Text>
-          <Text color={colors.primary} fontSize={16} fontFamily={'ArialB'}>
-            null
-          </Text>
-        </XStack> */}
-          <XStack gap={10}>
-            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-              Appointment Date:
-            </Text>
-            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-              {appDate}
-            </Text>
-          </XStack>
-          <XStack gap={10}>
-            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-              Follow-up Date:
-            </Text>
-            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-              {followupDate}
-            </Text>
-          </XStack>
-          <XStack gap={10}>
-            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-              Diagnosis
-            </Text>
-            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-              {diagnosis}
-            </Text>
-          </XStack>
-          <XStack gap={10}>
-            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-              Prescription:
-            </Text>
-            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-              {prescription}
-            </Text>
-          </XStack>
-          <XStack gap={10}>
-            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-              Charges:
-            </Text>
-            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-              {charges}
-            </Text>
-          </XStack>
-          <XStack gap={10}>
-            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-              BP:
-            </Text>
-            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-              {bloodPressure}
-            </Text>
-          </XStack>
-          <XStack gap={10}>
-            <Text color={colors.yellow} fontSize={16} fontFamily={"ArialB"}>
-              Weight:
-            </Text>
-            <Text color={colors.primary} fontSize={16} fontFamily={"ArialB"}>
-              {weight}
-            </Text>
-          </XStack>
-        </Card>
+        <YStack padding={paddingM} gap={spacingPrim}>
+          <FlatList
+            horizontal={false}
+            decelerationRate="normal"
+            data={history}
+            refreshControl={
+              <RefreshControl
+                refreshing={refresh}
+                onRefresh={() => setRefresh(true)}
+                colors={[colors.yellow]}
+                tintColor={colors.white}
+              />
+            }
+            renderItem={({ item }) => (
+              <Card
+                paddingTop={paddingM}
+                marginBottom={paddingM}
+                padding={paddingL}
+                gap={spacingPrim}
+                width={"100%"}
+                flexDirection="column"
+                backgroundColor={colors.white}
+              >
+                <XStack gap={spacingS}>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.yellow}
+                  >
+                    Patient Name:
+                  </Text>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.primary}
+                  >
+                    {item.patientName}
+                  </Text>
+                </XStack>
+                <XStack gap={spacingS}>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.yellow}
+                  >
+                    Appointment Date:
+                  </Text>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.primary}
+                  >
+                    {item.visitDate
+                      ? dayjs(item.visitDate).format("D MMM YYYY")
+                      : "Pending"}
+                  </Text>
+                </XStack>
+                <XStack gap={spacingS}>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.yellow}
+                  >
+                    Follow-up Date:
+                  </Text>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.primary}
+                  >
+                    {item.followupDate
+                      ? dayjs(item.followupDate).format("DD MMM YYYY")
+                      : "Pending"}
+                  </Text>
+                </XStack>
+                <XStack gap={spacingS}>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.yellow}
+                  >
+                    Doctor Name:
+                  </Text>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.primary}
+                  >
+                    {item.doctorName}
+                  </Text>
+                </XStack>
+                <XStack gap={spacingS}>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.yellow}
+                  >
+                    Clinic Name:
+                  </Text>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.primary}
+                  >
+                    {item.clinicName}
+                  </Text>
+                </XStack>
+              </Card>
+            )}
+          />
+        </YStack>
       )}
     </View>
   );

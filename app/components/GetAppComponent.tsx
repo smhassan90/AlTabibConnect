@@ -34,6 +34,9 @@ const GetAppComponent = () => {
 
   const currentDate = dayjs().format("YYYY-MM-DD");
 
+  //console.log("Data: ", JSON.stringify(data, null, 2));
+  //console.log("Patient: ", JSON.stringify(patientRedux, null, 2));
+
   //WHOLE DOC LIST
   const docs = data[data.length - 1].doc;
 
@@ -68,20 +71,17 @@ const GetAppComponent = () => {
     status: 0,
     clinicTotalAppointments: 0,
     clinicLastAppointmentToken: 0,
-    charges: 500,
-    prescription: "ABC",
-    diagnosis: "ABC",
+    charges: 0,
+    prescription: "",
+    diagnosis: "",
     age: 0,
-    weight: 80,
-    bloodPressure: "120/80",
-    followupDate: "2024-12-12",
+    weight: 0,
+    bloodPressure: "",
+    followupDate: "",
     patientId: patientId,
     clinicId: clinicId,
     doctorId: docId,
-    treatments: [
-      { id: 1, name: "Treatment A", detail: "Details A" },
-      { id: 2, name: "Treatment B", detail: "Details B" },
-    ],
+    treatments: [],
   };
 
   const encodedApp = encodeURIComponent(JSON.stringify(setAppObj));
@@ -95,7 +95,7 @@ const GetAppComponent = () => {
       .get(`${url}setAppointment?token=${token}&appointment=${encodedApp}`)
       .then((res) => {
         console.log("Response: ", res.data);
-        if (res.data.status === 200) {
+        if (res.status === 200) {
           console.log("Set Appointment status: ", res.data);
           Dialog.show({
             type: ALERT_TYPE.SUCCESS,

@@ -66,31 +66,29 @@ export default function Page() {
           setAppData(res.data.data.appointments);
           //console.log('Response Appointment Data:', JSON.stringify(appData, null, 2));
 
-          res.data.data.appointments.map((item: any) => {
-            if (
-              !successApps.some((app: any) => app.id === item.id) &&
-              item.status === 1
-            ) {
-              setSuccessApps((prevSuccessApps: {}) => [
-                ...prevSuccessApps,
-                item,
-              ]);
-            } else if (
-              !pendingApps.some((app: any) => app.id === item.id) &&
-              item.status !== 1
-            ) {
-              setPendingApps((prevPendingApps: {}) => [
-                ...prevPendingApps,
-                item,
-              ]);
+          const successAppsArray: any[] = [];
+          const pendingAppsArray: any[] = [];
+
+          res.data.data.appointments.forEach((item: any) => {
+            if (item.status === 1) {
+              // Replace existing items in successApps array with new items
+              successAppsArray.push(item);
+            } else {
+              // Replace existing items in pendingApps array with new items
+              pendingAppsArray.push(item);
             }
           });
 
-          console.log("Pending Apps:", JSON.stringify(pendingApps, null, 2));
-          console.log(
-            "Successfull Apps:",
-            JSON.stringify(successApps, null, 2),
-          );
+          setSuccessApps(successAppsArray);
+          setPendingApps(pendingAppsArray);
+
+          setTimeout(() => {
+            console.log("Pending Apps:", JSON.stringify(pendingApps, null, 2));
+            console.log(
+              "Successfull Apps:",
+              JSON.stringify(successApps, null, 2),
+            );
+          }, 2000);
           setLoading(false);
         })
         .catch((error) => {
@@ -120,25 +118,23 @@ export default function Page() {
         gap={spacingPrim}
         flex={1}
         marginHorizontal={spacingPrim}
-        ai={"center"}
         jc={"center"}
       >
-        {loading ? (
+        {loading === true ? (
           <View
             gap={10}
             alignItems="center"
             justifyContent="center"
-            height={cardWidth}
-            width={cardWidth}
+            position="absolute"
+            alignSelf="center"
           >
-            <WhiteBold>Loading your Follow-ups</WhiteBold>
-            <HeartLoader />
+            <WhiteBold>No Follow-ups found</WhiteBold>
           </View>
         ) : (
           <FlatList
             horizontal={false}
             decelerationRate="normal"
-            data={successApps}
+            data={pendingApps}
             refreshControl={
               <RefreshControl
                 refreshing={refresh}
@@ -180,6 +176,24 @@ export default function Page() {
                     fontSize={fontSizes.SM}
                     color={colors.yellow}
                   >
+                    Appointment Date:
+                  </Text>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.primary}
+                  >
+                    {item.visitDate
+                      ? dayjs(item.visitDate).format("D MMM YYYY")
+                      : "Pending"}
+                  </Text>
+                </XStack>
+                <XStack gap={spacingS}>
+                  <Text
+                    fontFamily={"ArialB"}
+                    fontSize={fontSizes.SM}
+                    color={colors.yellow}
+                  >
                     Follow-up Date:
                   </Text>
                   <Text
@@ -187,7 +201,9 @@ export default function Page() {
                     fontSize={fontSizes.SM}
                     color={colors.primary}
                   >
-                    {dayjs(item.followupDate).format("DD MMM YYYY")}
+                    {item.followupDate
+                      ? dayjs(item.followupDate).format("DD MMM YYYY")
+                      : "Pending"}
                   </Text>
                 </XStack>
                 <XStack gap={spacingS}>
@@ -222,100 +238,7 @@ export default function Page() {
                     {item.clinicName}
                   </Text>
                 </XStack>
-                <XStack gap={spacingS}>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.yellow}
-                  >
-                    Prescription:
-                  </Text>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.primary}
-                  >
-                    {item.prescription}
-                  </Text>
-                </XStack>
-                <XStack gap={spacingS}>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.yellow}
-                  >
-                    Diagnosis:
-                  </Text>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.primary}
-                  >
-                    {item.diagnosis}
-                  </Text>
-                </XStack>
-                <XStack gap={spacingS}>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.yellow}
-                  >
-                    Weight:
-                  </Text>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.primary}
-                  >
-                    {item.weight}
-                  </Text>
-                </XStack>
-                <XStack gap={spacingS}>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.yellow}
-                  >
-                    BP:
-                  </Text>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.primary}
-                  >
-                    {item.bloodPressure}
-                  </Text>
-                </XStack>
-                <XStack gap={spacingS}>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.yellow}
-                  >
-                    Charges:
-                  </Text>
-                  <Text
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.primary}
-                  >
-                    {item.charges}
-                  </Text>
-                </XStack>
                 <XStack gap={10}>
-                  {/* <Button
-                  onPress={() => goToHisory(item.patientId.toString())}
-                  flex={1}
-                  backgroundColor={colors.primary}
-                >
-                  <ButtonText
-                    fontFamily={"ArialB"}
-                    fontSize={fontSizes.SM}
-                    color={colors.white}
-                  >
-                    Patient History
-                  </ButtonText>
-                </Button> */}
                   <PrimBtn
                     onPress={() => goToHisory(item.patientId.toString())}
                   >
@@ -326,16 +249,6 @@ export default function Page() {
             )}
           />
         )}
-        {loading === false && successApps.length === 0 ? (
-          <View
-            gap={10}
-            alignItems="center"
-            justifyContent="center"
-            position="absolute"
-          >
-            <WhiteBold>No Follow-ups found</WhiteBold>
-          </View>
-        ) : null}
       </YStack>
     </View>
   );
