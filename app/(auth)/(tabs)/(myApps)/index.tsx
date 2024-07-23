@@ -263,6 +263,39 @@ export default function Page() {
                           fontSize={16}
                           color={colors.yellow}
                         >
+                          Total Appointments:
+                        </Text>
+                        <Text
+                          fontFamily={fontFamily.bold}
+                          fontSize={16}
+                          color={colors.primary}
+                        >
+                          {item.totalAppointments}
+                        </Text>
+                      </XStack>
+                      <XStack gap={5}>
+                        <Text
+                          fontFamily={fontFamily.bold}
+                          fontSize={16}
+                          color={colors.yellow}
+                        >
+                          Current Appointment:
+                        </Text>
+                        <Text
+                          fontFamily={fontFamily.bold}
+                          fontSize={16}
+                          color={colors.primary}
+                        >
+                          {item.currentAppointment}
+                        </Text>
+                      </XStack>
+
+                      <XStack gap={5}>
+                        <Text
+                          fontFamily={fontFamily.bold}
+                          fontSize={16}
+                          color={colors.yellow}
+                        >
                           Appointment Token:
                         </Text>
                         <Text
