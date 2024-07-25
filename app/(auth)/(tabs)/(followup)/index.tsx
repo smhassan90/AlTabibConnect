@@ -22,10 +22,6 @@ import { WhiteBold } from "~/app/components/CusText";
 import { HeartLoader } from "~/app/components/Animations";
 
 export default function Page() {
-  const cardWidth = Dimensions.get("window").width - 30;
-
-  const [activeTab, setActiveTab] = useState("PENDING");
-
   const [refresh, setRefresh] = useState(false);
 
   const token = SecureStore.getItem("token");
@@ -38,19 +34,7 @@ export default function Page() {
 
   const [successApps, setSuccessApps] = useState<any>([]);
   const [pendingApps, setPendingApps] = useState<any>([]);
-
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
-    setTimeout(() => {
-      setModalVisible(false);
-    }, 4000);
-  };
-
-  const handleTabPress = (tab: string) => {
-    setActiveTab(tab);
-  };
+  const [empty, setEmpty] = useState(false);
 
   //USE YOUR OWN URL!!
   useEffect(() => {
@@ -64,6 +48,10 @@ export default function Page() {
           console.log("FOLLOWUP RES:", JSON.stringify(res.data, null, 2));
           //console.log('Response:', JSON.stringify(res.data.data, null, 2));
           setAppData(res.data.data.appointments);
+          if (res.data.data.appointments.length === 0) {
+            setEmpty(true);
+            console.log("No appointments found");
+          }
           //console.log('Response Appointment Data:', JSON.stringify(appData, null, 2));
 
           const successAppsArray: any[] = [];
@@ -93,6 +81,7 @@ export default function Page() {
         })
         .catch((error) => {
           console.error("Error fetching Succ/Pen Appointments:", error);
+          setLoading(false);
         });
     }
     setRefresh(false);
@@ -128,9 +117,10 @@ export default function Page() {
             position="absolute"
             alignSelf="center"
           >
-            <WhiteBold>No Follow-ups found</WhiteBold>
+            <WhiteBold>Loading follow-ups</WhiteBold>
+            <HeartLoader />
           </View>
-        ) : (
+        ) : loading === false && empty === false ? (
           <FlatList
             horizontal={false}
             decelerationRate="normal"
@@ -248,7 +238,17 @@ export default function Page() {
               </Card>
             )}
           />
-        )}
+        ) : empty ? (
+          <View
+            gap={10}
+            alignItems="center"
+            justifyContent="center"
+            position="absolute"
+            alignSelf="center"
+          >
+            <WhiteBold>No follow-ups found</WhiteBold>
+          </View>
+        ) : null}
       </YStack>
     </View>
   );

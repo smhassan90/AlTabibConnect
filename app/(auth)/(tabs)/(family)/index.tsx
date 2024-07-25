@@ -22,6 +22,7 @@ import {
   AlertNotificationRoot,
   Dialog,
 } from "react-native-alert-notification";
+import { userData } from "~/app/components/home/CustomContent";
 
 const Page = () => {
   const [loading, setLoading] = useState(true);
@@ -260,15 +261,17 @@ const Page = () => {
                         Check History
                       </Text>
                     </Button>
-                    <Button
-                      onPress={() => confirmRemoveFamily(item.id)}
-                      backgroundColor={colors.yellow}
-                      flex={1}
-                    >
-                      <Text color={colors.white} fontFamily={"ArialB"}>
-                        Remove Member
-                      </Text>
-                    </Button>
+                    {item.name === userData.name ? null : (
+                      <Button
+                        onPress={() => confirmRemoveFamily(item.id)}
+                        backgroundColor={colors.yellow}
+                        flex={1}
+                      >
+                        <Text color={colors.white} fontFamily={"ArialB"}>
+                          Remove Member
+                        </Text>
+                      </Button>
+                    )}
                   </XStack>
                 </YStack>
               )}
