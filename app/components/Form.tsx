@@ -39,7 +39,7 @@ const Form = () => {
   const [date, setDate] = useState<DateType>(dayjs());
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const currDate = date ? dayjs(date).format("DD-MMM-YYYY") : "Date of Birth";
+  const currDate = date ? dayjs(date).format("YYYY-MM-DD") : "Date of Birth";
 
   const isEmptyString = (str: string) => str.trim() === "";
 
