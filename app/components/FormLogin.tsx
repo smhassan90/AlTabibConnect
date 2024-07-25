@@ -1,4 +1,4 @@
-import { Alert, TextInput, TouchableOpacity } from "react-native";
+import { TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 import { Separator, XStack, YStack } from "tamagui";
@@ -9,10 +9,8 @@ import { borders, buttons, colors, spacingPrim } from "../styles";
 import { url } from "~/env";
 import { useDispatch } from "react-redux";
 import { addUser } from "../context/actions/userActions";
-import { tokenCache } from "../getToken";
 import { Spinner } from "./Animations";
 import { LinkText, PrimBold, WhiteBold } from "./CusText";
-import { initializeSslPinning } from "react-native-ssl-public-key-pinning";
 import * as SecureStore from "expo-secure-store";
 
 const FormLogin = () => {
@@ -20,17 +18,19 @@ const FormLogin = () => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-  const [num, setNum] = useState("03323403109");
-  const [pass, setPass] = useState("password1234");
+  const [num, setNum] = useState("");
+  const [pass, setPass] = useState("");
+  const [showPass, setShowPass] = useState(true);
 
-  const validateNum = (num: string) => num.length >= 11;
+  const validateNum = (num: string) => num.length === 11 && num.startsWith("0");
+  const validatePass = (pass: string) => pass.length >= 5;
   const isEmptyString = (str: string) => str.trim() === "";
 
   const emptyFields = (num: string, password: string) =>
     ![num, password].some(isEmptyString);
 
   const validateSubmit = (num: string, password: string) =>
-    validateNum(num) && emptyFields(num, password);
+    validateNum(num) && validatePass(password) && emptyFields(num, password);
 
   const handleNumChange = (text: string) => {
     setNum(text);
@@ -41,7 +41,21 @@ const FormLogin = () => {
   };
 
   const handleSubmit = () => {
-    if (!validateSubmit(num, pass)) {
+    if (!validateNum(num)) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "Phone number should be 11 characters and start with 0",
+        button: "Close",
+      });
+    } else if (!validatePass(pass)) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "Password should be at least 5 characters",
+        button: "Close",
+      });
+    } else if (!emptyFields(num, pass)) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: "Error",
@@ -95,7 +109,7 @@ const FormLogin = () => {
           SecureStore.setItemAsync("token", response.data.data.token)
             .then(() => {
               console.log(
-                `Login Token Storage successfull: ${SecureStore.getItem("token")}`,
+                `Login Token Storage successful: ${SecureStore.getItem("token")}`,
               );
               router.replace("/(auth)/(tabs)/(home)");
             })
@@ -103,22 +117,45 @@ const FormLogin = () => {
               console.error("Error storing token: ", error);
             });
         } else {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: "Error",
+            textBody: "Error logging in, enter correct details",
+            button: "Close",
+          });
           console.log("Error, Status code: ", response.status);
           setLoading(false);
         }
       })
       .catch((error) => {
         if (error.response) {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: "Error",
+            textBody: "Error logging in, enter correct details",
+            button: "Close",
+          });
           console.error("Server Error: ", error.response.data);
           console.error("Status Code: ", error.response.status);
           console.error("Headers: ", error.response.headers);
           setLoading(false);
         } else if (error.request) {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: "Error",
+            textBody: "Error logging in, enter correct details",
+            button: "Close",
+          });
           console.error("No response received: ", error.request);
           setLoading(false);
         } else {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: "Error",
+            textBody: "Error logging in, enter correct details",
+            button: "Close",
+          });
           console.error("Request Error: ", error.message);
-
           setLoading(false);
         }
       });
@@ -148,7 +185,7 @@ const FormLogin = () => {
           keyboardType="numeric"
           maxLength={11}
           style={{ padding: 0, flex: 1, fontFamily: "ArialB" }}
-          placeholder="Enter Your Username"
+          placeholder="Enter Your Phone"
           onChangeText={handleNumChange}
           placeholderTextColor="#808080a4"
         />
@@ -170,8 +207,15 @@ const FormLogin = () => {
           onChangeText={handlePassChange}
           placeholderTextColor="#808080a4"
           autoCapitalize="none"
-          secureTextEntry={true}
+          secureTextEntry={showPass}
         />
+        <TouchableOpacity onPress={() => setShowPass(!showPass)}>
+          <AntDesign
+            name={showPass ? "eye" : "eyeo"}
+            size={24}
+            color={colors.primary}
+          />
+        </TouchableOpacity>
       </XStack>
       <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
         {loading ? <Spinner /> : <WhiteBold>Login</WhiteBold>}

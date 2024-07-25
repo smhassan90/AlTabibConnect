@@ -214,7 +214,7 @@ const DocDetails: React.FC = () => {
                     </View>
                   </TouchableOpacity>
 
-                  <XStack
+                  {/* <XStack
                     justifyContent="center"
                     flexDirection="row"
                     padding={spacingPrim}
@@ -281,7 +281,7 @@ const DocDetails: React.FC = () => {
                         Satisfied
                       </Text>
                     </YStack>
-                  </XStack>
+                  </XStack> */}
 
                   {/* Clinics FlatList */}
                   <FlatList

@@ -51,38 +51,52 @@ export default function Page() {
     );
   };
 
-  const changePw = (oldPw: string, newPw: string) => {
-    axios
-      .get(
-        `${url}changePassword?token=${token}&oldPassword=${oldPw}&newPassword=${newPw}`,
-      )
-      .then((res) => {
-        console.log(JSON.stringify(res.data, null, 2));
-        if (res.data.status == 200) {
-          Dialog.show({
-            type: ALERT_TYPE.SUCCESS,
-            title: "Password Changed",
-            textBody: "Password has been changed successfully",
-          });
-          setTimeout(() => {
-            Dialog.hide();
-            setChangePassState(false);
-          }, 2000);
-        } else {
-          Dialog.show({
-            type: ALERT_TYPE.DANGER,
-            title: "Error Changing Password",
-            textBody: "Something went wrong",
-          });
-          setTimeout(() => {
-            Dialog.hide();
-            setChangePassState(false);
-          }, 2000);
-        }
-      })
-      .catch((err: any) => {
-        console.log("ERROR CHANGING PW: ", err);
+  const changePw = (oldPw: string, newPw: string, confirmPw: string) => {
+    if (newPw.length < 5) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "New password should be at least 5 characters",
       });
+    } else if (newPw !== confirmPw) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "New password and confirm new password do not match",
+      });
+    } else {
+      axios
+        .get(
+          `${url}changePassword?token=${token}&oldPassword=${oldPw}&newPassword=${newPw}`,
+        )
+        .then((res) => {
+          console.log(JSON.stringify(res.data, null, 2));
+          if (res.data.status == 200) {
+            Dialog.show({
+              type: ALERT_TYPE.SUCCESS,
+              title: "Password Changed",
+              textBody: "Password has been changed successfully",
+            });
+            setTimeout(() => {
+              Dialog.hide();
+              setChangePassState(false);
+            }, 2000);
+          } else {
+            Dialog.show({
+              type: ALERT_TYPE.DANGER,
+              title: "Error Changing Password",
+              textBody: "Something went wrong",
+            });
+            setTimeout(() => {
+              Dialog.hide();
+              setChangePassState(false);
+            }, 2000);
+          }
+        })
+        .catch((err: any) => {
+          console.log("ERROR CHANGING PW: ", err);
+        });
+    }
   };
 
   return (
@@ -119,7 +133,6 @@ export default function Page() {
               color={colors.primary}
               fontFamily={"ArialB"}
             >
-              {/* {userData.name} */}
               {userData.name}
             </Text>
           </XStack>
@@ -178,7 +191,7 @@ export default function Page() {
                 onChangeText={handleOldPassChange}
                 placeholderTextColor={colors.labelGray}
                 style={inp.input}
-                //secureTextEntry
+                secureTextEntry
                 placeholder="Enter old password"
               />
               <TextInput
@@ -186,6 +199,7 @@ export default function Page() {
                 onChangeText={handleNewPassChange}
                 placeholderTextColor={colors.labelGray}
                 style={inp.input}
+                secureTextEntry
                 placeholder="Enter new password"
               />
               <TextInput
@@ -193,6 +207,7 @@ export default function Page() {
                 onChangeText={handleConNewPassChange}
                 placeholderTextColor={colors.labelGray}
                 style={inp.input}
+                secureTextEntry
                 placeholder="Confirm new password"
               />
               <XStack gap={5}>
@@ -209,7 +224,7 @@ export default function Page() {
                 <TouchableOpacity
                   style={[buttons.primaryBtn, { flex: 1 }]}
                   onPress={() => {
-                    changePw(password, newPw);
+                    changePw(password, newPw, newConNewPw);
                   }}
                 >
                   <Text fontFamily={"ArialB"} color={colors.white}>

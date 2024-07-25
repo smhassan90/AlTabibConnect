@@ -42,9 +42,14 @@ const Form = () => {
   const currDate = date ? dayjs(date).format("DD-MMM-YYYY") : "Date of Birth";
 
   const isEmptyString = (str: string) => str.trim() === "";
-  const validateNum = (num: string) => num.length >= 11;
 
-  //Validation Metdods
+  // Validation Methods
+  const validateNum = (num: string) => num.length === 11 && num.startsWith("0");
+
+  const validateName = (name: string) => /^[a-zA-Z ]+$/.test(name);
+
+  const validatePass = (pass: string) => pass.length >= 5;
+
   const emptyFields = (
     num: string,
     name: string,
@@ -63,10 +68,12 @@ const Form = () => {
     date: string,
   ) =>
     validateNum(num) &&
+    validateName(name) &&
+    validatePass(password) &&
     emptyFields(num, name, password, verifyPass, gender, date) &&
     password === verifyPass;
 
-  //Input Changing
+  // Input Changing
   const handleNumChange = (text: string) => setNum(text);
   const handlePassChange = (text: string) => setPass(text);
   const handleVerifyPassChange = (text: string) => setverifyPass(text);
@@ -75,7 +82,35 @@ const Form = () => {
   const handleNameChange = (name: string) => setName(name);
 
   const handleSubmit = () => {
-    if (!validateSubmit(num, name, pass, verifyPass, gender, currDate)) {
+    if (!validateNum(num)) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "Phone number should be 11 characters and start with 0",
+        button: "Close",
+      });
+    } else if (!validateName(name)) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "Name should not contain symbols or numbers",
+        button: "Close",
+      });
+    } else if (!validatePass(pass)) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "Password should be at least 5 characters",
+        button: "Close",
+      });
+    } else if (pass !== verifyPass) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: "Error",
+        textBody: "Passwords do not match",
+        button: "Close",
+      });
+    } else if (!emptyFields(num, name, pass, verifyPass, gender, currDate)) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: "Error",
@@ -88,7 +123,7 @@ const Form = () => {
     }
   };
 
-  //Putting inputs in JSON format then encoding it and passing it to the axios
+  // Putting inputs in JSON format then encoding it and passing it to the axios
   const patient = {
     name: `${name}`,
     gender: `${gender}`,
@@ -99,7 +134,7 @@ const Form = () => {
 
   const encodedPatient = encodeURIComponent(JSON.stringify(patient));
 
-  //USE YOUR OWN URL!!
+  // USE YOUR OWN URL!!
   const registerUrl = `${url}registerPatient?patient=${encodedPatient}&uuid=123&type=2`;
 
   const fetchRegisterData = () => {
@@ -133,7 +168,7 @@ const Form = () => {
             });
         } else {
           console.log("Error, Status code: ", response.status);
-          //setLoading(false);
+          setLoading(false);
         }
       })
       .catch((error) => {
@@ -259,6 +294,7 @@ const Form = () => {
           placeholderTextColor="#808080a4"
           autoCapitalize="none"
           textContentType="password"
+          secureTextEntry
         />
       </XStack>
       <XStack
@@ -282,6 +318,7 @@ const Form = () => {
           placeholderTextColor="#808080a4"
           autoCapitalize="none"
           textContentType="password"
+          secureTextEntry
         />
       </XStack>
       <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>

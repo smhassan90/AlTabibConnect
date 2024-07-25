@@ -105,7 +105,7 @@ const GetAppComponent = () => {
           setTimeout(() => {
             setLoading(false);
             Dialog.hide();
-            //router.push("/(auth)/(tabs)/(home)/");
+            router.push("/(auth)/(tabs)/(home)/");
           }, 2000);
         } else {
           Dialog.show({

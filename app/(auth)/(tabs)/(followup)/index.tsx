@@ -58,7 +58,7 @@ export default function Page() {
     if (!refresh) {
       axios
         .get(
-          `${url}viewAppointments?token=${token}&visitDate=&clinicId=1&patientId=0&doctorId=2&appointmentId=0&followupDate`,
+          `${url}viewAppointments?token=${token}&visitDate=&clinicId=1&patientId=0&doctorId=0&appointmentId=0&followupDate`,
         )
         .then((res) => {
           console.log("FOLLOWUP RES:", JSON.stringify(res.data, null, 2));

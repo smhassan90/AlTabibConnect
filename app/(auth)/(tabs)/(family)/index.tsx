@@ -19,6 +19,7 @@ import * as SecureStore from "expo-secure-store";
 import Header from "~/app/components/ParentView";
 import { HeartLoader } from "~/app/components/Animations";
 import { color } from "@tamagui/themes";
+import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 
 const Page = () => {
   const [loading, setLoading] = useState(true);
@@ -75,6 +76,44 @@ const Page = () => {
     router.push("/(auth)/(tabs)/(family)/getHistory");
   };
 
+  const removeFamily = (patientId: string) => {
+    axios
+      .get(`${url}removeFamilyMember?token=${token}&patientId=${patientId}`)
+      .then((res) => {
+        //console.log("Remove Family Response: ", JSON.stringify(res.data, null, 2));
+        if (res.data.status === 200) {
+          Dialog.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: "Family Member Removed",
+            textBody: "Family member was removed successfully!",
+          });
+          setTimeout(() => {
+            Dialog.hide();
+            setRefresh(true);
+          }, 2000);
+        } else {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: "Error removing family member",
+            textBody: "Something went wrong",
+          });
+          setTimeout(() => {
+            Dialog.hide();
+          }, 2000);
+        }
+      })
+      .catch((error) => {
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: "Error removing family member",
+          textBody: "Something went wrong",
+        });
+        console.error("Error removing family member: ", error);
+        setTimeout(() => {
+          Dialog.hide();
+        }, 2000);
+      });
+  };
   return (
     <View style={{ flex: 1, backgroundColor: colors.primary }}>
       <Header>
@@ -197,7 +236,11 @@ const Page = () => {
                       Check History
                     </Text>
                   </Button>
-                  <Button backgroundColor={colors.yellow} flex={1}>
+                  <Button
+                    onPress={() => removeFamily(item.id)}
+                    backgroundColor={colors.yellow}
+                    flex={1}
+                  >
                     <Text color={colors.white} fontFamily={"ArialB"}>
                       Remove Member
                     </Text>
