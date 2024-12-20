@@ -13,9 +13,9 @@ import {
   XStack,
   YStack,
 } from "tamagui";
-import GenderPick from "~/app/components/GenderPick";
-import MenuBar from "~/app/components/MenuBar";
-import { buttons, colors, fontSizes, spacingPrim } from "~/app/styles";
+import GenderPick from "./../../../../app/components/GenderPick";
+import MenuBar from "./../../../../app/components/MenuBar";
+import { buttons, colors, fontSizes, spacingPrim } from "./../../../../app/styles";
 import { useState } from "react";
 import dayjs from "dayjs";
 import {
@@ -25,10 +25,10 @@ import {
 } from "react-native-alert-notification";
 import { router } from "expo-router";
 import axios from "axios";
-import { url } from "~/env";
-import { tokenCache } from "~/app/getToken";
+import { url } from "./../../../../env";
+import { tokenCache } from "./../../../../app/getToken";
 import LottieView from "lottie-react-native";
-import Header from "~/app/components/ParentView";
+import Header from "./../../../../app/components/ParentView";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 
 const Page = () => {
@@ -303,8 +303,8 @@ const CustomModal = ({
             }}
             source={
               type == "1"
-                ? require("~/assets/Success.json")
-                : require("~/assets/Error.json")
+                ? require("./../../../../assets/Success.json")
+                : require("./../../../../assets/Error.json")
             }
           />
           <Text

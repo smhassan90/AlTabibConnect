@@ -19,7 +19,7 @@ import GenderPick from "./GenderPick";
 import axios from "axios";
 import { buttons, colors, fontSizes, fontsFams, spacingPrim } from "../styles";
 import { BlurView } from "expo-blur";
-import { url } from "~/env";
+import { url } from "./../../env";
 import { useDispatch } from "react-redux";
 import { addToken } from "../context/actions/tokenActions";
 import { tokenCache } from "../getToken";

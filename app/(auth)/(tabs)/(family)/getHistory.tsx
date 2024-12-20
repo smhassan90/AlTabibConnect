@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MenuBar from "~/app/components/MenuBar";
+import MenuBar from "./../../../../app/components/MenuBar";
 import {
   colors,
   fontSizes,
@@ -7,13 +7,13 @@ import {
   paddingM,
   spacingPrim,
   spacingS,
-} from "~/app/styles";
+} from "./../../../../app/styles";
 import { Card, Text, View, XStack, YStack } from "tamagui";
 import axios from "axios";
-import { url } from "~/env";
+import { url } from "./../../../../env";
 import * as SecureStore from "expo-secure-store";
 import dayjs from "dayjs";
-import Header from "~/app/components/ParentView";
+import Header from "./../../../../app/components/ParentView";
 import { FlatList, RefreshControl } from "react-native";
 
 const Page = () => {

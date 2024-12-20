@@ -6,7 +6,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import axios from "axios";
 import { borders, buttons, colors, spacingPrim } from "../styles";
-import { url } from "~/env";
+import { url } from "./../../env";
 import { useDispatch } from "react-redux";
 import { addUser } from "../context/actions/userActions";
 import { Spinner } from "./Animations";

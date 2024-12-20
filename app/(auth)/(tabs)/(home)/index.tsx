@@ -1,8 +1,8 @@
 import React from "react";
 import { View } from "tamagui";
-import DocDetails from "~/app/components/home/DocDetails";
-import MenuBar from "~/app/components/MenuBar";
-import { colors, spacingPrim } from "~/app/styles";
+import DocDetails from "./../../../../app/components/home/DocDetails";
+import MenuBar from "./../../../../app/components/MenuBar";
+import { colors, spacingPrim } from "./../../../../app/styles";
 import constants from "expo-constants";
 
 const statusBarHeight = constants.statusBarHeight;

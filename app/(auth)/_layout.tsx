@@ -1,14 +1,14 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Drawer } from "expo-router/drawer";
 import { colors } from "../styles";
-import { CustomContent } from "~/app/components/home/CustomContent";
+import { CustomContent } from "./../../app/components/home/CustomContent";
 import { useEffect, useRef, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Notifications from "expo-notifications";
 import axios from "axios";
 import { Platform } from "react-native";
 import * as Device from "expo-device";
-import { url } from "~/env";
+import { url } from "./../../env";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

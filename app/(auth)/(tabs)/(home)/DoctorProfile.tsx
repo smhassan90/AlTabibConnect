@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Card, Separator, TextArea, View, XStack, YStack } from "tamagui";
-import MenuBar from "~/app/components/MenuBar";
+import MenuBar from "./../../../../app/components/MenuBar";
 import {
   colors,
   fontFamily,
@@ -18,20 +18,20 @@ import {
   spacingM,
   spacingPrim,
   spacingS,
-} from "~/app/styles";
+} from "./../../../../app/styles";
 import constants from "expo-constants";
 import { Text } from "tamagui";
 import { FlatList } from "react-native-gesture-handler";
-import { PrimBtn, SecBtn } from "~/app/components/CusButtons";
-import { PrimBold, WhiteBold } from "~/app/components/CusText";
+import { PrimBtn, SecBtn } from "./../../../../app/components/CusButtons";
+import { PrimBold, WhiteBold } from "./../../../../app/components/CusText";
 import { useSelector } from "react-redux";
-import { CustomModal } from "~/app/components/Modal";
+import { CustomModal } from "./../../../../app/components/Modal";
 import { BlurView } from "expo-blur";
-import { userData } from "~/app/components/home/CustomContent";
+import { userData } from "./../../../../app/components/home/CustomContent";
 import { Rating, AirbnbRating } from "react-native-ratings";
 import SwipeRating from "react-native-ratings/dist/SwipeRating";
 import axios from "axios";
-import { url } from "~/env";
+import { url } from "./../../../../env";
 import * as SecureStore from "expo-secure-store";
 
 const statusBarHeight = constants.statusBarHeight;
@@ -150,7 +150,7 @@ const DoctorProfile = () => {
             ai={"center"}
           >
             <Image
-              source={require("~/assets/docMale.png")}
+              source={require("./../../../../assets/docMale.png")}
               style={{ width: 150, height: 150 }}
             />
             <XStack gap={10} ai={"center"}>
@@ -277,7 +277,7 @@ const DoctorProfile = () => {
                 <YStack flex={1} gap={spacingS}>
                   <XStack gap={10} ai={"center"}>
                     <Image
-                      source={require("~/assets/docMale.png")}
+                      source={require("./../../../../assets/docMale.png")}
                       style={{ width: 50, height: 50 }}
                     />
                     <YStack gap={5}>
@@ -415,7 +415,7 @@ const DoctorProfile = () => {
             }}
           >
             <Image
-              source={require("~/assets/man.png")}
+              source={require("./../../../../assets/man.png")}
               style={{
                 borderRadius: 50,
                 width: 75,

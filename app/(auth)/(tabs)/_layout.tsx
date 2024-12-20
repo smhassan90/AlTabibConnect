@@ -1,6 +1,6 @@
 import { FontAwesome, MaterialIcons, FontAwesome6 } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { colors } from "~/app/styles";
+import { colors } from "./../../../app/styles";
 
 export default function TabLayout() {
   return (

@@ -9,12 +9,12 @@ import { Button, ButtonText, Text, View, Image, YStack } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as SecureStore from "expo-secure-store";
 import { router, useNavigation } from "expo-router";
-import { colors, fontSizes } from "~/app/styles";
+import { colors, fontSizes } from "./../../../app/styles";
 import { FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { DrawerActions } from "@react-navigation/native";
 import constants from "expo-constants";
 import axios from "axios";
-import { url } from "~/env";
+import { url } from "./../../../env";
 
 export let userData = {};
 
@@ -78,7 +78,7 @@ export const CustomContent = (props: any) => {
             height={100}
             width={100}
             borderRadius={50}
-            source={require("~/assets/man.png")}
+            source={require("./../../../assets/man.png")}
           />
           <YStack gap={3}>
             <Text

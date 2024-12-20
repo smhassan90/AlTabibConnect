@@ -17,17 +17,17 @@ import {
   fontSizes,
   paddingL,
   spacingPrim,
-} from "~/app/styles";
-import MenuBar from "~/app/components/MenuBar";
-import { url } from "~/env";
+} from "./../../../../app/styles";
+import MenuBar from "./../../../../app/components/MenuBar";
+import { url } from "./../../../../env";
 import * as SecureStore from "expo-secure-store";
 import dayjs from "dayjs";
 import DateTimePicker, { DateType } from "react-native-ui-datepicker";
 import { BlurView } from "expo-blur";
 import constants from "expo-constants";
-import { HeartLoader } from "~/app/components/Animations";
-import { WhiteBold } from "~/app/components/CusText";
-import Header from "~/app/components/ParentView";
+import { HeartLoader } from "./../../../../app/components/Animations";
+import { WhiteBold } from "./../../../../app/components/CusText";
+import Header from "./../../../../app/components/ParentView";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 
 export default function Page() {

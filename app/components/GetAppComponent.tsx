@@ -7,7 +7,7 @@ import { Dimensions } from "react-native";
 import { router } from "expo-router";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { url } from "~/env";
+import { url } from "./../../env";
 import MenuBar from "./MenuBar";
 import { buttons, colors, fontSizes, spacingPrim } from "../styles";
 import * as SecureStore from "expo-secure-store";

@@ -28,7 +28,7 @@ export const HeartLoader = () => {
         color: "#ffa600",
       },
     ]}
-    source={require("~/assets/HeartLoader.json")}
+    source={require("./../../assets/HeartLoader.json")}
   />
   )
 }
@@ -52,7 +52,7 @@ export const Spinner = () => {
         color: "#0066a1",
       },
     ]}
-    source={require("~/assets/PulseDefault.json")}
+    source={require("./../../assets/PulseDefault.json")}
   />
   )
 }
@@ -66,7 +66,7 @@ export const MedSpin = () => {
       width: 100,
       height: 100,
     }}
-    source={require("~/assets/MedSpin.json")}
+    source={require("./../../assets/MedSpin.json")}
   />
   )
 }
@@ -79,7 +79,7 @@ export const Success = () => {
       width: 100,
       height: 100,
     }}
-    source={require("~/assets/Success.json")}
+    source={require("./../../assets/Success.json")}
   />
   )
 }
@@ -92,7 +92,7 @@ export const Error = () => {
       width: 100,
       height: 100,
     }}
-    source={require("~/assets/Error.json")}
+    source={require("./../../assets/Error.json")}
   />
   )
 }

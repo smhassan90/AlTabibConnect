@@ -11,15 +11,15 @@ import {
   paddingM,
   spacingPrim,
   spacingS,
-} from "~/app/styles";
-import MenuBar from "~/app/components/MenuBar";
-import { url } from "~/env";
+} from "./../../../../app/styles";
+import MenuBar from "./../../../../app/components/MenuBar";
+import { url } from "./../../../../env";
 import * as SecureStore from "expo-secure-store";
 import dayjs from "dayjs";
-import Header from "~/app/components/ParentView";
-import { PrimBtn } from "~/app/components/CusButtons";
-import { WhiteBold } from "~/app/components/CusText";
-import { HeartLoader } from "~/app/components/Animations";
+import Header from "./../../../..//app/components/ParentView";
+import { PrimBtn } from "./../../../..//app/components/CusButtons";
+import { WhiteBold } from "./../../../..//app/components/CusText";
+import { HeartLoader } from "./../../../..//app/components/Animations";
 
 export default function Page() {
   const [refresh, setRefresh] = useState(false);

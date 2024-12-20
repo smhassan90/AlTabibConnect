@@ -1,8 +1,8 @@
 import { StyleSheet, Text } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MenuBar from "~/app/components/MenuBar";
-import { colors } from "~/app/styles";
+import MenuBar from "./../../../../app/components/MenuBar";
+import { colors } from "./../../../../app/styles";
 
 const Lab = () => {
   return (

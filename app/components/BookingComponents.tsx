@@ -5,7 +5,7 @@ import { router } from "expo-router";
 import { colors, fontSizes, spacingPrim } from "../styles";
 import MenuBar from "./MenuBar";
 import axios from "axios";
-import { url } from "~/env";
+import { url } from "./../../env";
 import { useDispatch } from "react-redux";
 import { addPatient } from "../context/actions/patientActions";
 import * as SecureStore from "expo-secure-store";
@@ -109,12 +109,12 @@ const BookingComponents = () => {
                   <Image
                     source={
                       item.age > 18 && item.gender === "male"
-                        ? require("~/assets/man.png")
+                        ? require("./../../assets/man.png")
                         : item.age > 18 && item.gender === "female"
-                          ? require("~/assets/woman.png")
+                          ? require("./../../assets/woman.png")
                           : item.age <= 18 && item.gender === "male"
-                            ? require("~/assets/boy.png")
-                            : require("~/assets/girl.png")
+                            ? require("./../../assets/boy.png")
+                            : require("./../../assets/girl.png")
                     }
                     style={{ borderRadius: 50, width: 100, height: 100 }}
                   />

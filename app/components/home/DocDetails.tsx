@@ -24,14 +24,14 @@ import {
   spacingL,
   spacingPrim,
   spacingS,
-} from "~/app/styles";
-import { url } from "~/env";
+} from "./../../../app/styles";
+import { url } from "./../../../env";
 import * as SecureStore from "expo-secure-store";
 import { Feather } from "@expo/vector-icons";
 import { PrimBtn, SecBtn } from "../CusButtons";
 import { WhiteBold } from "../CusText";
 import { HeartLoader } from "../Animations";
-import { selectDoctor } from "~/app/context/actions/selectDoctorAction";
+import { selectDoctor } from "./../../../app/context/actions/selectDoctorAction";
 
 const cardWidth = Dimensions.get("window").width;
 
@@ -176,8 +176,8 @@ const DocDetails: React.FC = () => {
                     <Image
                       source={
                         item.gender == "male"
-                          ? require("~/assets/docMale.png")
-                          : require("~/assets/docFemale.png")
+                          ? require("../../../assets/docMale.png")
+                          : require("./../../../assets/docFemale.png")
                       }
                       style={{
                         borderWidth: 1,

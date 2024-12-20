@@ -5,7 +5,7 @@ import { TamaguiProvider } from "tamagui";
 import { useFonts } from "expo-font";
 import config from "../tamagui.config";
 import { Provider } from "react-redux";
-import store from "~/app/context/store";
+import store from "./../app/context/store";
 import { tokenCache } from "./getToken";
 
 export default function RootLayout() {

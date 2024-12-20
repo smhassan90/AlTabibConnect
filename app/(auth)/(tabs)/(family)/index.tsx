@@ -1,6 +1,6 @@
 import { Image, RefreshControl, TouchableOpacity, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import MenuBar from "~/app/components/MenuBar";
+import MenuBar from "./../../../../app/components/MenuBar";
 import { Button, Text, XStack, YStack } from "tamagui";
 import { FlatList } from "react-native";
 import {
@@ -10,19 +10,19 @@ import {
   fontSizes,
   spacingPrim,
   spacingS,
-} from "~/app/styles";
-import { url } from "~/env";
+} from "./../../../../app/styles";
+import { url } from "./../../../../env";
 import axios from "axios";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import Header from "~/app/components/ParentView";
-import { HeartLoader } from "~/app/components/Animations";
+import Header from "./../../../../app/components/ParentView";
+import { HeartLoader } from "./../../../../app/components/Animations";
 import {
   ALERT_TYPE,
   AlertNotificationRoot,
   Dialog,
 } from "react-native-alert-notification";
-import { userData } from "~/app/components/home/CustomContent";
+import { userData } from "./../../../../app/components/home/CustomContent";
 
 const Page = () => {
   const [loading, setLoading] = useState(true);
@@ -200,12 +200,12 @@ const Page = () => {
                     <Image
                       source={
                         item.age > 18 && item.gender === "male"
-                          ? require("~/assets/man.png")
+                          ? require("./../../../../assets/man.png")
                           : item.age > 18 && item.gender === "female"
-                            ? require("~/assets/woman.png")
+                            ? require("./../../../../assets/woman.png")
                             : item.age <= 18 && item.gender === "male"
-                              ? require("~/assets/boy.png")
-                              : require("~/assets/girl.png")
+                              ? require("./../../../../assets/boy.png")
+                              : require("./../../../../assets/girl.png")
                       }
                       style={{ borderRadius: 50, width: 100, height: 100 }}
                     />

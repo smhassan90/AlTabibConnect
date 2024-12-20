@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import MenuBar from "~/app/components/MenuBar";
-import { buttons, colors, fontSizes } from "~/app/styles";
+import MenuBar from "./../../../../app/components/MenuBar";
+import { buttons, colors, fontSizes } from "./../../../../app/styles";
 import { Card, Image, Text, XStack } from "tamagui";
 import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import axios from "axios";
-import { url } from "~/env";
+import { url } from "./../../../../env";
 import { TextInput } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import {
@@ -13,8 +13,8 @@ import {
   Dialog,
 } from "react-native-alert-notification";
 import { router } from "expo-router";
-import { userData } from "~/app/components/home/CustomContent";
-import Header from "~/app/components/ParentView";
+import { userData } from "./../../../../app/components/home/CustomContent";
+import Header from "./../../../../app/components/ParentView";
 import dayjs from "dayjs";
 
 export default function Page() {
@@ -118,7 +118,7 @@ export default function Page() {
             height={100}
             width={100}
             borderRadius={50}
-            source={require("~/assets/man.png")}
+            source={require("./../../../../assets/man.png")}
           />
           <XStack gap={5}>
             <Text
