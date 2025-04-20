@@ -92,7 +92,7 @@ const DocDetails: React.FC = () => {
   };
 
   const filteredDoctors = doctorsData.filter((doctor) =>
-    doctor.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    doctor?.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -193,7 +193,7 @@ const DocDetails: React.FC = () => {
                         fontFamily={fontFamily.bold}
                         fontSize={fontSizes.L}
                       >
-                        {item.name}
+                        {item?.name}
                       </Text>
                       <Text
                         color={colors.yellow}
@@ -208,7 +208,7 @@ const DocDetails: React.FC = () => {
                         fontSize={fontSizes.M}
                       >
                         {item.qualifications.map(
-                          (qual: string) => qual.name + " | ",
+                          (qual: string) => qual?.name + " | ",
                         )}
                       </Text>
                     </View>
@@ -314,7 +314,7 @@ const DocDetails: React.FC = () => {
                           fontFamily={fontFamily.bold}
                           fontSize={fontSizes.SM}
                         >
-                          {clinic.clinic.name}
+                          {clinic.clinic?.name}
                         </Text>
                         <Text
                           color={colors.yellow}
