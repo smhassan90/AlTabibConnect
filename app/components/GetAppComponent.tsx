@@ -29,37 +29,19 @@ const GetAppComponent = () => {
   const token = SecureStore.getItem("token");
 
   const data = useSelector((state: any) => state.appointments);
-
   const patientRedux = useSelector((state: any) => state.patients);
 
   const currentDate = dayjs().format("YYYY-MM-DD");
 
-  //console.log("Data: ", JSON.stringify(data, null, 2));
-  //console.log("Patient: ", JSON.stringify(patientRedux, null, 2));
 
   //WHOLE DOC LIST
   const docs = data[data.length - 1].doc;
-
-  const docId = data[data.length - 1].doc.id;
-  const docName = data[data.length - 1].doc.name;
-  const clinicName =
-    docs.doctorClinicDALS[docs.doctorClinicDALS.length - 1].clinic.name;
-  const clinicId =
-    docs.doctorClinicDALS[docs.doctorClinicDALS.length - 1].clinic.id;
+  const docId = docs.id;
+  const docName = docs.name;
+  const clinicName = data[0].clinic.clinic.name;
+  const clinicId = data[0].clinic.clinic.id;
   const patient = patientRedux[0];
   const patientId = patientRedux[0].id;
-
-  // console.log("User Token: ", token);
-  // console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
-  // console.log("Doctor ID: ", parseInt(docId));
-  // console.log("Doctor Name: ", docName);
-  // console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
-  // console.log("Clinic Id: ", parseInt(clinicId));
-  // console.log("Clinic Name: ", clinicName);
-  // console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
-  // console.log("Patient ID: ", parseInt(patient.id));
-  // console.log("Patient Name: ", patient.name);
-  // console.log("-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=");
 
   const setAppObj = {
     id: 0,
@@ -84,17 +66,19 @@ const GetAppComponent = () => {
     treatments: [],
   };
 
+  
   const encodedApp = encodeURIComponent(JSON.stringify(setAppObj));
 
   const dispactBooked = () => {
     setLoading(true);
     console.log("Encoded Appointment: ", JSON.stringify(setAppObj, null, 2));
     console.log("TOKEN:", token);
-
+    // return
     axios
       .get(`${url}setAppointment?token=${token}&appointment=${encodedApp}`)
       .then((res) => {
         console.log("Response: ", res.data);
+        
         if (res.status === 200) {
           console.log("Set Appointment status: ", res.data);
           Dialog.show({

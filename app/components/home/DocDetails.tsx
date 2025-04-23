@@ -32,12 +32,12 @@ import { PrimBtn, SecBtn } from "../CusButtons";
 import { WhiteBold } from "../CusText";
 import { HeartLoader } from "../Animations";
 import { selectDoctor } from "./../../../app/context/actions/selectDoctorAction";
+import { Axios, summary } from "../../config/summaryAPI";
 
 const cardWidth = Dimensions.get("window").width;
 
 const DocDetails: React.FC = () => {
   const dispatch = useDispatch();
-
   const [searchQuery, setSearchQuery] = useState("");
   const [refresh, setRefresh] = useState(false);
 
@@ -46,34 +46,34 @@ const DocDetails: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const token = SecureStore.getItem("token");
 
-  useEffect(() => {
-    // Axios GET request to fetch doctors data
-    if (!refresh) {
-      axios
-        .get(
-          //USE YOUR OWN URL!!
-          `${url}getAllBasicData?token=${token}`,
-        )
-        .then((res) => {
-          // console.log(
-          //   "DOCDETAILS RES:",
-          //   JSON.stringify(res.data.data, null, 2),
-          // );
-          //console.log("Doctors Data: ", JSON.stringify(res.data.data.doctors[0], null, 2));
-          setDoctorsData(res.data.data.doctors);
-          setLoading(false);
-        })
-        .catch((error) => {
-          Alert.alert("Error", "Error fetching data");
-          console.error("Error fetching data:", error);
-          setLoading(false);
-        });
-      setRefresh(false);
+  const getDoctorsData = async () => {
+    try {
+      const response = await Axios({
+        ...summary.getDoctors,
+        params: {
+          token,
+        },
+      });
+      setDoctorsData(response.data.data.doctors);
+    } catch (error) {
+      Alert.alert("Error", "Error fetching data");
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
     setRefresh(false);
+  };
+
+  useEffect(() => {
+    if (!refresh) {
+      getDoctorsData();
+    }
   }, [refresh]);
 
   const handleGetAppointment = (doc: any, clinic: any, doctorId: string) => {
+    console.log(JSON.stringify(doc),"doc")
+    console.log(JSON.stringify(clinic),"clinic")
+    // return
     dispatch(addAppointment(doc, clinic));
     SecureStore.setItem("doctorId", doctorId);
     router.push("/(auth)/(tabs)/(home)/SetAppointment");
@@ -92,9 +92,8 @@ const DocDetails: React.FC = () => {
   };
 
   const filteredDoctors = doctorsData.filter((doctor) =>
-    doctor.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    doctor.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   return (
     <YStack flex={1} justifyContent="center">
       {loading ? (
@@ -175,7 +174,7 @@ const DocDetails: React.FC = () => {
                   >
                     <Image
                       source={
-                        item.gender == "male"
+                        item.gender === "male"
                           ? require("../../../assets/docMale.png")
                           : require("./../../../assets/docFemale.png")
                       }
@@ -200,15 +199,21 @@ const DocDetails: React.FC = () => {
                         fontFamily={fontFamily.regular}
                         fontSize={fontSizes.M}
                       >
-                        Dentist
+                        {item.specializations.length > 0 ? (
+                          item.specializations.map((qual: string) => qual.name + " | ")
+                        ) : (
+                          "No Specialization"
+                        )}
                       </Text>
                       <Text
                         color={colors.yellow}
                         fontFamily={fontFamily.regular}
                         fontSize={fontSizes.M}
                       >
-                        {item.qualifications.map(
-                          (qual: string) => qual.name + " | ",
+                        {item.qualifications.length > 0 ? (
+                          item.qualifications.map((qual: string) => qual.name + " | ")
+                        ):(
+                          "No Qualification"
                         )}
                       </Text>
                     </View>
@@ -360,8 +365,8 @@ const DocDetails: React.FC = () => {
                             onPress={() =>
                               handleGetAppointment(
                                 item,
-                                item.doctorClinicDALS,
-                                item.id.toString(),
+                                clinic,
+                                item.id.toString()
                               )
                             }
                           >

@@ -14,12 +14,15 @@ import { url } from "./../../../../env";
 import * as SecureStore from "expo-secure-store";
 import dayjs from "dayjs";
 import Header from "./../../../../app/components/ParentView";
-import { FlatList, RefreshControl } from "react-native";
+import { Dimensions, FlatList, RefreshControl } from "react-native";
+import { HeartLoader } from "../../../../app/components/Animations";
+import { WhiteBold } from "../../../../app/components/CusText";
 
 const Page = () => {
   const token = SecureStore.getItem("token");
   const patientId = SecureStore.getItem("patientId");
   const doctorId = SecureStore.getItem("doctorId");
+  const cardWidth = Dimensions.get("window").width;
 
   const [empty, setEmpty] = useState(true);
 
@@ -27,15 +30,18 @@ const Page = () => {
 
   const [history, setHistory] = useState([]);
 
+  const [loading, setLoading] = useState(true);
+
   const fetchHistory = () => {
+    setLoading(true);
     axios
       .get(
-        `${url}getPatientHistory?token=${token}&patientId=${patientId}&doctorId=0`,
+        `${url}getPatientHistory?token=${token}&patientId=${patientId}&doctorId=0`
       )
       .then((res) => {
         console.log(
           "GET HISTORY RESPONSE: ",
-          JSON.stringify(res.data, null, 2),
+          JSON.stringify(res.data, null, 2)
         );
 
         {
@@ -45,6 +51,8 @@ const Page = () => {
         }
 
         setHistory(res.data.data.appointments);
+        setLoading(false);
+        setRefresh(false);
       })
       .catch((err) => {
         console.log("ERROR FETCHING HISTORY:", err);
@@ -59,15 +67,29 @@ const Page = () => {
     console.log("LOCAL PID:,", patientId);
     console.log("LOCAL DOC ID:", doctorId);
     fetchHistory();
-  }, []);
+  }, [patientId]);
 
   return (
     <View backgroundColor={colors.primary} flex={1}>
       <Header>
         <MenuBar title="Patient History" />
       </Header>
-
-      {empty ? (
+      {loading ? (
+        <YStack flex={1} justifyContent="center">
+          <View
+            gap={spacingPrim}
+            alignItems="center"
+            position="absolute"
+            justifyContent="center"
+            alignSelf="center"
+            height={cardWidth}
+            width={cardWidth}
+          >
+            <WhiteBold>Loading History</WhiteBold>
+            <HeartLoader />
+          </View>
+        </YStack>
+      ) : empty ? (
         <YStack position="absolute" alignSelf="center" top={"50%"}>
           <Text color={colors.white} fontSize={20} fontFamily={"ArialB"}>
             No History Found

@@ -4,6 +4,7 @@ import DocDetails from "./../../../../app/components/home/DocDetails";
 import MenuBar from "./../../../../app/components/MenuBar";
 import { colors, spacingPrim } from "./../../../../app/styles";
 import constants from "expo-constants";
+import { Text } from "react-native";
 
 const statusBarHeight = constants.statusBarHeight;
 
@@ -18,6 +19,7 @@ const Page = () => {
       >
         <MenuBar title="" />
       </View>
+      {/* <Text>Hello World</Text> */}
       <DocDetails heading="Well Known Doctors" />
     </View>
   );
