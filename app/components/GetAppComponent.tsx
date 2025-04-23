@@ -236,7 +236,7 @@ const GetAppComponent = () => {
                 style={[buttons.primaryBtn, { flex: 1 }]}
               >
                 <Text fontFamily={"ArialB"} color={colors.white}>
-                  Get Appointment
+                  Get Appointments
                 </Text>
               </TouchableOpacity>
             </XStack>

@@ -92,7 +92,7 @@ const DocDetails: React.FC = () => {
   };
 
   const filteredDoctors = doctorsData.filter((doctor) =>
-    doctor.name.toLowerCase().includes(searchQuery.toLowerCase())
+    doctor?.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
   return (
     <YStack flex={1} justifyContent="center">
@@ -192,7 +192,7 @@ const DocDetails: React.FC = () => {
                         fontFamily={fontFamily.bold}
                         fontSize={fontSizes.L}
                       >
-                        {item.name}
+                        {item?.name}
                       </Text>
                       <Text
                         color={colors.yellow}
@@ -319,7 +319,7 @@ const DocDetails: React.FC = () => {
                           fontFamily={fontFamily.bold}
                           fontSize={fontSizes.SM}
                         >
-                          {clinic.clinic.name}
+                          {clinic.clinic?.name}
                         </Text>
                         <Text
                           color={colors.yellow}
