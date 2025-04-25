@@ -19,8 +19,9 @@ import { url } from "./../../../env";
 export let userData = {};
 
 export const CustomContent = (props: any) => {
+  const token = SecureStore.getItem("token");
+  console.log(token,"token")
   useEffect(() => {
-    const token = SecureStore.getItem("token");
     axios
       .get(`${url}getProfile?token=${token}`)
       .then((res) => {
@@ -53,7 +54,36 @@ export const CustomContent = (props: any) => {
           },
         },
       ],
-      { cancelable: false },
+      { cancelable: false }
+    );
+  };
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to Delete Account?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            axios
+              .get(`${url}logoutDelete?token=${token}`)
+              .then((res) => {
+                if(res.data.status == 200){
+                  SecureStore.deleteItemAsync("token");
+                  router.replace("/Login");
+                }
+              })
+              .catch((err) => {
+                console.log("Error Delete User:", err);
+              });
+          },
+        },
+      ],
+      { cancelable: false }
     );
   };
 
@@ -180,6 +210,16 @@ export const CustomContent = (props: any) => {
           onPress={handleLogout}
         >
           <ButtonText fontFamily={"ArialB"}>Logout</ButtonText>
+        </Button>
+        <Button
+          backgroundColor={"$red9Light"}
+          marginHorizontal={10}
+          marginTop={10}
+          onPress={handleDeleteAccount}
+        >
+          <ButtonText fontFamily={"ArialB"}>
+            Permanent Delete Account
+          </ButtonText>
         </Button>
       </View>
     </View>

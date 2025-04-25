@@ -227,6 +227,12 @@ const FormLogin = () => {
           <LinkText>Register</LinkText>
         </TouchableOpacity>
       </XStack>
+      <XStack alignItems="center" justifyContent="center" gap={spacingPrim}>
+        <PrimBold>Do you have delete acoount?</PrimBold>
+        <TouchableOpacity onPress={() => router.push("/DeleteUser")}>
+          <LinkText>Delete Account</LinkText>
+        </TouchableOpacity>
+      </XStack>
     </YStack>
   );
 };
