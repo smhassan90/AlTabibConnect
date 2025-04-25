@@ -92,7 +92,7 @@ const FormDeleteUser = () => {
     axios
       .post(deleteUrl, payload)
       .then((response) => {
-        if (response.status === 200) {
+        if (response.data.status == 200) {
           Dialog.show({
             type: ALERT_TYPE.SUCCESS,
             title: "Success",
@@ -115,36 +115,7 @@ const FormDeleteUser = () => {
         }
       })
       .catch((error) => {
-        if (error.response) {
-          Dialog.show({
-            type: ALERT_TYPE.DANGER,
-            title: "Error",
-            textBody: "Error Delete User, enter correct details",
-            button: "Close",
-          });
-          console.error("Server Error: ", error.response.data);
-          console.error("Status Code: ", error.response.status);
-          console.error("Headers: ", error.response.headers);
-          setLoading(false);
-        } else if (error.request) {
-          Dialog.show({
-            type: ALERT_TYPE.DANGER,
-            title: "Error",
-            textBody: "Error Delete User, enter correct details",
-            button: "Close",
-          });
-          console.error("No response received: ", error.request);
-          setLoading(false);
-        } else {
-          Dialog.show({
-            type: ALERT_TYPE.DANGER,
-            title: "Error",
-            textBody: "Error Delete User, enter correct details",
-            button: "Close",
-          });
-          console.error("Request Error: ", error.message);
-          setLoading(false);
-        }
+        console.log(error)
       });
   };
 
