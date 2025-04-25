@@ -230,7 +230,7 @@ const FormLogin = () => {
       <XStack alignItems="center" justifyContent="center" gap="$2" flexWrap="wrap">
         <PrimBold>Do you have delete account?</PrimBold>
         <TouchableOpacity onPress={() => router.push("/DeleteUser")}>
-          <LinkTexts>Delete Account</LinkTexts>
+          <LinkText>Delete Account</LinkText>
         </TouchableOpacity>
       </XStack>
     </YStack>
