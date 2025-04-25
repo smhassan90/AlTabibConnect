@@ -10,7 +10,7 @@ import { url } from "./../../env";
 import { useDispatch } from "react-redux";
 import { addUser } from "../context/actions/userActions";
 import { Spinner } from "./Animations";
-import { LinkText, PrimBold, WhiteBold } from "./CusText";
+import { LinkText, LinkTexts, PrimBold, WhiteBold } from "./CusText";
 import * as SecureStore from "expo-secure-store";
 
 const FormLogin = () => {
@@ -100,16 +100,16 @@ const FormLogin = () => {
 
           console.log(
             "RESPONSE STATUS: ",
-            JSON.stringify(response.status, null, 2),
+            JSON.stringify(response.status, null, 2)
           );
           console.log(
             "Response TOKEN: ",
-            JSON.stringify(response.data.data.token, null, 2),
+            JSON.stringify(response.data.data.token, null, 2)
           );
           SecureStore.setItemAsync("token", response.data.data.token)
             .then(() => {
               console.log(
-                `Login Token Storage successful: ${SecureStore.getItem("token")}`,
+                `Login Token Storage successful: ${SecureStore.getItem("token")}`
               );
               router.replace("/(auth)/(tabs)/(home)");
             })
@@ -227,10 +227,10 @@ const FormLogin = () => {
           <LinkText>Register</LinkText>
         </TouchableOpacity>
       </XStack>
-      <XStack alignItems="center" justifyContent="center" gap={spacingPrim}>
-        <PrimBold>Do you have delete acoount?</PrimBold>
+      <XStack alignItems="center" justifyContent="center" gap="$2" flexWrap="wrap">
+        <PrimBold>Do you have delete account?</PrimBold>
         <TouchableOpacity onPress={() => router.push("/DeleteUser")}>
-          <LinkText>Delete Account</LinkText>
+          <LinkTexts>Delete Account</LinkTexts>
         </TouchableOpacity>
       </XStack>
     </YStack>
