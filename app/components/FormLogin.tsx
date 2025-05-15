@@ -228,7 +228,7 @@ const FormLogin = () => {
         </TouchableOpacity>
       </XStack>
       <XStack alignItems="center" justifyContent="center" gap="$2" flexWrap="wrap">
-        <PrimBold>Do you have delete account?</PrimBold>
+        <PrimBold>Do you want to delete an account?</PrimBold>
         <TouchableOpacity onPress={() => router.push("/DeleteUser")}>
           <LinkText>Delete Account</LinkText>
         </TouchableOpacity>
