@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as SecureStore from "expo-secure-store";
 import { router, useNavigation } from "expo-router";
 import { colors, fontSizes } from "./../../../app/styles";
-import { FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { DrawerActions } from "@react-navigation/native";
 import constants from "expo-constants";
 import axios from "axios";
@@ -201,6 +201,18 @@ export const CustomContent = (props: any) => {
             navigation.dispatch(DrawerActions.closeDrawer());
           }}
         />
+        <DrawerItem
+          style={{ marginLeft: 20 }}
+          labelStyle={{ fontFamily: 'ArialB', color: colors.white }}
+          icon={({ size, color }) => (
+            <Ionicons name="notifications" size={size} color={colors.yellow} />
+          )}
+          label={'Notifications'}
+          onPress={() => {
+            router.push('/(auth)/(tabs)/(notification)');
+            navigation.dispatch(DrawerActions.closeDrawer());
+          }}
+        />
       </DrawerContentScrollView>
 
       <View paddingBottom={bottom + 20}>
@@ -218,7 +230,7 @@ export const CustomContent = (props: any) => {
           onPress={handleDeleteAccount}
         >
           <ButtonText fontFamily={"ArialB"}>
-            Permanent Delete Account
+            Permanent Delete Accountssss
           </ButtonText>
         </Button>
       </View>

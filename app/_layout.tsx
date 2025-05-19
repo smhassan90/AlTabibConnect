@@ -7,6 +7,8 @@ import config from "../tamagui.config";
 import { Provider } from "react-redux";
 import store from "./../app/context/store";
 import { tokenCache } from "./getToken";
+import { PermissionsAndroid, Platform } from "react-native";
+import Toast from "react-native-toast-message";
 
 export default function RootLayout() {
   const [TOKEN, setTOKEN] = useState("");
@@ -30,7 +32,20 @@ export default function RootLayout() {
   });
 
   const InitialLayout = () => {
+    const requestNotificationPermission = async () => {
+      if (Platform.OS === 'android' && Platform.Version >= 33) {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+        );
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Notification permission denied');
+        } else {
+          console.log('Notification permission granted');
+        }
+      }
+    };
     useEffect(() => {
+      requestNotificationPermission()
       if (loggedIn) {
         //console.log("Authenticated! Going to Home Page");
         return router.replace("/(auth)/(tabs)/(home)");
@@ -51,6 +66,7 @@ export default function RootLayout() {
             <InitialLayout />
           </GestureHandlerRootView>
         </TamaguiProvider>
+        <Toast/>
       </Provider>
     );
   }

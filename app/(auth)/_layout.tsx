@@ -6,9 +6,12 @@ import { useEffect, useRef, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Notifications from "expo-notifications";
 import axios from "axios";
-import { Platform } from "react-native";
+import { Alert, Platform } from "react-native";
 import * as Device from "expo-device";
 import { url } from "./../../env";
+import messaging from "@react-native-firebase/messaging";
+import Toast from "react-native-toast-message";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -26,33 +29,114 @@ const DrawerLayout = () => {
   const responseListener = useRef();
 
   useEffect(() => {
-    const FCMtoken = expoPushToken
-      .replace("ExponentPushToken[", "")
-      .replace("]", "");
-    axios.get(`${url}updateFCMToken?token=${TOKEN}&fcm=${FCMtoken}`);
+    messaging()
+      .getInitialNotification()
+      .then(async (remoteMessage) => {
+        if (
+          remoteMessage &&
+          remoteMessage.data &&
+          remoteMessage.data.title &&
+          remoteMessage.data.body
+        ) {
+          const newNotification = {
+            title: remoteMessage.data?.title || "New Notification",
+            body: remoteMessage.data?.body || "",
+            timestamp: new Date().toISOString(),
+            AppointmentId: remoteMessage.data?.AppointmentId,
+            read: false,
+          };
+          console.log(remoteMessage, "remoteMessage Osama OKAY");
+          try {
+            const existing = await AsyncStorage.getItem("notifications");
+            const notifications = existing ? JSON.parse(existing) : [];
+            notifications.unshift(newNotification);
+            await AsyncStorage.setItem(
+              "notifications",
+              JSON.stringify(notifications)
+            );
+          } catch (err) {
+            console.log("Error saving initial notification:", err);
+          }
+        }
+      });
+  }, []);
+  useEffect(() => {
+    const requestPermissionAndGetToken = async () => {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-    registerForPushNotificationsAsync().then((expoToken) =>
-      setExpoPushToken(expoToken),
+      if (enabled) {
+        console.log("Authorization status:", authStatus);
+        const fcmToken = await messaging().getToken();
+        if (fcmToken) {
+          console.log("FCM Token:", fcmToken);
+          setExpoPushToken(fcmToken);
+          axios.get(
+            `http://192.168.18.21:8080/tabib/updateFCMToken?token=${TOKEN}&fcmToken=${fcmToken}`
+          );
+        }
+      } else {
+        Alert.alert(
+          "Permission denied",
+          "Please allow notification permissions"
+        );
+      }
+    };
+
+    requestPermissionAndGetToken();
+    console.log("PUSHINGGG:", expoPushToken);
+
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      console.log(remoteMessage, "remoteMessage");
+      const newNotification = {
+        title: remoteMessage.data?.title || "New Notification",
+        body: remoteMessage.data?.body || "",
+        timestamp: new Date().toISOString(),
+        AppointmentId: remoteMessage.data?.AppointmentId,
+        read: false,
+      };
+      try {
+        const existing = await AsyncStorage.getItem("patientNotifications");
+        const notifications = existing ? JSON.parse(existing) : [];
+        notifications.unshift(newNotification);
+        await AsyncStorage.setItem(
+          "patientNotifications",
+          JSON.stringify(notifications)
+        );
+      } catch (err) {
+        console.log("Error saving notification:", err);
+      }
+      Toast.show({
+        type: "info",
+        // text1: remoteMessage.notification?.title || 'New Notification',
+        // text2: remoteMessage.notification?.body || '',
+        text1: remoteMessage.data?.title || "New Notification",
+        text2: remoteMessage.data?.body || "",
+        position: "top",
+        visibilityTime: 2000,
+      });
+    });
+    const resetBadge = async () => {
+      try {
+        await Notifications.setBadgeCountAsync(0);
+        console.log("Badge count reset to 0");
+      } catch (error) {
+        console.log("Error resetting badge count:", error);
+      }
+    };
+    resetBadge(); // Call it immediately when app loads
+
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      () => {
+        resetBadge(); // Also reset badge when user interacts with a notification
+      }
     );
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("WTF");
-        console.log(response);
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current,
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, [TOKEN]);
+    return unsubscribe;
+    subscription.remove();
+  }, [TOKEN, expoPushToken]);
 
   return (
     <Drawer

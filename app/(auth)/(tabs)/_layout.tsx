@@ -1,4 +1,4 @@
-import { FontAwesome, MaterialIcons, FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { colors } from "./../../../app/styles";
 
@@ -70,6 +70,16 @@ export default function TabLayout() {
           tabBarLabel: "Profile",
           tabBarIcon: ({ color }) => (
             <FontAwesome name="user-md" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(notifications)"
+        options={{
+          headerShown: false,
+          tabBarLabel: "Notifications",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="notifications" size={24} color={color} />
           ),
         }}
       />

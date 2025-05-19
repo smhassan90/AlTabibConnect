@@ -12,6 +12,7 @@ import { addUser } from "../context/actions/userActions";
 import { Spinner } from "./Animations";
 import { LinkText, LinkTexts, PrimBold, WhiteBold } from "./CusText";
 import * as SecureStore from "expo-secure-store";
+import messaging from '@react-native-firebase/messaging';
 
 const FormLogin = () => {
   const dispatch = useDispatch();
@@ -88,13 +89,19 @@ const FormLogin = () => {
   const fetchLoginData = () => {
     axios
       .get(loginUrl)
-      .then((response) => {
+      .then(async(response) => {
         if (response.status === 200) {
           const USER = {
             name: num,
             pass: pass,
             token: response.data.data.token,
           };
+          try {
+            await messaging().subscribeToTopic(`patient-${response.data.data.loginStatus.username}`)
+            console.log("Topic Subscription Successfully")
+          } catch (error) {
+            console.log("Subscription Error")
+          }
 
           dispatch(addUser(USER));
 

@@ -2,12 +2,12 @@
   "project_info": {
     "project_number": "985945731828",
     "project_id": "al-tabib-patient",
-    "storage_bucket": "al-tabib-patient.appspot.com"
+    "storage_bucket": "al-tabib-patient.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:985945731828:android:0775b63796380e1fd524a1",
+        "mobilesdk_app_id": "1:985945731828:android:573f014674b5ca70d524a1",
         "android_client_info": {
           "package_name": "com.devfynals.AlTabibConnectPatient"
         }
