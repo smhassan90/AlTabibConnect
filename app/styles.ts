@@ -1,3 +1,4 @@
+import { red } from "@tamagui/themes";
 import { StyleSheet } from "react-native";
 
 export const spacingS = 5;
@@ -23,6 +24,7 @@ export const colors = {
   yellowLight:"#ffa60180",
   green: "#3bad6d",
   red: "#ff5757",
+  redLight: "#ff000080",
   lightGray: "#f5f5f5",
   border: "#e6e6e6",
 };

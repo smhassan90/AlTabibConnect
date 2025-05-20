@@ -30,6 +30,7 @@ import { tokenCache } from "./../../../../app/getToken";
 import LottieView from "lottie-react-native";
 import Header from "./../../../../app/components/ParentView";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
+import { PrimaryBtn } from "./../../../..//app/components/CusButtons";
 
 const Page = () => {
   const [date, setDate] = useState(new Date());
@@ -210,14 +211,17 @@ const Page = () => {
                 />
               )}
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={[buttons.primaryBtn, { flex: 1 }]}
                 onPress={() => setShowPicker(!showPicker)}
               >
                 <Text color={colors.white} fontFamily={"ArialB"}>
                   {date ? dayjs(date).format("MMMM DD, YYYY") : "Date of Birth"}
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
+              <PrimaryBtn
+                onPress={() => setShowPicker(!showPicker)}>{date ? dayjs(date).format("MMMM DD, YYYY") : "Date of Birth"}
+</PrimaryBtn>
             </XStack>
             <XStack
               zIndex={100}
@@ -237,14 +241,18 @@ const Page = () => {
               />
             </XStack>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={handleSubmit}
               style={[buttons.primaryBtn]}
             >
               <Text color={colors.white} fontFamily={"ArialB"}>
                 Add
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <XStack>
+            <PrimaryBtn onPress={handleSubmit}>Add</PrimaryBtn>
+            </XStack>
+            
             {/* MODAL */}
           </YStack>
         </Card>
@@ -257,7 +265,7 @@ const Page = () => {
       />
     </View>
   );
-};
+};  
 
 const CustomModal = ({
   visible,

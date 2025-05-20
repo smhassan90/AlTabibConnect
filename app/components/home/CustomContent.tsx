@@ -5,7 +5,7 @@ import {
   DrawerItem,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { Button, ButtonText, Text, View, Image, YStack } from "tamagui";
+import { Button, ButtonText, Text, View, Image, YStack, XStack } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as SecureStore from "expo-secure-store";
 import { router, useNavigation } from "expo-router";
@@ -15,6 +15,7 @@ import { DrawerActions } from "@react-navigation/native";
 import constants from "expo-constants";
 import axios from "axios";
 import { url } from "./../../../env";
+import { RedBtns } from "../CusButtons";
 
 export let userData = {};
 
@@ -216,7 +217,7 @@ export const CustomContent = (props: any) => {
       </DrawerContentScrollView>
 
       <View paddingBottom={bottom + 20}>
-        <Button
+        {/* <Button
           backgroundColor={"$red9Light"}
           marginHorizontal={10}
           onPress={handleLogout}
@@ -232,7 +233,13 @@ export const CustomContent = (props: any) => {
           <ButtonText fontFamily={"ArialB"}>
             Permanent Delete Accountssss
           </ButtonText>
-        </Button>
+        </Button> */}
+        <XStack>
+          <RedBtns onPress={handleLogout} isBold marginHorizontal={10} marginTop={10}>Logout</RedBtns>
+        </XStack>
+        <XStack>
+          <RedBtns onPress={handleDeleteAccount} isBold marginHorizontal={10} marginTop={10}>Permanent Delete Account</RedBtns>
+        </XStack>
       </View>
     </View>
   );

@@ -54,6 +54,8 @@ export const SecondaryBtn = ({
   onPress: () => void;
   children: React.ReactNode;
 }) => {
+  const getDisplayText = (text: string, maxLength = 13) =>
+    text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   return (
     <Button
       onPress={onPress}
@@ -65,7 +67,12 @@ export const SecondaryBtn = ({
         color: "black",
       }}
     >
-      <ButtonText style={{ fontWeight: isBold ? "bold" : "normal" }}>{children}</ButtonText>
+      <ButtonText
+        style={{
+          fontWeight: isBold ? "bold" : "normal",
+        }}
+        >{children}</ButtonText>
+      {/* <Text style={{ fontWeight: isBold ? "bold" : "normal" }}>Osama</Text> */}
     </Button>
   );
 };
@@ -127,5 +134,33 @@ export const RedBtn = ({
     <TouchableOpacity onPress={onPress} style={[buttons.redBtn, { flex: 1 }]}>
       {children}
     </TouchableOpacity>
+  );
+};
+export const RedBtns = ({
+  onPress,
+  children,
+  isBold,
+  marginHorizontal=0,
+  marginTop=0
+}: {
+  onPress: () => void;
+  children: React.ReactNode;
+}) => {
+  return (
+    <Button
+      marginHorizontal={marginHorizontal}
+      marginTop={marginTop}
+      onPress={onPress}
+      backgroundColor={colors.red}
+      flex={1}
+      style={{ height:40 }}
+      pressStyle={{
+        backgroundColor: colors.redLight,
+        borderWidth: 0,
+        color: "white",
+      }}
+    >
+      <ButtonText style={{ fontWeight: isBold ? "bold" : "normal" }}>{children}</ButtonText>
+    </Button>
   );
 };

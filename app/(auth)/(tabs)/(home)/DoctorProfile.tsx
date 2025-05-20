@@ -22,7 +22,7 @@ import {
 import constants from "expo-constants";
 import { Text } from "tamagui";
 import { FlatList } from "react-native-gesture-handler";
-import { PrimBtn, SecBtn } from "./../../../../app/components/CusButtons";
+import { PrimaryBtn, PrimBtn, SecBtn, SecondaryBtn } from "./../../../../app/components/CusButtons";
 import { PrimBold, WhiteBold } from "./../../../../app/components/CusText";
 import { useSelector } from "react-redux";
 import { CustomModal } from "./../../../../app/components/Modal";
@@ -292,9 +292,12 @@ const handleGetAppointment = () => {
               </YStack>
             </XStack>
             <XStack>
-              <PrimBtn onPress={modalPress}>
+              {/* <PrimBtn onPress={modalPress}>
                 <WhiteBold>Write Review</WhiteBold>
-              </PrimBtn>
+              </PrimBtn> */}
+              <PrimaryBtn onPress={modalPress} isBold>
+                                          Write Review
+                                        </PrimaryBtn>
             </XStack>
           </YStack>
           {/* <FlatList
@@ -417,26 +420,32 @@ const handleGetAppointment = () => {
                     gap={spacingPrim}
                   >
                     {/* Buttons for actions */}
-                    <PrimBtn
+                    {/* <PrimBtn
                       onPress={() =>
                         console.log(JSON.stringify(doctor, null, 2))
                       }
                     >
                       <WhiteBold>Get Directions</WhiteBold>
-                    </PrimBtn>
+                    </PrimBtn> */}
+                    <PrimaryBtn  isBold>
+                      Get Directions
+                                      </PrimaryBtn>
                     {/* <SecBtn onPress={() => console.log("hellow")}>
                       <Text fontFamily={fontFamily.bold} color={colors.white}>
                         Get Appointment
                       </Text>
                     </SecBtn> */}
-                      <SecBtn
+                     <SecondaryBtn onPress={() => handleGetAppointment()} isBold>
+                      Get Appointment
+                                      </SecondaryBtn>
+                      {/* <SecBtn
                        onPress={() => handleGetAppointment()}>
                        <Text
                        fontFamily={fontFamily.bold}
                         color={colors.white}>
                            Get Appointment
                         </Text>
-                        </SecBtn>
+                        </SecBtn> */}
                   </View>
                 </YStack>
               </Card>
@@ -481,7 +490,7 @@ const handleGetAppointment = () => {
                 fontFamily={fontFamily.regular}
                 fontSize={fontSizes.SM}
               >
-                Posting publicly across Al Tabib
+                {/* Posting publicly across Al Tabib */}
               </Text>
             </View>
           </TouchableOpacity>
@@ -507,14 +516,19 @@ const handleGetAppointment = () => {
             onChangeText={setReview}
           />
           <XStack gap={spacingPrim}>
-            <SecBtn onPress={() => setToggleModal(false)}>
+            {/* <SecBtn onPress={() => setToggleModal(false)}>
               <Text fontFamily={fontFamily.bold} color={colors.white}>
                 Cancel
               </Text>
-            </SecBtn>
-            <PrimBtn onPress={sendFeedback}>
+            </SecBtn> */}
+            <SecondaryBtn onPress={() => setToggleModal(false)} isBold>cancel
+                                      </SecondaryBtn>
+            {/* <PrimBtn onPress={sendFeedback}>
               <WhiteBold>Submit</WhiteBold>
-            </PrimBtn>
+            </PrimBtn> */}
+            <PrimaryBtn onPress={sendFeedback} isBold>
+                                      Submit
+                                      </PrimaryBtn>
           </XStack>
         </YStack>
       </CustomModal>

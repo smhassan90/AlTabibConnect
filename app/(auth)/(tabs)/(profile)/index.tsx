@@ -16,6 +16,7 @@ import { router } from "expo-router";
 import { userData } from "./../../../../app/components/home/CustomContent";
 import Header from "./../../../../app/components/ParentView";
 import dayjs from "dayjs";
+import { PrimaryBtn, RedBtns } from "./../../../../app/components/CusButtons";
 
 export default function Page() {
   const token = SecureStore.getItem("token");
@@ -234,22 +235,30 @@ export default function Page() {
               </XStack>
             </>
           ) : (
-            <TouchableOpacity
-              style={[buttons.primaryBtn]}
+          
+            <XStack>
+            <PrimaryBtn
               onPress={() => {
                 setChangePassState(!changePassState);
               }}
             >
-              <Text color={colors.white} fontFamily={"ArialB"}>
-                Change Password
-              </Text>
-            </TouchableOpacity>
+              Change Password
+            </PrimaryBtn>
+            </XStack>
           )}
-          <TouchableOpacity style={buttons.redBtn} onPress={handleLogout}>
+          {/* <TouchableOpacity style={buttons.redBtn} onPress={handleLogout}>
             <Text fontFamily={"ArialB"} color={colors.white}>
               Logout
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          {/* <RedBtns onPress={handleLogout}>
+            
+          </RedBtns> */}
+          <XStack>
+          <RedBtns onPress={handleLogout}>
+             Logout
+          </RedBtns>
+          </XStack>
         </Card>
       </View>
     </AlertNotificationRoot>

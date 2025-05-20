@@ -23,6 +23,7 @@ import {
   Dialog,
 } from "react-native-alert-notification";
 import { userData } from "./../../../../app/components/home/CustomContent";
+import { PrimaryBtn, SecondaryBtn } from "./../../../..//app/components/CusButtons";
 
 const Page = () => {
   const [loading, setLoading] = useState(true);
@@ -141,7 +142,7 @@ const Page = () => {
           <MenuBar title="My Family" />
         </Header>
         <YStack paddingTop={10} flex={1} paddingHorizontal={10}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => router.push("/(auth)/(tabs)/(family)/AddFamily")}
             style={[buttons.secBtn]}
@@ -149,7 +150,16 @@ const Page = () => {
             <Text color={"white"} fontFamily={fontFamily.bold}>
               Add Family
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <XStack>
+          <SecondaryBtn
+            onPress={() => router.push("/(auth)/(tabs)/(family)/AddFamily")}
+            isBold
+          >
+            Add Family
+          </SecondaryBtn>
+          </XStack>
+
           {loading ? (
             <View
               style={{
@@ -252,7 +262,7 @@ const Page = () => {
                   </XStack>
 
                   <XStack gap={spacingS}>
-                    <Button
+                    {/* <Button
                       onPress={() => checkHistory(item.id.toString())}
                       backgroundColor={colors.primary}
                       flex={1}
@@ -260,17 +270,15 @@ const Page = () => {
                       <Text color={colors.white} fontFamily={"ArialB"}>
                         Check History
                       </Text>
-                    </Button>
+                    </Button> */}
+                     <PrimaryBtn   onPress={() => checkHistory(item.id.toString())} isBold>
+                                         Check History
+                                                         </PrimaryBtn> 
                     {item.name === userData.name ? null : (
-                      <Button
-                        onPress={() => confirmRemoveFamily(item.id)}
-                        backgroundColor={colors.yellow}
-                        flex={1}
-                      >
-                        <Text color={colors.white} fontFamily={"ArialB"}>
-                          Remove Member
-                        </Text>
-                      </Button>
+                  
+                      <SecondaryBtn onPress={() => confirmRemoveFamily(item.id)} isBold>
+                        Remove Member
+                      </SecondaryBtn>
                     )}
                   </XStack>
                 </YStack>
