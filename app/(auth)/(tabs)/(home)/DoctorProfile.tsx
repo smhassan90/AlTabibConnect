@@ -33,6 +33,11 @@ import SwipeRating from "react-native-ratings/dist/SwipeRating";
 import axios from "axios";
 import { url } from "./../../../../env";
 import * as SecureStore from "expo-secure-store";
+import { useDispatch } from "react-redux";
+import { addAppointment } from "./../../../context/actions/appointmentActions";
+// import { addAppointment } from "../../context/actions/appointmentActions";
+import { router } from "expo-router";
+
 
 const statusBarHeight = constants.statusBarHeight;
 
@@ -87,6 +92,8 @@ const DoctorProfile = () => {
   const [review, setReview] = useState("");
 
   const token = SecureStore.getItem("token");
+    const dispatch = useDispatch();
+  
 
   const modalPress = () => {
     setToggleModal(true);
@@ -96,6 +103,19 @@ const DoctorProfile = () => {
     setDoctor(reduxData.selectedDoctor);
     setRefresh(false);
   }, [reduxData.selectedDoctor, refresh]);
+
+  // const handleGetAppointment = (doc: any, clinic: any, doctorId: string) => {
+  //     console.log(JSON.stringify(doc),"doc")
+  //     console.log(JSON.stringify(clinic),"clinic")
+  //     // return
+  //     dispatch(addAppointment(doc, clinic));
+  //     SecureStore.setItem("doctorId", doctorId);
+  //     router.push("/(auth)/(tabs)/(home)/SetAppointment");
+  //   };
+const handleGetAppointment = () => {
+  router.push("/(auth)/(tabs)/(home)/SetAppointment");
+};
+
 
   const sendFeedback = () => {
     const Feedback = {
@@ -123,6 +143,7 @@ const DoctorProfile = () => {
     console.log("RATING:", rating);
     console.log("DETAIL:", review);
   };
+  
 
   return (
     <>
@@ -170,10 +191,11 @@ const DoctorProfile = () => {
               </Text>
               <Text fontSize={fontSizes.SM}>⭐</Text>
             </XStack>
-            <XStack gap={10}>
+            {/* <XStack gap={5}>
               <Text fontSize={fontSizes.SM} color={colors.yellow}>
                 {doctor?.specializations.map((s) => `${s.name}`)}
               </Text>
+              
               <Text fontSize={fontSizes.SM} color={colors.yellow}>
                 (
                 {doctor?.qualifications.map((q, index) => (
@@ -184,7 +206,23 @@ const DoctorProfile = () => {
                 ))}
                 )
               </Text>
-            </XStack>
+            </XStack> */}
+            <YStack gap={5}>
+  <Text fontSize={fontSizes.SM} color={colors.yellow}>
+    {doctor?.specializations.map((s) => (
+      <Text key={s.id}>{s.name}</Text>
+    ))}
+  </Text>
+
+  <Text justifyContent="center" fontSize={fontSizes.SM} color={colors.yellow}>
+    {doctor?.qualifications.map((q, index) => (
+      <Text key={q.id}>
+        {q.name}
+        {index < doctor.qualifications.length - 1 && " | "}
+      </Text>
+    ))}
+  </Text>
+</YStack>
             <XStack
               justifyContent="center"
               flexDirection="row"
@@ -259,7 +297,7 @@ const DoctorProfile = () => {
               </PrimBtn>
             </XStack>
           </YStack>
-          <FlatList
+          {/* <FlatList
             horizontal
             style={{ height: 200 }}
             contentContainerStyle={{ gap: 10 }}
@@ -307,7 +345,7 @@ const DoctorProfile = () => {
                 </YStack>
               </Card>
             )}
-          />
+          /> */}
           <FlatList
             refreshControl={
               <RefreshControl
@@ -386,11 +424,19 @@ const DoctorProfile = () => {
                     >
                       <WhiteBold>Get Directions</WhiteBold>
                     </PrimBtn>
-                    <SecBtn onPress={() => console.log("hellow")}>
+                    {/* <SecBtn onPress={() => console.log("hellow")}>
                       <Text fontFamily={fontFamily.bold} color={colors.white}>
                         Get Appointment
                       </Text>
-                    </SecBtn>
+                    </SecBtn> */}
+                      <SecBtn
+                       onPress={() => handleGetAppointment()}>
+                       <Text
+                       fontFamily={fontFamily.bold}
+                        color={colors.white}>
+                           Get Appointment
+                        </Text>
+                        </SecBtn>
                   </View>
                 </YStack>
               </Card>
