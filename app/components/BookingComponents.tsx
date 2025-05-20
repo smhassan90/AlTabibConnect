@@ -14,6 +14,7 @@ import { WhiteBold } from "./CusText";
 import { HeartLoader } from "./Animations";
 import { Axios, summary } from "../config/summaryAPI";
 import dayjs from "dayjs";
+import { PrimaryBtn, SecondaryBtn } from "./CusButtons";
 
 const cardWidth = Dimensions.get("window").width;
 
@@ -212,20 +213,25 @@ const BookingComponents = () => {
                   </YStack>
                 </XStack>
                 <XStack gap={5}>
-                  <Button
+                  {/* <Button
                     onPress={() => checkHistory(item.id.toString())}
                     backgroundColor={colors.primary}
                     flex={1}
+                    pressStyle={{ backgroundColor: colors.primary, opacity: 0.5,borderWidth: 0,color: 'black' }}
                   >
                     <ButtonText>Check History</ButtonText>
-                  </Button>
-                  <Button
+                  </Button> */}
+                  {/* <Button
                     onPress={() => dispactBooked(item.id, item.name)}
                     backgroundColor={colors.yellow}
                     flex={1}
+                    pressStyle={{ backgroundColor: colors.yellow, opacity: 0.5,borderWidth: 0,color: 'black' }}
                   >
                     <ButtonText>Select Patient</ButtonText>
-                  </Button>
+                  </Button> */}
+                  <PrimaryBtn onPress={() => checkHistory(item.id.toString())}>Check History</PrimaryBtn>
+                  <SecondaryBtn onPress={() => dispactBooked(item.id, item.name)}>Select Patient</SecondaryBtn>
+
                 </XStack>
               </YStack>
             )}

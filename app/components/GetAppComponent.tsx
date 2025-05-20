@@ -19,6 +19,7 @@ import {
 import Header from "./ParentView";
 import { WhiteBold } from "./CusText";
 import { HeartLoader } from "./Animations";
+import { PrimaryBtn, SecondaryBtn } from "./CusButtons";
 
 dayjs.locale("en");
 
@@ -120,7 +121,7 @@ const GetAppComponent = () => {
   const cancelBooking = () => {
     setTimeout(() => {
       router.push("/(auth)/(tabs)/(home)/SetAppointment");
-    }, 2000);
+    }, 500);
   };
 
   return (
@@ -223,22 +224,24 @@ const GetAppComponent = () => {
               </Text>
             </XStack>
             <XStack gap={5}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => cancelBooking()}
                 style={[buttons.secBtn, { flex: 1 }]}
               >
                 <Text fontFamily={"ArialB"} color={colors.white}>
                   Cancel
                 </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </TouchableOpacity> */}
+               <SecondaryBtn onPress={() => cancelBooking()}>Cancel</SecondaryBtn>
+               <PrimaryBtn onPress={() => dispactBooked()}>Get Appointments</PrimaryBtn>                         
+              {/* <TouchableOpacity
                 onPress={() => dispactBooked()}
                 style={[buttons.primaryBtn, { flex: 1 }]}
               >
                 <Text fontFamily={"ArialB"} color={colors.white}>
                   Get Appointments
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </XStack>
           </Card>
         </View>

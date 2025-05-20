@@ -28,7 +28,7 @@ import {
 import { url } from "./../../../env";
 import * as SecureStore from "expo-secure-store";
 import { Feather } from "@expo/vector-icons";
-import { PrimBtn, SecBtn } from "../CusButtons";
+import { PrimaryBtn, PrimBtn, SecBtn, SecondaryBtn } from "../CusButtons";
 import { WhiteBold } from "../CusText";
 import { HeartLoader } from "../Animations";
 import { selectDoctor } from "./../../../app/context/actions/selectDoctorAction";
@@ -358,10 +358,22 @@ const DocDetails: React.FC = () => {
                           gap={spacingPrim}
                         >
                           {/* Buttons for actions */}
-                          <PrimBtn onPress={handleOpenMaps}>
+                          <PrimaryBtn onPress={handleOpenMaps} isBold>
+                            Get Directions
+                          </PrimaryBtn>
+                          <SecondaryBtn onPress={() =>
+                              handleGetAppointment(
+                                item,
+                                clinic,
+                                item.id.toString()
+                              )
+                            } isBold>
+                            Get Appointment
+                          </SecondaryBtn>
+                          {/* <PrimBtn onPress={handleOpenMaps}>
                             <WhiteBold>Get Directions</WhiteBold>
-                          </PrimBtn>
-                          <SecBtn
+                          </PrimBtn> */}
+                          {/* <SecBtn
                             onPress={() =>
                               handleGetAppointment(
                                 item,
@@ -376,7 +388,7 @@ const DocDetails: React.FC = () => {
                             >
                               Get Appointment
                             </Text>
-                          </SecBtn>
+                          </SecBtn> */}
                         </View>
                       </View>
                     )}

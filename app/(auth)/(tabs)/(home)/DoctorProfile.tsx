@@ -387,7 +387,7 @@ const DoctorProfile = () => {
                       <WhiteBold>Get Directions</WhiteBold>
                     </PrimBtn>
                     <SecBtn onPress={() => console.log("hellow")}>
-                      <Text fontFamily={fontFamily.bold} color={colors.white}>
+                      <Text fontFamily={fontFamily.bold} color={colors.red}>
                         Get Appointment
                       </Text>
                     </SecBtn>

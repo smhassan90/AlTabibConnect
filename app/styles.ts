@@ -12,6 +12,7 @@ export const paddingXL = 20;
 
 export const colors = {
   primary: "#0066a1",
+  primaryLight:"#0066a199",
   primaryDark: "#2d3181",
   gradSec: "#23333a",
   black: "#525252",
@@ -19,6 +20,7 @@ export const colors = {
   labelGray: "#a1a1a1",
   linkBlue: "#00a2ff",
   yellow: "#ffa600",
+  yellowLight:"#ffa60180",
   green: "#3bad6d",
   red: "#ff5757",
   lightGray: "#f5f5f5",

@@ -29,6 +29,7 @@ import { HeartLoader } from "./../../../../app/components/Animations";
 import { WhiteBold } from "./../../../../app/components/CusText";
 import Header from "./../../../../app/components/ParentView";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
+import { PrimaryBtn } from "./../../../../app/components/CusButtons";
 
 export default function Page() {
   const [date, setDate] = useState(new Date());
@@ -323,7 +324,8 @@ export default function Page() {
                         </Text>
                       </XStack>
                       <XStack gap={10}>
-                        <Button
+                         <PrimaryBtn onPress={() => goToHisory(item.patientId.toString())} isBold>Patient History</PrimaryBtn>
+                        {/* <Button
                           onPress={() => goToHisory(item.patientId.toString())}
                           flex={1}
                           backgroundColor={colors.primary}
@@ -335,7 +337,7 @@ export default function Page() {
                           >
                             Patient History
                           </ButtonText>
-                        </Button>
+                        </Button> */}
                       </XStack>
                     </Card>
                   </>
@@ -439,7 +441,8 @@ export default function Page() {
                       </Text>
                     </XStack>
                     <XStack gap={10}>
-                      <Button
+                      <PrimaryBtn onPress={() => goToHisory(item.patientId.toString())} isBold>Patient History</PrimaryBtn>
+                      {/* <Button
                         onPress={() => goToHisory(item.patientId.toString())}
                         flex={1}
                         backgroundColor={colors.primary}
@@ -451,7 +454,7 @@ export default function Page() {
                         >
                           Patient History
                         </ButtonText>
-                      </Button>
+                      </Button> */}
                     </XStack>
                   </Card>
                 )}
