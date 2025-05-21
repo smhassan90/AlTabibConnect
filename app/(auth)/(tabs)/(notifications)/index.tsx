@@ -6,6 +6,8 @@ import {
   styles,
   spacingL,
   spacingS,
+  fontFamily,
+  fontSizes,
 } from "./../../../../app/styles";
 import { Card, Image, Text, View, XStack, YStack } from "tamagui";
 import {
@@ -37,7 +39,7 @@ export default function Page() {
     const stored = await AsyncStorage.getItem("patientNotifications");
     if (stored) {
       const notifications = JSON.parse(stored);
-      console.log(notifications,"notifications")
+      console.log(notifications, "notifications");
       const now = dayjs();
       const filtered = notifications.filter((notification) => {
         const notificationTime = dayjs(notification.timestamp);
@@ -57,7 +59,10 @@ export default function Page() {
     const updated = [...notifications];
     if (!updated[index].read) {
       updated[index].read = true;
-      await AsyncStorage.setItem("patientNotifications", JSON.stringify(updated));
+      await AsyncStorage.setItem(
+        "patientNotifications",
+        JSON.stringify(updated)
+      );
       setNotifications(updated);
     }
   };
@@ -73,30 +78,43 @@ export default function Page() {
           ))}
         </YStack> */}
         <YStack flex={1} paddingTop={10}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl
-                refreshing={refresh}
-                colors={[colors.yellow]}
-                tintColor={colors.white}
-                onRefresh={() => {
-                  setRefresh(true);
-                }}
-              />
-            }
-            refreshing={true}
-            horizontal={false}
-            decelerationRate="normal"
-            data={notifications}
-            keyExtractor={(item: any) => item.timestamp.toString()}
-            renderItem={({ item, index }) => (
-              <NotificationCard
-                notification={item}
-                onPress={() => handleNotificationPress(index)}
-              />
-            )}
-          />
+          {notifications.length > 0 ? (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refresh}
+                  colors={[colors.yellow]}
+                  tintColor={colors.white}
+                  onRefresh={() => {
+                    setRefresh(true);
+                  }}
+                />
+              }
+              refreshing={true}
+              horizontal={false}
+              decelerationRate="normal"
+              data={notifications}
+              keyExtractor={(item: any) => item.timestamp.toString()}
+              renderItem={({ item, index }) => (
+                <NotificationCard
+                  notification={item}
+                  onPress={() => handleNotificationPress(index)}
+                />
+              )}
+            />
+          ) : (
+            <YStack alignItems="center" flex={1} justifyContent="center">
+              <Text
+                textAlign="center"
+                fontFamily={fontFamily.bold}
+                fontSize={fontSizes.M}
+                color={"white"}
+              >
+                No Notifications
+              </Text>
+            </YStack>
+          )}
         </YStack>
       </View>
     </AlertNotificationRoot>

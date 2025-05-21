@@ -1,4 +1,4 @@
-import { TextInput, TouchableOpacity } from "react-native";
+import { Pressable, TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 import { Separator, XStack, YStack } from "tamagui";
@@ -12,6 +12,7 @@ import { addUser } from "../context/actions/userActions";
 import { Spinner } from "./Animations";
 import { LinkText, PrimBold, WhiteBold } from "./CusText";
 import * as SecureStore from "expo-secure-store";
+import { PrimaryBtn } from "./CusButtons";
 
 const FormDeleteUser = () => {
   const dispatch = useDispatch();
@@ -46,21 +47,21 @@ const FormDeleteUser = () => {
         type: ALERT_TYPE.DANGER,
         title: "Error",
         textBody: "Phone number should be 11 characters and start with 0",
-        button: "Close",
+        // button: "Close",
       });
     } else if (!validatePass(pass)) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: "Error",
         textBody: "Password should be at least 5 characters",
-        button: "Close",
+        // button: "Close",
       });
     } else if (!emptyFields(num, pass)) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: "Error",
         textBody: "Please fill all details correctly",
-        button: "Close",
+        // button: "Close",
       });
     } else {
       setLoading(true);
@@ -97,25 +98,23 @@ const FormDeleteUser = () => {
             type: ALERT_TYPE.SUCCESS,
             title: "Success",
             textBody: "Delete Account Successfully",
-            button: "Close",
           });
-          setTimeout(()=>{
+          setTimeout(() => {
             router.replace("/Login");
-          },2000)
+          }, 2000);
           setLoading(false);
         } else {
           Dialog.show({
             type: ALERT_TYPE.DANGER,
             title: "Error",
             textBody: "Error Delete User, enter correct details",
-            button: "Close",
           });
           console.log("Error, Status code: ", response.status);
           setLoading(false);
         }
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
       });
   };
 
@@ -167,7 +166,10 @@ const FormDeleteUser = () => {
           autoCapitalize="none"
           secureTextEntry={showPass}
         />
-        <TouchableOpacity onPress={() => setShowPass(!showPass)}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => setShowPass(!showPass)}
+        >
           <AntDesign
             name={showPass ? "eye" : "eyeo"}
             size={24}
@@ -175,15 +177,32 @@ const FormDeleteUser = () => {
           />
         </TouchableOpacity>
       </XStack>
-      <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
+      {/* <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
         {loading ? <Spinner /> : <WhiteBold>Delete</WhiteBold>}
-      </TouchableOpacity>
-
+      </TouchableOpacity> */}
+      <XStack>
+        <PrimaryBtn onPress={handleSubmit}>
+          {loading ? <Spinner /> : "Delete"}
+        </PrimaryBtn>
+      </XStack>
       <XStack alignItems="center" justifyContent="center" gap={spacingPrim}>
         <PrimBold>Already have an account?</PrimBold>
-        <TouchableOpacity onPress={() => router.push("/Login")}>
+        {/* <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => router.push("/Login")}
+        >
           <LinkText>Login</LinkText>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Pressable
+          onPress={() => router.push("/Login")}
+        >
+          {({ pressed }) => (
+            <LinkText style={{ color: pressed ? "#000" : colors.linkBlue }}>
+              Login
+            </LinkText>
+          )}
+          {/* <LinkText>Login</LinkText> */}
+        </Pressable>
       </XStack>
     </YStack>
   );

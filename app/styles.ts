@@ -1,6 +1,10 @@
 import { red } from "@tamagui/themes";
 import { StyleSheet } from "react-native";
+import { Dimensions } from 'react-native';
 
+const { width, height} = Dimensions.get('window');
+console.log(width,"width")
+console.log(height,"height")
 export const spacingS = 5;
 export const spacingPrim = 10;
 export const spacingM = 15;
@@ -34,12 +38,20 @@ const fontsFams = {
 };
 export { fontsFams };
 
+export const getResponsiveFontSize = (baseFontSize:any) => {
+  if (width <= 320) return baseFontSize - 3;
+  if (width <= 350) return baseFontSize - 2;
+  if (width <= 375) return baseFontSize - 1.3;
+  if (width <= 768) return baseFontSize;
+  return baseFontSize + 2;
+};
+
 const fontSizes = {
-  XSM: 15,
-  SM: 16,
-  M: 18, //Doc Name,
-  L: 20,
-  XL: 24,
+  XSM: getResponsiveFontSize(15),
+  SM: getResponsiveFontSize(16),
+  M: getResponsiveFontSize(18),
+  L: getResponsiveFontSize(20),
+  XL: getResponsiveFontSize(24),
 };
 export { fontSizes };
 

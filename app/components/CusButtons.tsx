@@ -1,7 +1,14 @@
 import { Pressable, TouchableOpacity } from "react-native";
 import React from "react";
-import { buttons, colors, fontFamily, fontSizes } from "../styles";
+import {
+  buttons,
+  colors,
+  fontFamily,
+  fontSizes,
+  getResponsiveFontSize,
+} from "../styles";
 import { Button, ButtonText, Text } from "tamagui";
+import { tabStyles } from "../(auth)/(tabs)/(myApps)";
 
 export const PrimBtn = ({
   onPress,
@@ -35,13 +42,21 @@ export const PrimaryBtn = ({
       onPress={onPress}
       backgroundColor={colors.primary}
       flex={1}
+      style={{ height: 35 }}
       pressStyle={{
         backgroundColor: colors.primaryLight,
         borderWidth: 0,
         color: "black",
       }}
     >
-      <ButtonText style={{ fontWeight: isBold ? "bold" : "normal" }}>{children}</ButtonText>
+      <ButtonText
+        style={{
+          fontWeight: "bold",
+          fontSize: getResponsiveFontSize(fontSizes.SM),
+        }}
+      >
+        {children}
+      </ButtonText>
     </Button>
   );
 };
@@ -49,7 +64,7 @@ export const PrimaryBtn = ({
 export const SecondaryBtn = ({
   onPress,
   children,
-  isBold
+  isBold,
 }: {
   onPress: () => void;
   children: React.ReactNode;
@@ -61,6 +76,7 @@ export const SecondaryBtn = ({
       onPress={onPress}
       backgroundColor={colors.yellow}
       flex={1}
+      style={{ height: 35 }}
       pressStyle={{
         backgroundColor: colors.yellowLight,
         borderWidth: 0,
@@ -70,9 +86,43 @@ export const SecondaryBtn = ({
       <ButtonText
         style={{
           fontWeight: isBold ? "bold" : "normal",
+          fontSize: getResponsiveFontSize(fontSizes.SM),
         }}
-        >{children}</ButtonText>
+      >
+        {children}
+      </ButtonText>
       {/* <Text style={{ fontWeight: isBold ? "bold" : "normal" }}>Osama</Text> */}
+    </Button>
+  );
+};
+
+export const SimpleBtn = ({
+  activeTab,
+  onPress,
+  children,
+}: {
+  onPress: () => void;
+  children: React.ReactNode;
+}) => {
+  return (
+    <Button
+      onPress={onPress}
+      backgroundColor={colors.yellow}
+      flex={1}
+      pressStyle={{
+        backgroundColor: colors.primaryLight,
+        borderWidth: 0,
+        color: "black",
+      }}
+    >
+      <ButtonText
+        style={[
+          tabStyles.tabItem,
+          activeTab === "PENDING" && tabStyles.activeTabItem,
+        ]}
+      >
+        {children}
+      </ButtonText>
     </Button>
   );
 };
@@ -140,8 +190,8 @@ export const RedBtns = ({
   onPress,
   children,
   isBold,
-  marginHorizontal=0,
-  marginTop=0
+  marginHorizontal = 0,
+  marginTop = 0,
 }: {
   onPress: () => void;
   children: React.ReactNode;
@@ -152,15 +202,18 @@ export const RedBtns = ({
       marginTop={marginTop}
       onPress={onPress}
       backgroundColor={colors.red}
+      style={{ height: 35 }}
       flex={1}
-      style={{ height:40 }}
+      style={{ height: 40 }}
       pressStyle={{
         backgroundColor: colors.redLight,
         borderWidth: 0,
         color: "white",
       }}
     >
-      <ButtonText style={{ fontWeight: isBold ? "bold" : "normal" }}>{children}</ButtonText>
+      <ButtonText style={{ fontWeight: isBold ? "bold" : "normal" }}>
+        {children}
+      </ButtonText>
     </Button>
   );
 };

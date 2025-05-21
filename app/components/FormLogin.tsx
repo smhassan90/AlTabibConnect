@@ -1,4 +1,4 @@
-import { TextInput, TouchableOpacity } from "react-native";
+import { Pressable, TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
 import { Separator, XStack, YStack } from "tamagui";
@@ -12,7 +12,8 @@ import { addUser } from "../context/actions/userActions";
 import { Spinner } from "./Animations";
 import { LinkText, LinkTexts, PrimBold, WhiteBold } from "./CusText";
 import * as SecureStore from "expo-secure-store";
-import messaging from '@react-native-firebase/messaging';
+import messaging from "@react-native-firebase/messaging";
+import { PrimaryBtn } from "./CusButtons";
 
 const FormLogin = () => {
   const dispatch = useDispatch();
@@ -47,21 +48,21 @@ const FormLogin = () => {
         type: ALERT_TYPE.DANGER,
         title: "Error",
         textBody: "Phone number should be 11 characters and start with 0",
-        button: "Close",
+        // button: "Close",
       });
     } else if (!validatePass(pass)) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: "Error",
         textBody: "Password should be at least 5 characters",
-        button: "Close",
+        // button: "Close",
       });
     } else if (!emptyFields(num, pass)) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: "Error",
         textBody: "Please fill all details correctly",
-        button: "Close",
+        // button: "Close",
       });
     } else {
       setLoading(true);
@@ -89,7 +90,7 @@ const FormLogin = () => {
   const fetchLoginData = () => {
     axios
       .get(loginUrl)
-      .then(async(response) => {
+      .then(async (response) => {
         if (response.status === 200) {
           const USER = {
             name: num,
@@ -97,10 +98,12 @@ const FormLogin = () => {
             token: response.data.data.token,
           };
           try {
-            await messaging().subscribeToTopic(`patient-${response.data.data.loginStatus.username}`)
-            console.log("Topic Subscription Successfully")
+            await messaging().subscribeToTopic(
+              `patient-${response.data.data.loginStatus.username}`
+            );
+            console.log("Topic Subscription Successfully");
           } catch (error) {
-            console.log("Subscription Error")
+            console.log("Subscription Error");
           }
 
           dispatch(addUser(USER));
@@ -128,7 +131,7 @@ const FormLogin = () => {
             type: ALERT_TYPE.DANGER,
             title: "Error",
             textBody: "Error logging in, enter correct details",
-            button: "Close",
+            // button: "Close",
           });
           console.log("Error, Status code: ", response.status);
           setLoading(false);
@@ -140,7 +143,7 @@ const FormLogin = () => {
             type: ALERT_TYPE.DANGER,
             title: "Error",
             textBody: "Error logging in, enter correct details",
-            button: "Close",
+            // button: "Close",
           });
           console.error("Server Error: ", error.response.data);
           console.error("Status Code: ", error.response.status);
@@ -151,7 +154,7 @@ const FormLogin = () => {
             type: ALERT_TYPE.DANGER,
             title: "Error",
             textBody: "Error logging in, enter correct details",
-            button: "Close",
+            // button: "Close",
           });
           console.error("No response received: ", error.request);
           setLoading(false);
@@ -160,7 +163,7 @@ const FormLogin = () => {
             type: ALERT_TYPE.DANGER,
             title: "Error",
             textBody: "Error logging in, enter correct details",
-            button: "Close",
+            // button: "Close",
           });
           console.error("Request Error: ", error.message);
           setLoading(false);
@@ -224,21 +227,54 @@ const FormLogin = () => {
           />
         </TouchableOpacity>
       </XStack>
-      <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
+      <XStack>
+        <PrimaryBtn onPress={handleSubmit}>
+          {loading ? <Spinner /> : "Login"}
+        </PrimaryBtn>
+      </XStack>
+      {/* <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
         {loading ? <Spinner /> : <WhiteBold>Login</WhiteBold>}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <XStack alignItems="center" justifyContent="center" gap={spacingPrim}>
         <PrimBold>Don't have an account?</PrimBold>
-        <TouchableOpacity onPress={() => router.push("/Register")}>
+        {/* <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => router.push("/Register")}
+        >
           <LinkText>Register</LinkText>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Pressable
+          onPress={() => router.push("/Register")}
+        >
+          {({ pressed }) => (
+            <LinkText style={{ color: pressed ? "#000" : colors.linkBlue }}>
+              Register
+            </LinkText>
+          )}
+          {/* <LinkText>Login</LinkText> */}
+        </Pressable>
       </XStack>
-      <XStack alignItems="center" justifyContent="center" gap="$2" flexWrap="wrap">
+      <XStack
+        alignItems="center"
+        justifyContent="center"
+        gap="$2"
+        flexWrap="wrap"
+      >
         <PrimBold>Do you want to delete an account?</PrimBold>
-        <TouchableOpacity onPress={() => router.push("/DeleteUser")}>
+        {/* <TouchableOpacity activeOpacity={0.9} onPress={() => router.push("/DeleteUser")}>
           <LinkText>Delete Account</LinkText>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Pressable
+          onPress={() => router.push("/DeleteUser")}
+        >
+          {({ pressed }) => (
+            <LinkText style={{ color: pressed ? "#000" : colors.linkBlue }}>
+              Delete Account
+            </LinkText>
+          )}
+          {/* <LinkText>Login</LinkText> */}
+        </Pressable>
       </XStack>
     </YStack>
   );

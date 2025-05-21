@@ -1,6 +1,7 @@
 import {
   Dimensions,
   Modal,
+  Pressable,
   Text,
   TextInput,
   TouchableOpacity,
@@ -25,6 +26,7 @@ import { addToken } from "../context/actions/tokenActions";
 import { tokenCache } from "../getToken";
 import { Spinner } from "./Animations";
 import { LinkText, PrimBold, WhiteBold } from "./CusText";
+import { PrimaryBtn } from "./CusButtons";
 
 const Form = () => {
   const dispatch = useDispatch();
@@ -56,7 +58,7 @@ const Form = () => {
     password: string,
     verifyPass: string,
     gender: string,
-    date: string,
+    date: string
   ) => ![num, name, password, verifyPass, gender, date].some(isEmptyString);
 
   const validateSubmit = (
@@ -65,7 +67,7 @@ const Form = () => {
     password: string,
     verifyPass: string,
     gender: string,
-    date: string,
+    date: string
   ) =>
     validateNum(num) &&
     validateName(name) &&
@@ -87,7 +89,6 @@ const Form = () => {
         type: ALERT_TYPE.DANGER,
         title: "Error",
         textBody: "Phone number should be 11 characters and start with 0",
-        button: "Close",
       });
     } else if (!validateName(name)) {
       Dialog.show({
@@ -101,21 +102,18 @@ const Form = () => {
         type: ALERT_TYPE.DANGER,
         title: "Error",
         textBody: "Password should be at least 5 characters",
-        button: "Close",
       });
     } else if (pass !== verifyPass) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: "Error",
         textBody: "Passwords do not match",
-        button: "Close",
       });
     } else if (!emptyFields(num, name, pass, verifyPass, gender, currDate)) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: "Error",
         textBody: "Please fill all details correctly",
-        button: "Close",
       });
     } else {
       setLoading(true);
@@ -146,18 +144,18 @@ const Form = () => {
 
           console.log(
             "RESPONSE STATUS: ",
-            JSON.stringify(response.status, null, 2),
+            JSON.stringify(response.status, null, 2)
           );
           console.log(
             "TOKEN: ",
-            JSON.stringify(response.data.data.token, null, 2),
+            JSON.stringify(response.data.data.token, null, 2)
           );
           tokenCache
             .setToken("token", response.data.data.token)
             .then(() => {
               setTimeout(() => {
                 console.log(
-                  `Register Token stored successfully: ${tokenCache.getToken("token")}`,
+                  `Register Token stored successfully: ${tokenCache.getToken("token")}`
                 );
                 router.replace("/Login");
                 setLoading(false);
@@ -249,15 +247,17 @@ const Form = () => {
         <Separator alignSelf="stretch" vertical borderColor={"lightgray"} />
 
         {/* DATE PICKER */}
-
-        <TouchableOpacity
+        <PrimaryBtn onPress={() => setIsModalVisible(true)}>
+          {date ? dayjs(date).format("MMMM DD, YYYY") : "Choose Date"}
+        </PrimaryBtn>
+        {/* <TouchableOpacity
           style={[buttons.primaryBtn, { flex: 1 }]}
           onPress={() => setIsModalVisible(true)}
         >
           <WhiteBold>
             {date ? dayjs(date).format("MMMM DD, YYYY") : "Choose Date"}
           </WhiteBold>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </XStack>
       <XStack
         borderColor={"#ebebeb"}
@@ -321,15 +321,28 @@ const Form = () => {
           secureTextEntry
         />
       </XStack>
-      <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
+      {/* <TouchableOpacity onPress={handleSubmit} style={[buttons.primaryBtn]}>
         {loading ? <Spinner /> : <WhiteBold>Register</WhiteBold>}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <XStack>
+        <PrimaryBtn onPress={handleSubmit}>
+          {loading ? <Spinner /> : "Register"}
+        </PrimaryBtn>
+      </XStack>
 
       <View style={RegLog.onPressStyle}>
         <PrimBold>Already have an account?</PrimBold>
-        <TouchableOpacity onPress={() => router.push("/Login")}>
+        {/* <TouchableOpacity activeOpacity={0.9} onPress={() => router.push("/Login")}>
           <LinkText>Login</LinkText>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Pressable onPress={() => router.push("/Login")}>
+          {({ pressed }) => (
+            <LinkText style={{ color: pressed ? "#000" : colors.linkBlue }}>
+              Login
+            </LinkText>
+          )}
+          {/* <LinkText>Login</LinkText> */}
+        </Pressable>
       </View>
 
       {/* MODAL */}
@@ -381,12 +394,15 @@ const Form = () => {
               onChange={(date) => setDate(date.date)}
             />
             <XStack>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={[buttons.primaryBtn, { flex: 1 }]}
                 onPress={() => setIsModalVisible(false)}
               >
                 <WhiteBold>Close</WhiteBold>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
+              <PrimaryBtn onPress={() => setIsModalVisible(false)}>
+                Close
+              </PrimaryBtn>
             </XStack>
           </View>
         </BlurView>

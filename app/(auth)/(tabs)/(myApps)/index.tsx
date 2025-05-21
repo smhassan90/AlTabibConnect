@@ -29,7 +29,7 @@ import { HeartLoader } from "./../../../../app/components/Animations";
 import { WhiteBold } from "./../../../../app/components/CusText";
 import Header from "./../../../../app/components/ParentView";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import { PrimaryBtn } from "./../../../../app/components/CusButtons";
+import { PrimaryBtn, SimpleBtn } from "./../../../../app/components/CusButtons";
 
 export default function Page() {
   const [date, setDate] = useState(new Date());
@@ -65,7 +65,7 @@ export default function Page() {
     if (!refresh) {
       axios
         .get(
-          `${url}viewAppointments?token=${token}&visitDate=${currDate}&clinicId=0&patientId=0&doctorId=0&appointmentId=0&followupDate`,
+          `${url}viewAppointments?token=${token}&visitDate=${currDate}&clinicId=0&patientId=0&doctorId=0&appointmentId=0&followupDate`
         )
         .then((res) => {
           console.log("Date Chosen:", currDate);
@@ -90,7 +90,7 @@ export default function Page() {
           console.log("Pending Apps:", JSON.stringify(pendingApps, null, 2));
           console.log(
             "Successfull Apps:",
-            JSON.stringify(successApps, null, 2),
+            JSON.stringify(successApps, null, 2)
           );
           setLoading(false);
         })
@@ -164,6 +164,7 @@ export default function Page() {
               alignItems={"center"}
             >
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={[
                   tabStyles.tabItem,
                   activeTab === "PENDING" && tabStyles.activeTabItem,
@@ -179,6 +180,7 @@ export default function Page() {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
+                activeOpacity={0.8}
                 style={[
                   tabStyles.tabItem,
                   activeTab === "SUCCESSFUL" && tabStyles.activeTabItem,
@@ -324,7 +326,12 @@ export default function Page() {
                         </Text>
                       </XStack>
                       <XStack gap={10}>
-                         <PrimaryBtn onPress={() => goToHisory(item.patientId.toString())} isBold>Patient History</PrimaryBtn>
+                        <PrimaryBtn
+                          onPress={() => goToHisory(item.patientId.toString())}
+                          isBold
+                        >
+                          Patient History
+                        </PrimaryBtn>
                         {/* <Button
                           onPress={() => goToHisory(item.patientId.toString())}
                           flex={1}
@@ -441,7 +448,12 @@ export default function Page() {
                       </Text>
                     </XStack>
                     <XStack gap={10}>
-                      <PrimaryBtn onPress={() => goToHisory(item.patientId.toString())} isBold>Patient History</PrimaryBtn>
+                      <PrimaryBtn
+                        onPress={() => goToHisory(item.patientId.toString())}
+                        isBold
+                      >
+                        Patient History
+                      </PrimaryBtn>
                       {/* <Button
                         onPress={() => goToHisory(item.patientId.toString())}
                         flex={1}
@@ -533,7 +545,7 @@ export default function Page() {
   );
 }
 
-const tabStyles = {
+export const tabStyles = {
   cardText: {
     fontSize: 16,
     fontWeight: "bold",

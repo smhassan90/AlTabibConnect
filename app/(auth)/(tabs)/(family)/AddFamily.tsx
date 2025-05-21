@@ -77,7 +77,7 @@ const Page = () => {
     setTimeout(() => {
       setModalVisible(false);
       router.push("/(auth)/(tabs)/(family)/");
-    }, 5000);
+    }, 2000);
   };
 
   const handleSubmit = () => {
@@ -98,8 +98,8 @@ const Page = () => {
     name: `${name}`,
     gender: `${gender}`,
     dob: `${formatDate}`,
+    status:1
   };
-
   const encodedPatient = encodeURIComponent(JSON.stringify(patient));
 
   const addPUrl = `${url}addPatient?token=${token}&patient=${encodedPatient}`;
@@ -331,13 +331,13 @@ const CustomModal = ({
               ? "Family Member Added Successfully"
               : "Error Adding Family member"}
           </Text>
-          <Button
+          {/* <Button
             width={"80%"}
             onPress={onClose}
             backgroundColor={colors.primary}
           >
             <ButtonText>Close</ButtonText>
-          </Button>
+          </Button> */}
         </View>
       </BlurView>
     </Modal>

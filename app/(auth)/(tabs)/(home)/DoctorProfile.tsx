@@ -21,8 +21,13 @@ import {
 } from "./../../../../app/styles";
 import constants from "expo-constants";
 import { Text } from "tamagui";
-import { FlatList } from "react-native-gesture-handler";
-import { PrimaryBtn, PrimBtn, SecBtn, SecondaryBtn } from "./../../../../app/components/CusButtons";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
+import {
+  PrimaryBtn,
+  PrimBtn,
+  SecBtn,
+  SecondaryBtn,
+} from "./../../../../app/components/CusButtons";
 import { PrimBold, WhiteBold } from "./../../../../app/components/CusText";
 import { useSelector } from "react-redux";
 import { CustomModal } from "./../../../../app/components/Modal";
@@ -37,7 +42,6 @@ import { useDispatch } from "react-redux";
 import { addAppointment } from "./../../../context/actions/appointmentActions";
 // import { addAppointment } from "../../context/actions/appointmentActions";
 import { router } from "expo-router";
-
 
 const statusBarHeight = constants.statusBarHeight;
 
@@ -92,8 +96,7 @@ const DoctorProfile = () => {
   const [review, setReview] = useState("");
 
   const token = SecureStore.getItem("token");
-    const dispatch = useDispatch();
-  
+  const dispatch = useDispatch();
 
   const modalPress = () => {
     setToggleModal(true);
@@ -112,10 +115,9 @@ const DoctorProfile = () => {
   //     SecureStore.setItem("doctorId", doctorId);
   //     router.push("/(auth)/(tabs)/(home)/SetAppointment");
   //   };
-const handleGetAppointment = () => {
-  router.push("/(auth)/(tabs)/(home)/SetAppointment");
-};
-
+  const handleGetAppointment = () => {
+    router.push("/(auth)/(tabs)/(home)/SetAppointment");
+  };
 
   const sendFeedback = () => {
     const Feedback = {
@@ -143,7 +145,6 @@ const handleGetAppointment = () => {
     console.log("RATING:", rating);
     console.log("DETAIL:", review);
   };
-  
 
   return (
     <>
@@ -156,12 +157,24 @@ const handleGetAppointment = () => {
         >
           <MenuBar title="Doctor Profile" />
         </View>
-        <YStack
+        {/* <YStack
           gap={spacingPrim}
           flex={1}
           padding={spacingM}
           paddingBottom={0}
           backgroundColor={colors.primary}
+        > */}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refresh}
+              onRefresh={() => setRefresh(true)}
+              colors={[colors.yellow]}
+              tintColor={colors.white}
+            />
+          }
+          contentContainerStyle={{ gap: 20, padding: spacingM }}
         >
           <YStack
             borderRadius={10}
@@ -174,7 +187,7 @@ const handleGetAppointment = () => {
               source={require("./../../../../assets/docMale.png")}
               style={{ width: 150, height: 150 }}
             />
-            <XStack gap={10} ai={"center"}>
+            <XStack gap={10}>
               <Text
                 fontSize={fontSizes.SM}
                 color={colors.primary}
@@ -192,40 +205,45 @@ const handleGetAppointment = () => {
               <Text fontSize={fontSizes.SM}>⭐</Text>
             </XStack>
             {/* <XStack gap={5}>
+                <Text fontSize={fontSizes.SM} color={colors.yellow}>
+                  {doctor?.specializations.map((s) => `${s.name}`)}
+                </Text>
+                
+                <Text fontSize={fontSizes.SM} color={colors.yellow}>
+                  (
+                  {doctor?.qualifications.map((q, index) => (
+                    <React.Fragment key={q.id}>
+                      {q.name}
+                      {index < doctor.qualifications.length - 1 && " | "}
+                    </React.Fragment>
+                  ))}
+                  )
+                </Text>
+              </XStack> */}
+            <YStack gap={5}>
               <Text fontSize={fontSizes.SM} color={colors.yellow}>
-                {doctor?.specializations.map((s) => `${s.name}`)}
+                {doctor?.specializations.map((s) => (
+                  <Text key={s.id}>{s.name}</Text>
+                ))}
               </Text>
-              
-              <Text fontSize={fontSizes.SM} color={colors.yellow}>
-                (
+
+              <Text
+                justifyContent="center"
+                fontSize={fontSizes.SM}
+                color={colors.yellow}
+              >
                 {doctor?.qualifications.map((q, index) => (
-                  <React.Fragment key={q.id}>
+                  <Text key={q.id}>
                     {q.name}
                     {index < doctor.qualifications.length - 1 && " | "}
-                  </React.Fragment>
+                  </Text>
                 ))}
-                )
               </Text>
-            </XStack> */}
-            <YStack gap={5}>
-  <Text fontSize={fontSizes.SM} color={colors.yellow}>
-    {doctor?.specializations.map((s) => (
-      <Text key={s.id}>{s.name}</Text>
-    ))}
-  </Text>
-
-  <Text justifyContent="center" fontSize={fontSizes.SM} color={colors.yellow}>
-    {doctor?.qualifications.map((q, index) => (
-      <Text key={q.id}>
-        {q.name}
-        {index < doctor.qualifications.length - 1 && " | "}
-      </Text>
-    ))}
-  </Text>
-</YStack>
+            </YStack>
             <XStack
               justifyContent="center"
               flexDirection="row"
+              c
               padding={spacingPrim}
             >
               <YStack gap={spacingS} ai={"center"}>
@@ -293,63 +311,15 @@ const handleGetAppointment = () => {
             </XStack>
             <XStack>
               {/* <PrimBtn onPress={modalPress}>
-                <WhiteBold>Write Review</WhiteBold>
-              </PrimBtn> */}
+                  <WhiteBold>Write Review</WhiteBold>
+                </PrimBtn> */}
               <PrimaryBtn onPress={modalPress} isBold>
-                                          Write Review
-                                        </PrimaryBtn>
+                Write Review
+              </PrimaryBtn>
             </XStack>
           </YStack>
-          {/* <FlatList
-            horizontal
-            style={{ height: 200 }}
-            contentContainerStyle={{ gap: 10 }}
-            data={dummyReviews}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Card
-                width={(Dimensions.get("window").width - 40) / 2}
-                flex={1}
-                padding={spacingM}
-                backgroundColor={colors.white}
-                borderRadius={10}
-                overflow="scroll"
-              >
-                <YStack flex={1} gap={spacingS}>
-                  <XStack gap={10} ai={"center"}>
-                    <Image
-                      source={require("./../../../../assets/docMale.png")}
-                      style={{ width: 50, height: 50 }}
-                    />
-                    <YStack gap={5}>
-                      <Text
-                        fontFamily={fontFamily.bold}
-                        fontSize={fontSizes.SM}
-                        color={colors.yellow}
-                      >
-                        {item.name}
-                      </Text>
-                      <Text
-                        fontFamily={fontFamily.bold}
-                        fontSize={fontSizes.SM}
-                        color={colors.yellow}
-                      >
-                        Rating: ⭐
-                      </Text>
-                      <Text
-                        fontFamily={fontFamily.bold}
-                        fontSize={fontSizes.SM}
-                        color={colors.primary}
-                      >
-                        {item.review}
-                      </Text>
-                    </YStack>
-                  </XStack>
-                </YStack>
-              </Card>
-            )}
-          /> */}
           <FlatList
+            scrollEnabled={false}
             refreshControl={
               <RefreshControl
                 refreshing={refresh}
@@ -427,18 +397,16 @@ const handleGetAppointment = () => {
                     >
                       <WhiteBold>Get Directions</WhiteBold>
                     </PrimBtn> */}
-                    <PrimaryBtn  isBold>
-                      Get Directions
-                                      </PrimaryBtn>
+                    <PrimaryBtn isBold>Get Directions</PrimaryBtn>
                     {/* <SecBtn onPress={() => console.log("hellow")}>
                       <Text fontFamily={fontFamily.bold} color={colors.white}>
                         Get Appointment
                       </Text>
                     </SecBtn> */}
-                     <SecondaryBtn onPress={() => handleGetAppointment()} isBold>
+                    <SecondaryBtn onPress={() => handleGetAppointment()} isBold>
                       Get Appointment
-                                      </SecondaryBtn>
-                      {/* <SecBtn
+                    </SecondaryBtn>
+                    {/* <SecBtn
                        onPress={() => handleGetAppointment()}>
                        <Text
                        fontFamily={fontFamily.bold}
@@ -451,7 +419,8 @@ const handleGetAppointment = () => {
               </Card>
             )}
           />
-        </YStack>
+        </ScrollView>
+        {/* </YStack> */}
       </View>
       <CustomModal visible={toggleModal} onClose={() => setToggleModal(false)}>
         <YStack
@@ -521,14 +490,15 @@ const handleGetAppointment = () => {
                 Cancel
               </Text>
             </SecBtn> */}
-            <SecondaryBtn onPress={() => setToggleModal(false)} isBold>cancel
-                                      </SecondaryBtn>
+            <SecondaryBtn onPress={() => setToggleModal(false)} isBold>
+              cancel
+            </SecondaryBtn>
             {/* <PrimBtn onPress={sendFeedback}>
               <WhiteBold>Submit</WhiteBold>
             </PrimBtn> */}
             <PrimaryBtn onPress={sendFeedback} isBold>
-                                      Submit
-                                      </PrimaryBtn>
+              Submit
+            </PrimaryBtn>
           </XStack>
         </YStack>
       </CustomModal>

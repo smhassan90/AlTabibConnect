@@ -16,7 +16,7 @@ import { router } from "expo-router";
 import { userData } from "./../../../../app/components/home/CustomContent";
 import Header from "./../../../../app/components/ParentView";
 import dayjs from "dayjs";
-import { PrimaryBtn, RedBtns } from "./../../../../app/components/CusButtons";
+import { PrimaryBtn, RedBtns, SecondaryBtn } from "./../../../../app/components/CusButtons";
 
 export default function Page() {
   const token = SecureStore.getItem("token");
@@ -212,7 +212,12 @@ export default function Page() {
                 placeholder="Confirm new password"
               />
               <XStack gap={5}>
-                <TouchableOpacity
+                <SecondaryBtn onPress={() => {
+                    setChangePassState(!changePassState);
+                  }}>
+                  Cancel
+                </SecondaryBtn>
+                {/* <TouchableOpacity
                   style={[buttons.secBtn, { flex: 1 }]}
                   onPress={() => {
                     setChangePassState(!changePassState);
@@ -221,8 +226,11 @@ export default function Page() {
                   <Text fontFamily={"ArialB"} color={colors.white}>
                     Cancel
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                </TouchableOpacity> */}
+                <PrimaryBtn onPress={() => {
+                    changePw(password, newPw, newConNewPw);
+                  }}>Confirm</PrimaryBtn>
+                {/* <TouchableOpacity
                   style={[buttons.primaryBtn, { flex: 1 }]}
                   onPress={() => {
                     changePw(password, newPw, newConNewPw);
@@ -231,7 +239,7 @@ export default function Page() {
                   <Text fontFamily={"ArialB"} color={colors.white}>
                     Confirm
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </XStack>
             </>
           ) : (

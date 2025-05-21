@@ -192,18 +192,6 @@ export const CustomContent = (props: any) => {
         />
         <DrawerItem
           style={{ marginLeft: 20 }}
-          labelStyle={{ fontFamily: "ArialB", color: colors.white }}
-          icon={({ size, color }) => (
-            <FontAwesome name="user-md" size={size} color={colors.yellow} />
-          )}
-          label={"My Profile"}
-          onPress={() => {
-            router.replace("/(auth)/(tabs)/(profile)/");
-            navigation.dispatch(DrawerActions.closeDrawer());
-          }}
-        />
-        <DrawerItem
-          style={{ marginLeft: 20 }}
           labelStyle={{ fontFamily: 'ArialB', color: colors.white }}
           icon={({ size, color }) => (
             <Ionicons name="notifications" size={size} color={colors.yellow} />
@@ -211,6 +199,18 @@ export const CustomContent = (props: any) => {
           label={'Notifications'}
           onPress={() => {
             router.push('/(auth)/(tabs)/(notification)');
+            navigation.dispatch(DrawerActions.closeDrawer());
+          }}
+        />
+        <DrawerItem
+          style={{ marginLeft: 25 }}
+          labelStyle={{ fontFamily: "ArialB", color: colors.white }}
+          icon={({ size, color }) => (
+            <FontAwesome name="user-md" size={size} color={colors.yellow} />
+          )}
+          label={"My Profile"}
+          onPress={() => {
+            router.replace("/(auth)/(tabs)/(profile)/");
             navigation.dispatch(DrawerActions.closeDrawer());
           }}
         />

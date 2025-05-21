@@ -21,6 +21,9 @@ import {
   colors,
   fontFamily,
   fontSizes,
+  paddingL,
+  paddingM,
+  paddingXL,
   spacingL,
   spacingPrim,
   spacingS,
@@ -33,6 +36,7 @@ import { WhiteBold } from "../CusText";
 import { HeartLoader } from "../Animations";
 import { selectDoctor } from "./../../../app/context/actions/selectDoctorAction";
 import { Axios, summary } from "../../config/summaryAPI";
+import { purple } from "@tamagui/themes";
 
 const cardWidth = Dimensions.get("window").width;
 
@@ -55,11 +59,13 @@ const DocDetails: React.FC = () => {
         },
       });
       setDoctorsData(response.data.data.doctors);
+      console.log("APi Chal Gai")
     } catch (error) {
       Alert.alert("Error", "Error fetching data");
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
+      setRefresh(false);
     }
     setRefresh(false);
   };
@@ -186,7 +192,7 @@ const DocDetails: React.FC = () => {
                         height: 75,
                       }}
                     />
-                    <View gap={spacingS}>
+                    <View flex={1} gap={spacingS}>
                       <Text
                         color={colors.primary}
                         fontFamily={fontFamily.bold}
@@ -197,7 +203,7 @@ const DocDetails: React.FC = () => {
                       <Text
                         color={colors.yellow}
                         fontFamily={fontFamily.regular}
-                        fontSize={fontSizes.M}
+                        fontSize={fontSizes.SM}
                       >
                         {item.specializations.length > 0 ? (
                           item.specializations.map((qual: string) => qual.name + " | ")
@@ -208,7 +214,7 @@ const DocDetails: React.FC = () => {
                       <Text
                         color={colors.yellow}
                         fontFamily={fontFamily.regular}
-                        fontSize={fontSizes.M}
+                        fontSize={fontSizes.SM}
                       >
                         {item.qualifications.length > 0 ? (
                           item.qualifications.map((qual: string) => qual.name + " | ")

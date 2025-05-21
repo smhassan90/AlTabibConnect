@@ -36,12 +36,13 @@ export const PrimRegular = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const LinkText = ({ children }: { children: React.ReactNode }) => {
+export const LinkText = ({ children,style }: { children: React.ReactNode }) => {
   return (
     <Text
       fontFamily={fontFamily.bold}
       fontSize={fontSizes.SM}
       color={colors.linkBlue}
+      style={style}
     >
       {children}
     </Text>
