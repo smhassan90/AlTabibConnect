@@ -2,7 +2,7 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import { YStack, XStack, Card,Text } from 'tamagui';
 import { colors, iconSize } from '../../../styles';
 // import { CusText } from '~/components/CusText';
-import { WhiteBold,PrimBold,PrimRegular,YellowBold } from "../../../../app/components/CusText";
+import { WhiteBold,PrimBold,PrimRegular,YellowBold, PrimRegulars, CusText } from "../../../../app/components/CusText";
 
 import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
@@ -23,27 +23,27 @@ const NotificationCard = ({notification,onPress}) => {
         <XStack alignItems="center" gap={10}>
           <YStack flex={1}>
             <XStack>
-              <PrimBold bold size="md" color="primary">
+              <CusText bold size="md" color="primary">
                 {notification.title}
-              </PrimBold>
+              </CusText>
             </XStack>
             <XStack>
-              <PrimRegular size="sm" color="labelGray">
+              <CusText size="sm" color="labelGray">
                 {notification.body}
-              </PrimRegular>
+              </CusText>
             </XStack>
           </YStack>
           <YStack>
           <XStack justifyContent="flex-end">
-            <PrimBold bold size="sm" color="red">
+            <CusText bold size="sm" color="red">
               {!notification.read && "New"}
-            </PrimBold>
+            </CusText>
           </XStack>
           <XStack justifyContent="flex-end">
-            <YellowBold bold size="sm" color="yellow">
+            <CusText bold size="sm" color="yellow">
               {/* {notification.timestamp} */}
               {dayjs(notification.timestamp).fromNow()}
-            </YellowBold>
+            </CusText>
           </XStack>
           </YStack>
         </XStack>

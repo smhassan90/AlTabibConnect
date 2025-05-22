@@ -59,7 +59,7 @@ const DocDetails: React.FC = () => {
         },
       });
       setDoctorsData(response.data.data.doctors);
-      console.log("APi Chal Gai")
+      setRefresh(false);
     } catch (error) {
       Alert.alert("Error", "Error fetching data");
       console.error("Error fetching data:", error);
@@ -67,18 +67,15 @@ const DocDetails: React.FC = () => {
       setLoading(false);
       setRefresh(false);
     }
-    setRefresh(false);
   };
 
   useEffect(() => {
-    if (!refresh) {
-      getDoctorsData();
-    }
+    getDoctorsData();
   }, [refresh]);
 
   const handleGetAppointment = (doc: any, clinic: any, doctorId: string) => {
-    console.log(JSON.stringify(doc),"doc")
-    console.log(JSON.stringify(clinic),"clinic")
+    console.log(JSON.stringify(doc), "doc");
+    console.log(JSON.stringify(clinic), "clinic");
     // return
     dispatch(addAppointment(doc, clinic));
     SecureStore.setItem("doctorId", doctorId);
@@ -98,7 +95,7 @@ const DocDetails: React.FC = () => {
   };
 
   const filteredDoctors = doctorsData.filter((doctor) =>
-    doctor?.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    doctor?.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   return (
     <YStack flex={1} justifyContent="center">
@@ -156,6 +153,7 @@ const DocDetails: React.FC = () => {
                   tintColor={colors.white}
                 />
               }
+              refreshing={true}
               horizontal={false}
               decelerationRate="normal"
               data={filteredDoctors}
@@ -205,22 +203,22 @@ const DocDetails: React.FC = () => {
                         fontFamily={fontFamily.regular}
                         fontSize={fontSizes.SM}
                       >
-                        {item.specializations.length > 0 ? (
-                          item.specializations.map((qual: string) => qual.name + " | ")
-                        ) : (
-                          "No Specialization"
-                        )}
+                        {item.specializations.length > 0
+                          ? item.specializations.map(
+                              (qual: string) => qual.name + " | "
+                            )
+                          : "No Specialization"}
                       </Text>
                       <Text
                         color={colors.yellow}
                         fontFamily={fontFamily.regular}
                         fontSize={fontSizes.SM}
                       >
-                        {item.qualifications.length > 0 ? (
-                          item.qualifications.map((qual: string) => qual.name + " | ")
-                        ):(
-                          "No Qualification"
-                        )}
+                        {item.qualifications.length > 0
+                          ? item.qualifications.map(
+                              (qual: string) => qual.name + " | "
+                            )
+                          : "No Qualification"}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -367,13 +365,16 @@ const DocDetails: React.FC = () => {
                           <PrimaryBtn onPress={handleOpenMaps} isBold>
                             Get Directions
                           </PrimaryBtn>
-                          <SecondaryBtn onPress={() =>
+                          <SecondaryBtn
+                            onPress={() =>
                               handleGetAppointment(
                                 item,
                                 clinic,
                                 item.id.toString()
                               )
-                            } isBold>
+                            }
+                            isBold
+                          >
                             Get Appointment
                           </SecondaryBtn>
                           {/* <PrimBtn onPress={handleOpenMaps}>

@@ -191,18 +191,6 @@ export const CustomContent = (props: any) => {
           }}
         />
         <DrawerItem
-          style={{ marginLeft: 20 }}
-          labelStyle={{ fontFamily: 'ArialB', color: colors.white }}
-          icon={({ size, color }) => (
-            <Ionicons name="notifications" size={size} color={colors.yellow} />
-          )}
-          label={'Notifications'}
-          onPress={() => {
-            router.push('/(auth)/(tabs)/(notification)');
-            navigation.dispatch(DrawerActions.closeDrawer());
-          }}
-        />
-        <DrawerItem
           style={{ marginLeft: 25 }}
           labelStyle={{ fontFamily: "ArialB", color: colors.white }}
           icon={({ size, color }) => (
@@ -211,6 +199,18 @@ export const CustomContent = (props: any) => {
           label={"My Profile"}
           onPress={() => {
             router.replace("/(auth)/(tabs)/(profile)/");
+            navigation.dispatch(DrawerActions.closeDrawer());
+          }}
+        />
+        <DrawerItem
+          style={{ marginLeft: 20 }}
+          labelStyle={{ fontFamily: 'ArialB', color: colors.white }}
+          icon={({ size, color }) => (
+            <Ionicons name="notifications" size={size} color={colors.yellow} />
+          )}
+          label={'Notifications'}
+          onPress={() => {
+            router.push('/(auth)/(tabs)/(notification)');
             navigation.dispatch(DrawerActions.closeDrawer());
           }}
         />
