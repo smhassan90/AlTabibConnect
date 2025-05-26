@@ -1,5 +1,6 @@
 import axios from "axios";
-export const baseURL = "http://altabibserver.fynals.com:8080/tabib/";
+import { url } from "~/env";
+export const baseURL = url;
 
 export const Axios = axios.create({
   baseURL: baseURL,
